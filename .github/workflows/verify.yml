@@ -1,0 +1,34 @@
+name: Verify app and Cloudflare build
+on:
+  push:
+    branches: [v1zw, main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run check:cloudflare
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+      - name: Test actual local Worker
+        shell: bash
+        run: |
+          npm run preview:cloudflare > /tmp/pass-detective-worker.log 2>&1 &
+          worker_pid=$!
+          trap 'kill "$worker_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:8787/api/status; then break; fi
+            sleep 1
+          done
+          PASS_DETECTIVE_URL=http://127.0.0.1:8787 npm run smoke
+        env:
+          WRANGLER_SEND_METRICS: 'false'

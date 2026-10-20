@@ -1,0 +1,10 @@
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const root=new URL('./prototypes/pass-detective/',import.meta.url);
+const html=readFileSync(new URL('index.html',root),'utf8');
+const pure=html.match(/<script id="passing-model">([\s\S]*?)<\/script>/)[1];
+const ui=html.match(/<script id="board-ui">([\s\S]*?)<\/script>/)[1];
+export const PassingModel=vm.runInNewContext(pure+'\nPassingModel');
+export const initial=vm.runInNewContext(ui.slice(ui.indexOf('const roles='),ui.indexOf('let state='))+'\ninitial');
+export const SnapshotModel=vm.runInNewContext(readFileSync(new URL('snapshot-model.js',root),'utf8')+'\nSnapshotModel');
+export const MatchIntelligence=vm.runInNewContext(readFileSync(new URL('intelligence.js',root),'utf8')+'\nMatchIntelligence');

@@ -1,0 +1,409 @@
+{
+  "experiment": "release-context-v1",
+  "seed": 20261020,
+  "source_revision": "4b73468fc5b0f1950f9f66fada70ad3a4f9327cb",
+  "source": "StatsBomb Open Data",
+  "features": [
+    "start_x",
+    "start_y",
+    "under_pressure",
+    "left_foot",
+    "distance_to_goal",
+    "distance_from_centre",
+    "x_squared",
+    "y_squared",
+    "xy"
+  ],
+  "scope": "Ordinary ground foot passes; context at release, not alternative-receiver probabilities.",
+  "versions": {
+    "python": "3.13.9",
+    "catboost": "1.2.8",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "sklearn": "1.7.2"
+  },
+  "split": {
+    "train": {
+      "matches": 40,
+      "match_ids": [
+        7546,
+        7579,
+        7547,
+        7549,
+        8652,
+        7562,
+        7563,
+        7577,
+        8655,
+        7583,
+        7570,
+        7552,
+        8658,
+        7555,
+        7580,
+        8651,
+        7581,
+        7551,
+        7566,
+        7545,
+        7569,
+        7586,
+        7542,
+        7541,
+        7538,
+        7544,
+        7533,
+        7561,
+        7558,
+        7584,
+        8657,
+        7560,
+        7537,
+        7585,
+        7571,
+        7548,
+        7578,
+        7557,
+        7525,
+        8649
+      ],
+      "passes": 24644,
+      "completion_rate": 0.9242411946112644
+    },
+    "validation": {
+      "matches": 12,
+      "match_ids": [
+        7536,
+        7550,
+        7543,
+        7530,
+        7532,
+        7554,
+        7540,
+        7535,
+        7556,
+        8650,
+        7568,
+        7529
+      ],
+      "passes": 7207,
+      "completion_rate": 0.9232690439850145
+    },
+    "calibration": {
+      "matches": 12,
+      "match_ids": [
+        7582,
+        7553,
+        7534,
+        7567,
+        7576,
+        7531,
+        7564,
+        7559,
+        7572,
+        7565,
+        7539,
+        8656
+      ],
+      "passes": 8491,
+      "completion_rate": 0.9303968908255801
+    },
+    "test": {
+      "matches": 64,
+      "match_ids": [
+        3857254,
+        3857255,
+        3857256,
+        3857257,
+        3857258,
+        3857259,
+        3857260,
+        3857261,
+        3857262,
+        3857263,
+        3857264,
+        3857265,
+        3857266,
+        3857267,
+        3857268,
+        3857269,
+        3857270,
+        3857271,
+        3857272,
+        3857273,
+        3857274,
+        3857275,
+        3857276,
+        3857277,
+        3857278,
+        3857279,
+        3857280,
+        3857281,
+        3857282,
+        3857283,
+        3857284,
+        3857285,
+        3857286,
+        3857287,
+        3857288,
+        3857289,
+        3857290,
+        3857291,
+        3857292,
+        3857293,
+        3857294,
+        3857295,
+        3857296,
+        3857297,
+        3857298,
+        3857299,
+        3857300,
+        3857301,
+        3869117,
+        3869118,
+        3869151,
+        3869152,
+        3869219,
+        3869220,
+        3869253,
+        3869254,
+        3869321,
+        3869354,
+        3869420,
+        3869486,
+        3869519,
+        3869552,
+        3869684,
+        3869685
+      ],
+      "passes": 44847,
+      "completion_rate": 0.931165964278547
+    }
+  },
+  "excluded_passes": {
+    "2018": 22539,
+    "2022": 23668
+  },
+  "test_metrics": {
+    "catboost_calibrated": {
+      "log_loss": 0.22633210067708978,
+      "brier": 0.05937371930862353,
+      "roc_auc": 0.7285815516682864,
+      "ece": 0.011645562120235497,
+      "reliability_bins": [
+        {
+          "lower": 0.1,
+          "count": 4,
+          "predicted": 0.15117203996336975,
+          "observed": 0.75
+        },
+        {
+          "lower": 0.2,
+          "count": 115,
+          "predicted": 0.2540692793318967,
+          "observed": 0.30434782608695654
+        },
+        {
+          "lower": 0.3,
+          "count": 40,
+          "predicted": 0.36638857718364015,
+          "observed": 0.325
+        },
+        {
+          "lower": 0.4,
+          "count": 95,
+          "predicted": 0.45391756314057985,
+          "observed": 0.4105263157894737
+        },
+        {
+          "lower": 0.5,
+          "count": 133,
+          "predicted": 0.5496296215821109,
+          "observed": 0.5714285714285714
+        },
+        {
+          "lower": 0.6,
+          "count": 200,
+          "predicted": 0.6586520652108346,
+          "observed": 0.625
+        },
+        {
+          "lower": 0.7,
+          "count": 746,
+          "predicted": 0.7560948683063485,
+          "observed": 0.7359249329758714
+        },
+        {
+          "lower": 0.8,
+          "count": 3202,
+          "predicted": 0.8674429644591574,
+          "observed": 0.8357276702061212
+        },
+        {
+          "lower": 0.9,
+          "count": 40312,
+          "predicted": 0.9581783253318371,
+          "observed": 0.9487001389164517
+        }
+      ]
+    },
+    "logistic_calibrated": {
+      "log_loss": 0.2284504578866656,
+      "brier": 0.060077859205370274,
+      "roc_auc": 0.7184024674912841,
+      "ece": 0.010490338441161111,
+      "reliability_bins": [
+        {
+          "lower": 0.4,
+          "count": 11,
+          "predicted": 0.4806817449164328,
+          "observed": 0.5454545454545454
+        },
+        {
+          "lower": 0.5,
+          "count": 75,
+          "predicted": 0.5625472356078146,
+          "observed": 0.4266666666666667
+        },
+        {
+          "lower": 0.6,
+          "count": 259,
+          "predicted": 0.6585605650688043,
+          "observed": 0.5173745173745173
+        },
+        {
+          "lower": 0.7,
+          "count": 940,
+          "predicted": 0.7604893265885515,
+          "observed": 0.6904255319148936
+        },
+        {
+          "lower": 0.8,
+          "count": 4517,
+          "predicted": 0.8638005950909599,
+          "observed": 0.8521142351117998
+        },
+        {
+          "lower": 0.9,
+          "count": 39045,
+          "predicted": 0.9577242213656633,
+          "observed": 0.9499295684466641
+        }
+      ]
+    },
+    "constant": {
+      "log_loss": 0.2509649311080567,
+      "brier": 0.0641438636826956,
+      "roc_auc": 0.5,
+      "ece": 0.0069247696672825034,
+      "reliability_bins": [
+        {
+          "lower": 0.9,
+          "count": 44847,
+          "predicted": 0.9242411946112645,
+          "observed": 0.931165964278547
+        }
+      ]
+    },
+    "catboost_raw": {
+      "log_loss": 0.22533278659618602,
+      "brier": 0.059186243824203115,
+      "roc_auc": 0.7285815516682864,
+      "ece": 0.003945993282941557,
+      "reliability_bins": [
+        {
+          "lower": 0.1,
+          "count": 4,
+          "predicted": 0.17487685737561065,
+          "observed": 0.75
+        },
+        {
+          "lower": 0.2,
+          "count": 96,
+          "predicted": 0.27109647683836563,
+          "observed": 0.3020833333333333
+        },
+        {
+          "lower": 0.3,
+          "count": 49,
+          "predicted": 0.34814604624078554,
+          "observed": 0.32653061224489793
+        },
+        {
+          "lower": 0.4,
+          "count": 100,
+          "predicted": 0.45584981304850103,
+          "observed": 0.39
+        },
+        {
+          "lower": 0.5,
+          "count": 145,
+          "predicted": 0.5515111173589875,
+          "observed": 0.5724137931034483
+        },
+        {
+          "lower": 0.6,
+          "count": 247,
+          "predicted": 0.6617346328807181,
+          "observed": 0.6437246963562753
+        },
+        {
+          "lower": 0.7,
+          "count": 922,
+          "predicted": 0.7570981582693179,
+          "observed": 0.7570498915401301
+        },
+        {
+          "lower": 0.8,
+          "count": 4711,
+          "predicted": 0.868909471290774,
+          "observed": 0.8528974739970282
+        },
+        {
+          "lower": 0.9,
+          "count": 38573,
+          "predicted": 0.9497293384254327,
+          "observed": 0.95183159204625
+        }
+      ]
+    }
+  },
+  "best_iteration": 126,
+  "bootstrap_95_logloss_difference_catboost_minus_logistic": [
+    -0.0028816905789382573,
+    -0.0013624783268683391
+  ],
+  "promotion_checks": {
+    "logloss_improvement_over_logistic_at_least_2_percent": false,
+    "logloss_improvement_over_constant_at_least_2_percent": true,
+    "brier_better_than_both_baselines": true,
+    "ece_at_most_0_05": true,
+    "match_bootstrap_interval_strictly_below_zero": true
+  },
+  "statistical_gate_passed": false,
+  "calibration": {
+    "method": "sigmoid on independent 2018 calibration matches",
+    "coefficient": 1.0965777592661028,
+    "intercept": -0.024649504875657428
+  },
+  "feature_importance": {
+    "start_x": 10.46675366325195,
+    "start_y": 6.200215765596142,
+    "under_pressure": 10.914356757691333,
+    "left_foot": 6.065854375567475,
+    "distance_to_goal": 18.838445157960706,
+    "distance_from_centre": 14.32346534015427,
+    "x_squared": 17.83755831212061,
+    "y_squared": 5.988224808073535,
+    "xy": 9.36512581958395
+  },
+  "limitations": [
+    "No intended target, defender geometry, speed, facing or player ability features.",
+    "Ground/foot pass scope conditions on action type; not all possible football actions.",
+    "No counterfactual labels; observed action-selection bias remains.",
+    "Pressure is an annotation, not a measured distance threshold.",
+    "Test tournament contains teams/players also seen in training; this is not unseen-player validation.",
+    "Calibration on real events does not validate synthetic board inputs.",
+    "Data/weights remain local; permission for prize/commercial deployment is not established."
+  ]
+}
