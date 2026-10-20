@@ -58,10 +58,11 @@ $('snapshotImage').onchange=async e=>{
   finally{URL.revokeObjectURL(url);e.target.value='';}
 };
 $('mappingTarget').onchange=drawMapping;
-$('snapshotCanvas').onclick=e=>{
+function markSnapshotPoint(p){
   if(!snapshotImage)return;
-  const box=e.currentTarget.getBoundingClientRect(),p={x:(e.clientX-box.left)/box.width,y:(e.clientY-box.top)/box.height};
+  if(replayActive){snapshotStatus('Exit replay before editing screenshot positions.');return;}
   try{
+    if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||p.x<0||p.x>1||p.y<0||p.y>1)throw Error('Choose a position within the image.');
     if(calibration.length<4){
       const next=[...calibration,p];if(next.length===4)SnapshotModel.calibrate(next);calibration=next;
     }else{
@@ -71,6 +72,10 @@ $('snapshotCanvas').onclick=e=>{
     }
     drawMapping();
   }catch(error){snapshotStatus(error.message);}
+}
+$('snapshotCanvas').onclick=e=>{
+  const box=e.currentTarget.getBoundingClientRect();
+  markSnapshotPoint({x:(e.clientX-box.left)/box.width,y:(e.clientY-box.top)/box.height});
 };
 $('undoMark').onclick=()=>{
   const last=mappingHistory.pop();

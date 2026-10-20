@@ -59,11 +59,13 @@ test('vision provider output is validated before returning suggestions',async()=
   assert.equal(markers[0].id,'ball');
 });
 
-function loadUI(){
+function loadUI(options={}){
   const dir=new URL('../prototypes/pass-detective/',import.meta.url);
   const html=readFileSync(new URL('index.html',dir),'utf8');
   const errors=[],console=new VirtualConsole();console.on('jsdomError',e=>errors.push(e));
-  const dom=new JSDOM(html,{runScripts:'outside-only',url:'file:///prototype/index.html',pretendToBeVisual:true,virtualConsole:console});
+  const dom=new JSDOM(html,{runScripts:'outside-only',url:options.storage?'https://ripple.test/':'file:///prototype/index.html',pretendToBeVisual:true,virtualConsole:console});
+  dom.window.fetch=async()=>({ok:true,json:async()=>({ai:false,vision:false})});
+  if(options.draft)dom.window.localStorage.setItem('ripple.board.v1',options.draft);
   dom.window.structuredClone=structuredClone;
   dom.window.HTMLElement.prototype.scrollIntoView=function(){};
   const context=dom.getInternalVMContext();
@@ -72,6 +74,87 @@ function loadUI(){
   }
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
+test('draft history supports undo, redo, reload, and clear without erasing current state',()=>{
+  const {$,dom,context}=loadUI({storage:true});
+  try{
+    const old=vm.runInContext('state.players.find(p=>p.id===state.selected).x',context);
+    $('px').value=49;$('px').dispatchEvent(new dom.window.Event('input'));
+    dom.window.RippleWorkspace.flush();
+    const draft=dom.window.localStorage.getItem('ripple.board.v1');
+    assert.ok(draft);assert.equal($('undoBoard').disabled,false);
+    $('undoBoard').click();assert.equal(Number($('px').value),old);
+    $('redoBoard').click();assert.equal(Number($('px').value),49);
+    const restored=loadUI({storage:true,draft});
+    try{assert.equal(Number(restored.$('px').value),49);assert.match(restored.$('draftStatus').textContent,/restored/);}
+    finally{restored.dom.window.close();}
+    $('clearDraft').click();assert.equal(dom.window.localStorage.getItem('ripple.board.v1'),null);
+    assert.equal(Number($('px').value),49);
+  }finally{dom.window.close();}
+});
+test('replay cannot overwrite saved editing draft and hidden playback stops',()=>{
+  const {$,dom}=loadUI({storage:true});
+  try{
+    $('px').value=48;$('px').dispatchEvent(new dom.window.Event('input'));dom.window.RippleWorkspace.flush();
+    const before=dom.window.localStorage.getItem('ripple.board.v1');
+    dom.window.RippleWorkspace.showView('replay');$('startReplay').click();
+    assert.equal($('undoBoard').disabled,true);
+    $('nextDecision').click();
+    dom.window.RippleWorkspace.flush();
+    assert.equal(dom.window.localStorage.getItem('ripple.board.v1'),before);
+    assert.equal($('undoBoard').disabled,true);
+    $('autoReplay').click();dom.window.RippleWorkspace.showView('snapshot');
+    assert.equal($('autoReplay').textContent,'Play sequence');
+    assert.equal($('snapshot-import').hidden,false);
+    assert.equal($('tactics').parentElement.hidden,true);
+  }finally{dom.window.close();}
+});
+test('reports contain portable pitch and model evidence, including empty possession',()=>{
+  const {$,dom,context}=loadUI();
+  try{
+    const report=dom.window.RippleWorkspace.reportHTML();
+    assert.match(report,/<svg[^>]+xmlns=/);assert.match(report,/Heuristic score \(not probability\)/);
+    assert.doesNotMatch(report,/undefined|NaN|<script/);
+    $('studioLanguage').value='ms';$('studioLanguage').dispatchEvent(new dom.window.Event('change'));
+    assert.match(dom.window.RippleWorkspace.reportHTML(),/Laporan analisis/);
+    vm.runInContext('state.owner=null;render()',context);
+    assert.match(dom.window.RippleWorkspace.reportHTML(),/Tetapkan penghantar/);
+  }finally{dom.window.close();}
+});
+test('language switch translates workspace and dynamic cards without changing model state',()=>{
+  const {$,dom,context}=loadUI();
+  try{
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    $('appLanguage').value='ms';$('appLanguage').dispatchEvent(new dom.window.Event('change'));
+    assert.equal($('viewTitle').textContent,'Papan taktikal');
+    assert.match($('cards').textContent,/Skor heuristik/);
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    dom.window.RippleWorkspace.showView('snapshot');
+    assert.equal($('viewTitle').textContent,'Makmal tangkap layar');
+    $('appLanguage').value='en';$('appLanguage').dispatchEvent(new dom.window.Event('change'));
+    assert.equal($('viewTitle').textContent,'Screenshot lab');
+    assert.match($('cards').textContent,/Heuristic score/);
+  }finally{dom.window.close();}
+});
+test('keyboard screenshot mapping calibrates, marks all players, applies and supports undo',()=>{
+  const {$,dom,context}=loadUI();
+  try{
+    dom.window.HTMLCanvasElement.prototype.getContext=()=>new Proxy({}, {get:()=>()=>{}});
+    vm.runInContext('snapshotImage={};',context);
+    const mark=(x,y)=>{$('markerX').value=x;$('markerY').value=y;$('placeMarker').click();};
+    mark(0,0);mark(100,0);mark(100,100);mark(0,100);
+    assert.equal($('mappingTarget').disabled,false);
+    for(let i=0;i<23;i++)mark(20+i,50);
+    assert.equal($('applyImage').disabled,false);
+    assert.equal($('markerChecklist').querySelectorAll('.marked').length,23);
+    $('undoMark').click();assert.equal($('applyImage').disabled,true);
+    mark(42,50);$('applyImage').click();
+    assert.equal(dom.window.RippleWorkspace.view,'analysis');
+    assert.equal(vm.runInContext('state.owner',context),null);
+    assert.equal($('player-settings').querySelector('details.settings-fold').open,true);
+    $('snapshotZoom').value='2';$('snapshotZoom').dispatchEvent(new dom.window.Event('change'));
+    assert.equal($('snapshotCanvas').style.width,'200%');
+  }finally{dom.window.close();}
+});
 test('guided start exits locked replay and navigation targets existing sections',()=>{
   const {$,dom,errors}=loadUI();
   try{
