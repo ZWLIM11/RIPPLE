@@ -72,6 +72,23 @@ function loadUI(){
   }
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
+test('guided start exits locked replay and navigation targets existing sections',()=>{
+  const {$,dom,errors}=loadUI();
+  try{
+    $('startReplay').click();
+    assert.equal($('px').disabled,true);
+    $('guidedStart').click();
+    assert.equal($('px').disabled,false);
+    assert.equal($('replayWorkspace').hidden,true);
+    assert.match($('walkthrough').textContent,/Compare #10/);
+    assert.equal(dom.window.document.activeElement,$('tactics'));
+    for(const link of dom.window.document.querySelectorAll('a[href^="#"]')){
+      assert.ok($(link.hash.slice(1)),`Missing navigation target ${link.hash}`);
+    }
+    assert.ok($('tactics').compareDocumentPosition($('snapshot-import')) & 4);
+    assert.equal(errors.length,0);
+  }finally{dom.window.close();}
+});
 test('integrated UI supports replay reveal, language, focus, seek, overlays and exit',()=>{
   const {$,dom,errors}=loadUI();
   try{

@@ -20,8 +20,9 @@ test('edge model produces exactly the same recommendations as original Node mode
 });
 test('Cloudflare build contains only explicitly allowed application files',async()=>{
   const names=await readdir(new URL('../dist/cloudflare/public/',import.meta.url));
-  assert.equal(names.length,11);
-  for(const name of names)assert.ok(name==='index.html'||name==='_headers'||/\.(js|css)$/.test(name));
+  assert.deepEqual(names.sort(),['_headers','index.html','comparison.js','snapshot-model.js',
+    'snapshot-ui.js','replay-model.js','replay-ui.js','intelligence.js','studio-ui.js',
+    'vision-ui.js','guide-ui.js','studio.css'].sort());
   const model=await readFile(new URL('../dist/cloudflare/models.mjs',import.meta.url),'utf8');
   assert.doesNotMatch(model,/node:|runInNewContext|eval\(/);
 });
