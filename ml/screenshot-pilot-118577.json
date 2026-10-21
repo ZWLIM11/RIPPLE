@@ -1,0 +1,82 @@
+{
+  "source_url": "https://huggingface.co/datasets/atomscott/soccertrack-v2/blob/main/mot/clips/118577.mp4",
+  "source_sha256": "f0dfbef3b496867bd2a1261c9a4d4c538d3861bf15b50109e9287c6a1371fc04",
+  "source_bytes": 270151489,
+  "fps": 25.0,
+  "frame_count": 6000,
+  "duration_seconds": 240.0,
+  "width": 4096,
+  "height": 1080,
+  "samples": [
+    {
+      "seconds": 0,
+      "frame_index_zero_based": 0,
+      "image": "118577-0s.jpg",
+      "sha256": "43431a33c2a2b7428dc46c3a92a2cc8c7e07acb34cbd0a0c721d52546d0f5c55"
+    },
+    {
+      "seconds": 30,
+      "frame_index_zero_based": 750,
+      "image": "118577-30s.jpg",
+      "sha256": "89cbac450b15c3663729b663a976ecb4adb62bdb77dda622a86cdec71d02eede"
+    },
+    {
+      "seconds": 60,
+      "frame_index_zero_based": 1500,
+      "image": "118577-60s.jpg",
+      "sha256": "616ffad31c5ab3b3d70ed3069b55d2dd52886cd24da8a41eebddfc918eb7fb81"
+    },
+    {
+      "seconds": 120,
+      "frame_index_zero_based": 3000,
+      "image": "118577-120s.jpg",
+      "sha256": "050c78cedc4c7a9579f6ffb6f1aa4b8759dd0838bc32c88baff9e99ee163f56a"
+    },
+    {
+      "seconds": 180,
+      "frame_index_zero_based": 4500,
+      "image": "118577-180s.jpg",
+      "sha256": "fbf274985b8ea632518d53229ae371a2e3dae28bf5d5614eff1d8e7c8868afbe"
+    },
+    {
+      "seconds": 230,
+      "frame_index_zero_based": 5750,
+      "image": "118577-230s.jpg",
+      "sha256": "f324933e56a68951233755c4f1a72c3591105e0c2cf98b132f34c1b3667372d9"
+    }
+  ],
+  "manual_line_diagnostic": {
+    "display_size": [
+      2048,
+      540
+    ],
+    "endpoints": [
+      [
+        50.0,
+        300.0
+      ],
+      [
+        1969.0,
+        274.0
+      ]
+    ],
+    "intermediate_point": [
+      1066.0,
+      357.0
+    ],
+    "offset_display_pixels": 70.75900862268468,
+    "offset_native_pixels": 141.51801724536935,
+    "approximate_manual_measurement": true
+  },
+  "visual_review": "All six sampled frames show a curved near touchline in the fixed panoramic view.",
+  "input_feasibility": "unsupported_without_distortion_correction",
+  "scope": "Full-pitch four-corner calibration; local-region calibration not evaluated.",
+  "pass_outcomes_scored": 0,
+  "production_approved": false,
+  "limitations": [
+    "One four-minute clip, six time samples, not a pass-outcome benchmark.",
+    "Previously downloaded 117092 event annotations are a different match and were not used.",
+    "No independently reviewed intended targets/outcomes or camera rectification for this clip.",
+    "A planar homography preserves straight lines and cannot rectify this curved touchline."
+  ]
+}

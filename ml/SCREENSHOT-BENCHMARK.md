@@ -1,4 +1,25 @@
-# Real screenshot benchmark: awaiting footage
+# Real screenshot benchmark: panoramic pilot inspected
+
+## Update: supplied 118577 clip
+
+The user supplied `118577.mp4`. Its SHA-256 matches the provider's published file hash: `f0dfbef3b496867bd2a1261c9a4d4c538d3861bf15b50109e9287c6a1371fc04`. Decoded metadata: 270,151,489 bytes, 4096x1080, 25fps, 6,000 frames, 240 seconds.
+
+Extracted and visually inspected frames at 0, 30, 60, 120, 180 and 230 seconds. All six show a curved near touchline in the fixed panoramic view. Approximate manual marks in the 30-second frame give a 141.5-native-pixel intermediate-point deviation from the chord between two touchline points. This is an image curvature diagnostic, not independently verified position error in metres.
+
+**Current full-pitch screenshot mapping is unsuitable for this raw panorama.** The production code uses a planar homography, which preserves straight lines and cannot straighten the observed curve. Local-region modes have not been evaluated by this pilot. Camera rectification must be validated against withheld pitch landmarks before passing geometry can be trusted.
+
+Zero pass outcomes were scored. No model accuracy claim, automatic detection test, or app promotion follows from this feasibility pilot. The saved event file belongs to **117092**, a different match, and was not paired with this clip. Independent target/outcome review and matching clip timing remain outstanding. This pilot establishes an input limitation; it does not show that the CatBoost model itself fails on correctly mapped screenshots.
+
+Reproduce with OpenCV installed in the ML environment:
+
+```text
+python ml/inspect_screenshot_clip.py "C:/Users/LIM ZIWEI/Downloads/118577.mp4"
+python ml/test_screenshot_benchmark.py
+```
+
+Report: `screenshot-pilot-118577.json`. Frames stay local under ignored `work/screenshot-benchmark/`; no video or screenshot is pushed. Four benchmark software tests still pass. Next work: obtain matching camera calibration/rectification for 118577, validate landmark mapping, then annotate matched release images and observed outcomes. The outcome benchmark below remains pending.
+
+## Original setup and access record
 
 2026-10-21. **No real pass outcomes have been scored. No screenshot accuracy or readiness claim is supported.** The empty evaluation report deliberately has no metrics. The SkillCorner visible model remains research-only.
 
