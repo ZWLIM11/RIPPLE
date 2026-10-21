@@ -1,0 +1,142 @@
+{
+  "experiment": "metrica-completed-pass-receiver-choice-v1",
+  "source": "https://github.com/metrica-sports/sample-data",
+  "commit": "e706dd506b360d69d9d123d5b8026e7294b13996",
+  "source_sha256": {
+    "events1.csv": "097dda6345e17390dca095331458fd00e47960c480c76f4356fd4edf2575ef05",
+    "events2.csv": "edf31a18599265b77a8baf150f2ce6d89456fb0324b62ea7a391229657a619ba",
+    "tracking1_Away.csv": "0a3df68a92af0290ede472e62de3b6489ddee29223da09bdf0cf76c8e0ab0618",
+    "tracking1_Home.csv": "0a3d0eff7785950379c587d3597b86a2d91c2492281b4652e1abb97c99b6b364",
+    "tracking2_Away.csv": "aa639f40762eade46c389020fe4458266b5ba14027b1e96e22e75db62803718b",
+    "tracking2_Home.csv": "3f9990ac204b07133e4202441d6fcbb386897c7c7f81e1bc3ce4d35bc8644694"
+  },
+  "features": [
+    "distance",
+    "abs_dx",
+    "abs_dy",
+    "receiver_touchline",
+    "receiver_endline",
+    "passer_touchline",
+    "passer_endline",
+    "passer_pressure",
+    "receiver_pressure",
+    "lane_clearance",
+    "lane_defenders_3m"
+  ],
+  "exclusions": {
+    "1": {
+      "included": 694,
+      "invalid_or_off_pitch": 76,
+      "excluded_subtype": 29
+    },
+    "2": {
+      "included": 862,
+      "invalid_or_off_pitch": 66,
+      "excluded_subtype": 36
+    }
+  },
+  "label_audit": {
+    "1": {
+      "pass_events": 799,
+      "failed_events": 308,
+      "failed_events_with_To": 0
+    },
+    "2": {
+      "pass_events": 964,
+      "failed_events": 282,
+      "failed_events_with_To": 0
+    }
+  },
+  "folds": [
+    {
+      "train_game": 1,
+      "test_game": 2,
+      "train_events": 694,
+      "metrics": {
+        "catboost": {
+          "top1": 0.4709976798143852,
+          "top3": 0.8178654292343387,
+          "mrr": 0.6580483740286523,
+          "events": 862
+        },
+        "logistic": {
+          "top1": 0.43271461716937354,
+          "top3": 0.7935034802784223,
+          "mrr": 0.6288849298420063,
+          "events": 862
+        },
+        "nearest": {
+          "top1": 0.3433874709976798,
+          "top3": 0.7296983758700696,
+          "mrr": 0.5580948698118072,
+          "events": 862
+        }
+      },
+      "top1_absolute_gains": {
+        "logistic": 0.038283062645011634,
+        "nearest": 0.12761020881670537
+      },
+      "five_minute_block_bootstrap_95_ci": {
+        "logistic": [
+          0.01108494659668457,
+          0.06563398254446631
+        ],
+        "nearest": [
+          0.08369872999331575,
+          0.17012227661894708
+        ]
+      }
+    },
+    {
+      "train_game": 2,
+      "test_game": 1,
+      "train_events": 862,
+      "metrics": {
+        "catboost": {
+          "top1": 0.484149855907781,
+          "top3": 0.7824207492795389,
+          "mrr": 0.6579462284433466,
+          "events": 694
+        },
+        "logistic": {
+          "top1": 0.41786743515850144,
+          "top3": 0.776657060518732,
+          "mrr": 0.6196926032660903,
+          "events": 694
+        },
+        "nearest": {
+          "top1": 0.3025936599423631,
+          "top3": 0.6801152737752162,
+          "mrr": 0.5264963862586342,
+          "events": 694
+        }
+      },
+      "top1_absolute_gains": {
+        "logistic": 0.06628242074927954,
+        "nearest": 0.1815561959654179
+      },
+      "five_minute_block_bootstrap_95_ci": {
+        "logistic": [
+          0.03611817621874004,
+          0.09286809633273382
+        ],
+        "nearest": [
+          0.161136580936724,
+          0.20118134567236076
+        ]
+      }
+    }
+  ],
+  "exploratory_gate_passed": false,
+  "production_approved": false,
+  "target": "Receiver choice conditional on completed pass; unchosen candidates are NOT failed passes.",
+  "limitations": [
+    "Only two anonymized matches; no match-level generalization interval.",
+    "No intended receiver for failed events: cannot estimate completion or causal best action.",
+    "Coordinates at release only; no future tracking or event endpoints used.",
+    "Ordinary/through-pass-like filtered population; height not fully annotated.",
+    "Partial screenshot inputs and retained movement assumptions are not validated.",
+    "Publisher asks public attribution; no explicit standard redistribution/commercial license established. Research artifacts kept local."
+  ],
+  "script_sha256": "b87ab616e119538cdf7b8a01fbe79953200c89e07cfdc164344bbf0ee15fec18"
+}
