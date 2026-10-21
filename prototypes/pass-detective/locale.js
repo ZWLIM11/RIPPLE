@@ -111,6 +111,8 @@
     'Pin the inspected route, then move a defender or adjust the assumptions.\nCompare the same receiver, fixed target location, launch speed and passing foot.\nMoving the receiver does not move the pinned target. These are estimates, not observed outcomes.':'Pin laluan diperiksa, kemudian gerakkan pertahanan atau ubah andaian. Bandingkan penerima, lokasi sasaran tetap, kelajuan awal dan kaki yang sama. Menggerakkan penerima tidak menggerakkan sasaran dipinkan. Ini anggaran, bukan hasil diperhatikan.'
   };
   Object.assign(dictionary,{
+    'Language / Bahasa':'Bahasa','Local template · AI not connected':'Templat tempatan · AI belum disambung',
+    'Foundry · verified evidence':'Foundry · bukti disahkan',
     'Pitch':'Padang','Passing options':'Pilihan hantaran','Explain':'Terangkan','Compare':'Bandingkan','Screenshot & save':'Tangkap layar dan simpan',
     'BLUE →':'BIRU →','← CORAL':'← KARANG','Broadcast view':'Paparan siaran','Exit broadcast view':'Keluar paparan siaran',
     'Ask about this candidate':'Tanya tentang hantaran ini','Question':'Soalan','Explain candidate':'Terangkan hantaran',
@@ -187,7 +189,7 @@
   });
   const phrases={
     'Blue':'Biru','Coral':'Karang','Ball':'Bola','ball':'bola',' in possession':' menguasai bola',
-    ' / 100 · assumed ability':' / 100 · keupayaan andaian',' foot':' kaki','left':'kiri','right':'kanan',
+    ' / 100 · assumed ability':' / 100 · keupayaan andaian','left foot':'kaki kiri','right foot':'kaki kanan',' foot':' kaki','left':'kiri','right':'kanan',
     'unreachable':'tidak tercapai','Low':'Rendah','Medium':'Sederhana','High':'Tinggi',
     'Advances':'Maju','Moves back':'Berundur',' m to nearest opponent at target.':' m ke pihak lawan terdekat di sasaran.',
     'candidates evaluated across':'calon dinilai melibatkan','teammates.':'rakan sepasukan.',
