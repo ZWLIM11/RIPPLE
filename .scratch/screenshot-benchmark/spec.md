@@ -1,0 +1,7 @@
+# Independent screenshot benchmark
+
+Freeze the existing SkillCorner visible CatBoost and logistic models. No training or tuning on benchmark outcomes. Use real release-time images from previously unused matches, paired with independently reviewed clips establishing intended target and successful/failed/offside outcome. Screenshot marking must precede outcome review. Unknown target/outcome is an abstention, not a fabricated failure. Record every sampled attempt including rejected inputs.
+
+Use the production SnapshotModel/FrameModel projection code and normalized image feet/landmark clicks. Do not substitute tracking coordinates. Current app region dimensions are 105x68m; require that coordinate convention explicitly. Preserve source, file hash, release timing, marker and outcome reviewer identifiers. Explicitly record whether all visible defenders were marked and whether supported landmarks can be located. No automatic detector accuracy claim from manual marks.
+
+Minimum research promotion evidence: at least 500 scored attempts, 100 failures, five previously unused matches; report coverage and per-match metrics. Require >=80% input coverage, AUC >=.70, ECE <=.05, >=2% log-loss improvement over frozen logistic, and no worse Brier. This is a research screening gate, not automatic production approval. Actual independent annotation audit and review remain required. Current task may remain pending if footage access is unavailable.

@@ -1,0 +1,19 @@
+{
+  "sampled_attempts": 0,
+  "scored_attempts": 0,
+  "coverage": null,
+  "rejections": {},
+  "research_gate_passed": false,
+  "production_approved": false,
+  "status": "awaiting_independent_annotated_footage",
+  "mode": "manual_screenshot_marks_using_production_projection",
+  "model_hashes": {
+    "visible.cbm": "774ea4db28895644d6a8033ffd0afc66a919c1519e965da6b919d31783f35c19",
+    "visible.joblib": "aad325d7338122055e0e324ae4f73f3949e314f59e58a261abb21987a821fec0"
+  },
+  "projection_hashes": {
+    "snapshot-model.js": "b612a5071785340f1e86f474f1da43fff81031d90f6d068371c4884549dbe48d",
+    "frame-model.js": "5338175d0fc1f06107539e7243daa02cb0bd3302afc0de199fa602c2cf8e5bda"
+  },
+  "manifest_sha256": "747366e6b3fa9b8a456e99daa57095e8faec5ec23e3bb9ca1a0ca0e78492860e"
+}
