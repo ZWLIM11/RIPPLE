@@ -76,6 +76,52 @@ function loadUI(options={}){
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
 
+test('partial frame geometry maps known landmarks without importing unknown players',()=>{
+  const {$,dom,context,errors}=loadUI({storage:true});
+  try{
+    dom.window.HTMLCanvasElement.prototype.getContext=()=>new Proxy({},{get:()=>()=>{}});
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    $('frameRegion').value='leftBox';$('frameRegion').dispatchEvent(new dom.window.Event('change'));
+    vm.runInContext('snapshotImage={};calibration=[{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:1}];mappedPoints.set("blue-1",{x:.1,y:.5});mappedPoints.set("blue-2",{x:.9,y:.5});mappedPoints.set("coral-1",{x:.5,y:.6});drawMapping()',context);
+    const centre=vm.runInContext('FrameModel.project(calibration,{x:.5,y:.5},"leftBox")',context);
+    assert.equal(centre.x,8.25);assert.equal(centre.y,34);
+    $('framePasser').value='blue-1';$('frameReceiver').value='blue-2';$('measureFrame').click();
+    assert.match($('frameResult').textContent,/13.2 m apart/);assert.match($('frameResult').textContent,/19 players unknown/);
+    assert.equal($('applyImage').disabled,true);$('applyImage').onclick();assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    $('frameReceiver').value='coral-1';$('measureFrame').click();assert.match($('frameResult').textContent,/two different marked teammates/);
+    $('frameRegion').value='rightHalf';$('frameRegion').dispatchEvent(new dom.window.Event('change'));assert.equal(vm.runInContext('mappedPoints.size',context),0);
+    assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});
+
+test('colour assistance returns regions rather than identities and ignores nonmatching pixels',()=>{
+  const {dom,context}=loadUI();
+  try{
+    const result=vm.runInContext(`(()=>{const data=new Uint8ClampedArray(100*100*4);for(let y=20;y<24;y++)for(let x=30;x<34;x++){let i=(y*100+x)*4;data[i]=57;data[i+1]=139;data[i+2]=255;data[i+3]=255;}return FrameModel.blobs(data,100,100,[57,139,255]);})()`,context);
+    assert.equal(result.length,1);assert.ok(Math.abs(result[0].x-.32)<.001);assert.equal(result[0].id,undefined);
+  }finally{dom.window.close();}
+});
+
+test('clipboard image paste uses shared loader only in screenshot view and outside text inputs',async()=>{
+  const {$,dom,context}=loadUI({storage:true});
+  try{
+    vm.runInContext('window.pasted=[];loadSnapshotFile=async file=>window.pasted.push(file.type)',context);
+    const paste=target=>{const e=new dom.window.Event('paste',{bubbles:true,cancelable:true});Object.defineProperty(e,'clipboardData',{value:{items:[{kind:'file',type:'image/png',getAsFile:()=>({type:'image/png'})}]}});target.dispatchEvent(e);};
+    paste(dom.window.document);assert.equal(dom.window.pasted.length,0);
+    dom.window.RippleWorkspace.showView('snapshot');paste(dom.window.document);assert.equal(dom.window.pasted.length,1);
+    paste($('markerX'));assert.equal(dom.window.pasted.length,1);
+  }finally{dom.window.close();}
+});
+
+test('shared image loader rejects bad files and replay imports before decoding',async()=>{
+  const {$,dom,context}=loadUI();
+  try{
+    await vm.runInContext('loadSnapshotFile({type:"text/html",size:1})',context);assert.match($('snapshotStatus').textContent,/Choose PNG/);
+    await vm.runInContext('loadSnapshotFile({type:"image/png",size:16*1024*1024})',context);assert.match($('snapshotStatus').textContent,/15 MB/);
+    $('startReplay').click();await vm.runInContext('loadSnapshotFile({type:"image/png",size:1})',context);assert.match($('snapshotStatus').textContent,/Exit replay/);
+  }finally{dom.window.close();}
+});
+
 test('named scenarios persist, safely render names, load with undo and recover removed entries',()=>{
   const {$,dom,context,errors}=loadUI({storage:true});
   try{

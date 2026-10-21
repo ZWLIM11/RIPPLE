@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {initial,PassingModel} from '../model-loader.mjs';
 const base=process.env.PASS_DETECTIVE_URL||'http://127.0.0.1:3001';
-for(const path of ['/','/studio-ui.js','/intelligence.js','/vision-ui.js','/studio.css','/workspace.js','/workspace.css','/snapshot-tools.js','/locale.js','/playbook.js','/playbook.css','/api/status']){
+for(const path of ['/','/studio-ui.js','/intelligence.js','/vision-ui.js','/studio.css','/workspace.js','/workspace.css','/snapshot-tools.js','/locale.js','/playbook.js','/playbook.css','/frame-model.js','/frame-ui.js','/api/status']){
   assert.equal((await fetch(base+path)).status,200,path);
 }
 const state=initial(),candidateKey=PassingModel.candidates(state)[0].key;

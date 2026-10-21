@@ -42,8 +42,9 @@ function drawMapping(){
   $('applyImage').disabled=calibration.length!==4||mappedPoints.size!==23;
   $('undoMark').disabled=!calibration.length;
 }
-$('snapshotImage').onchange=async e=>{
-  const file=e.target.files[0];if(!file)return;
+async function loadSnapshotFile(file){
+  if(!file)return;
+  if(replayActive){snapshotStatus('Exit replay before loading an image.');return;}
   const version=++imageLoadVersion;
   if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>15*1024*1024){snapshotStatus('Choose PNG, JPEG or WebP up to 15 MB.');return;}
   const url=URL.createObjectURL(file),img=new Image();
@@ -55,7 +56,10 @@ $('snapshotImage').onchange=async e=>{
     $('snapshotCanvas').width=Math.round(img.naturalWidth*scale);$('snapshotCanvas').height=Math.round(img.naturalHeight*scale);
     $('imageWorkspace').hidden=false;drawMapping();snapshotStatus('Image loaded locally. Mark the pitch corners in the requested order.');
   }catch(error){snapshotStatus(`Image not loaded: ${error.message}`);}
-  finally{URL.revokeObjectURL(url);e.target.value='';}
+  finally{URL.revokeObjectURL(url);}
+}
+$('snapshotImage').onchange=async e=>{
+  await loadSnapshotFile(e.target.files[0]);e.target.value='';
 };
 $('mappingTarget').onchange=drawMapping;
 function markSnapshotPoint(p){
