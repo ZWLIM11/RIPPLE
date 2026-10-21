@@ -1,0 +1,1190 @@
+{
+  "source": "https://github.com/SkillCorner/opendata",
+  "commit": "4340d274572876239c154c90bc507a9b3250a656",
+  "splits": {
+    "train": [
+      1874553,
+      1886347,
+      1899585,
+      1925299,
+      1927964,
+      1953632,
+      1959846,
+      1986691,
+      1996436,
+      1996435,
+      2006229,
+      2006363
+    ],
+    "calibration": [
+      2007448,
+      2007721,
+      2010085,
+      2011166
+    ],
+    "test": [
+      2013725,
+      2015213,
+      2016236,
+      2017461
+    ]
+  },
+  "features": [
+    "distance",
+    "abs_dx",
+    "abs_dy",
+    "receiver_touchline",
+    "receiver_endline",
+    "passer_touchline",
+    "passer_endline",
+    "passer_pressure",
+    "receiver_pressure",
+    "lane_clearance",
+    "lane_defenders_3m",
+    "defenders_observed"
+  ],
+  "experiments": {
+    "complete": {
+      "audit": {
+        "1874553": {
+          "attempts_successful": 700,
+          "included_successful": 684,
+          "attempts_unsuccessful": 135,
+          "included_unsuccessful": 133,
+          "off_pitch_successful": 15,
+          "missing_target_or_passer_unsuccessful": 1,
+          "missing_target_or_passer_successful": 1,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "off_pitch_unsuccessful": 1
+        },
+        "1886347": {
+          "attempts_successful": 735,
+          "included_successful": 727,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "attempts_unsuccessful": 115,
+          "included_unsuccessful": 112,
+          "off_pitch_successful": 8,
+          "off_pitch_unsuccessful": 3
+        },
+        "1899585": {
+          "attempts_unsuccessful": 131,
+          "unknown_target_unsuccessful": 1,
+          "attempts_successful": 606,
+          "included_successful": 603,
+          "included_unsuccessful": 127,
+          "off_pitch_unsuccessful": 3,
+          "attempts_offside": 4,
+          "included_offside": 4,
+          "off_pitch_successful": 2,
+          "missing_target_or_passer_successful": 1
+        },
+        "1925299": {
+          "attempts_successful": 780,
+          "included_successful": 770,
+          "attempts_unsuccessful": 127,
+          "included_unsuccessful": 126,
+          "off_pitch_successful": 10,
+          "attempts_offside": 5,
+          "included_offside": 5,
+          "off_pitch_unsuccessful": 1
+        },
+        "1927964": {
+          "attempts_successful": 902,
+          "included_successful": 895,
+          "attempts_unsuccessful": 92,
+          "included_unsuccessful": 90,
+          "off_pitch_successful": 7,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "off_pitch_unsuccessful": 2
+        },
+        "1953632": {
+          "attempts_successful": 759,
+          "included_successful": 736,
+          "off_pitch_successful": 20,
+          "attempts_unsuccessful": 102,
+          "included_unsuccessful": 95,
+          "attempts_offside": 4,
+          "included_offside": 4,
+          "off_pitch_unsuccessful": 4,
+          "invalid_target_unsuccessful": 3,
+          "invalid_target_successful": 3
+        },
+        "1959846": {
+          "attempts_successful": 680,
+          "included_successful": 667,
+          "attempts_unsuccessful": 133,
+          "included_unsuccessful": 129,
+          "off_pitch_successful": 13,
+          "off_pitch_unsuccessful": 3,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "missing_target_or_passer_unsuccessful": 1
+        },
+        "1986691": {
+          "attempts_successful": 662,
+          "included_successful": 658,
+          "attempts_unsuccessful": 100,
+          "included_unsuccessful": 96,
+          "off_pitch_successful": 4,
+          "off_pitch_unsuccessful": 4,
+          "attempts_offside": 4,
+          "included_offside": 4
+        },
+        "1996436": {
+          "attempts_successful": 528,
+          "included_successful": 514,
+          "attempts_unsuccessful": 130,
+          "included_unsuccessful": 124,
+          "missing_target_or_passer_unsuccessful": 1,
+          "off_pitch_successful": 14,
+          "off_pitch_unsuccessful": 5,
+          "attempts_offside": 2,
+          "included_offside": 2
+        },
+        "1996435": {
+          "attempts_successful": 741,
+          "included_successful": 723,
+          "attempts_unsuccessful": 133,
+          "included_unsuccessful": 131,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 17,
+          "missing_target_or_passer_successful": 1,
+          "attempts_offside": 4,
+          "included_offside": 4
+        },
+        "2006229": {
+          "attempts_successful": 723,
+          "included_successful": 712,
+          "attempts_unsuccessful": 137,
+          "included_unsuccessful": 136,
+          "attempts_offside": 1,
+          "included_offside": 1,
+          "off_pitch_successful": 11,
+          "off_pitch_unsuccessful": 1
+        },
+        "2006363": {
+          "attempts_unsuccessful": 121,
+          "unknown_target_unsuccessful": 1,
+          "included_unsuccessful": 120,
+          "attempts_successful": 723,
+          "included_successful": 720,
+          "off_pitch_successful": 3,
+          "attempts_offside": 1,
+          "included_offside": 1
+        },
+        "2007448": {
+          "attempts_unsuccessful": 117,
+          "included_unsuccessful": 111,
+          "attempts_successful": 632,
+          "included_successful": 613,
+          "off_pitch_successful": 19,
+          "off_pitch_unsuccessful": 5,
+          "missing_target_or_passer_unsuccessful": 1,
+          "attempts_offside": 3,
+          "included_offside": 3
+        },
+        "2007721": {
+          "attempts_successful": 706,
+          "included_successful": 704,
+          "attempts_unsuccessful": 139,
+          "included_unsuccessful": 137,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 2,
+          "attempts_offside": 2,
+          "included_offside": 2
+        },
+        "2010085": {
+          "attempts_unsuccessful": 124,
+          "unknown_target_unsuccessful": 1,
+          "attempts_successful": 710,
+          "included_successful": 704,
+          "included_unsuccessful": 121,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 6,
+          "attempts_offside": 2,
+          "included_offside": 2
+        },
+        "2011166": {
+          "attempts_successful": 498,
+          "included_successful": 486,
+          "attempts_unsuccessful": 127,
+          "included_unsuccessful": 123,
+          "off_pitch_successful": 12,
+          "attempts_offside": 5,
+          "included_offside": 5,
+          "off_pitch_unsuccessful": 4
+        },
+        "2013725": {
+          "attempts_successful": 604,
+          "included_successful": 595,
+          "attempts_unsuccessful": 154,
+          "included_unsuccessful": 152,
+          "attempts_offside": 8,
+          "included_offside": 8,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 9
+        },
+        "2015213": {
+          "attempts_unsuccessful": 132,
+          "included_unsuccessful": 127,
+          "attempts_successful": 601,
+          "included_successful": 587,
+          "attempts_offside": 3,
+          "included_offside": 3,
+          "off_pitch_successful": 13,
+          "off_pitch_unsuccessful": 5,
+          "missing_target_or_passer_successful": 1
+        },
+        "2016236": {
+          "attempts_unsuccessful": 178,
+          "included_unsuccessful": 174,
+          "attempts_successful": 642,
+          "included_successful": 633,
+          "off_pitch_successful": 9,
+          "off_pitch_unsuccessful": 4,
+          "attempts_offside": 3,
+          "included_offside": 3
+        },
+        "2017461": {
+          "attempts_unsuccessful": 134,
+          "included_unsuccessful": 134,
+          "attempts_successful": 517,
+          "included_successful": 506,
+          "off_pitch_successful": 11,
+          "attempts_offside": 3,
+          "included_offside": 3
+        }
+      },
+      "counts": {
+        "train": {
+          "n": 9861,
+          "failures": 1452,
+          "completion_rate": 0.8527532704593854,
+          "log_loss": 0.41790338328826837,
+          "brier": 0.12556513018020768,
+          "auc": 0.5,
+          "ece": 0.0
+        },
+        "calibration": {
+          "n": 3011,
+          "failures": 504,
+          "completion_rate": 0.8326137495848556,
+          "log_loss": 0.45327564515033486,
+          "brier": 0.13977369388815863,
+          "auc": 0.5,
+          "ece": 0.02013952087452986
+        },
+        "test": {
+          "n": 2925,
+          "failures": 604,
+          "completion_rate": 0.7935042735042735,
+          "log_loss": 0.5219659897632556,
+          "brier": 0.16736568507491548,
+          "auc": 0.5,
+          "ece": 0.05924899695511188
+        }
+      },
+      "metrics": {
+        "catboost": {
+          "n": 2925,
+          "failures": 604,
+          "completion_rate": 0.7935042735042735,
+          "log_loss": 0.36685853708604943,
+          "brier": 0.11924705650947867,
+          "auc": 0.8565195123134297,
+          "ece": 0.03249382635365669
+        },
+        "logistic": {
+          "n": 2925,
+          "failures": 604,
+          "completion_rate": 0.7935042735042735,
+          "log_loss": 0.3740330098632226,
+          "brier": 0.1206127245075641,
+          "auc": 0.8546634386297297,
+          "ece": 0.0386505339722189
+        },
+        "prevalence": {
+          "n": 2925,
+          "failures": 604,
+          "completion_rate": 0.7935042735042735,
+          "log_loss": 0.5219659897632556,
+          "brier": 0.16736568507491548,
+          "auc": 0.5,
+          "ece": 0.05924899695511188
+        }
+      },
+      "per_match": {
+        "2013725": {
+          "catboost": {
+            "n": 755,
+            "failures": 160,
+            "completion_rate": 0.7880794701986755,
+            "log_loss": 0.3683709184788641,
+            "brier": 0.12106430623786009,
+            "auc": 0.8630882352941176,
+            "ece": 0.04464963341677933
+          },
+          "logistic": {
+            "n": 755,
+            "failures": 160,
+            "completion_rate": 0.7880794701986755,
+            "log_loss": 0.3729668162942759,
+            "brier": 0.12290272985695211,
+            "auc": 0.8602941176470589,
+            "ece": 0.048594942013454934
+          },
+          "prevalence": {
+            "n": 755,
+            "failures": 160,
+            "completion_rate": 0.7880794701986755,
+            "log_loss": 0.5314939007930802,
+            "brier": 0.17119291929021263,
+            "auc": 0.5,
+            "ece": 0.0646738002607099
+          }
+        },
+        "2015213": {
+          "catboost": {
+            "n": 717,
+            "failures": 130,
+            "completion_rate": 0.8186889818688982,
+            "log_loss": 0.34845453694549183,
+            "brier": 0.11403727894182647,
+            "auc": 0.851028698728869,
+            "ece": 0.03815060229990428
+          },
+          "logistic": {
+            "n": 717,
+            "failures": 130,
+            "completion_rate": 0.8186889818688982,
+            "log_loss": 0.36211196510097804,
+            "brier": 0.11681762246999344,
+            "auc": 0.8446861486043769,
+            "ece": 0.04024930694771958
+          },
+          "prevalence": {
+            "n": 717,
+            "failures": 130,
+            "completion_rate": 0.8186889818688982,
+            "log_loss": 0.47773255914972457,
+            "brier": 0.1495977085925411,
+            "auc": 0.5,
+            "ece": 0.03406428859048738
+          }
+        },
+        "2016236": {
+          "catboost": {
+            "n": 810,
+            "failures": 177,
+            "completion_rate": 0.7814814814814814,
+            "log_loss": 0.377859210790531,
+            "brier": 0.12209434200620997,
+            "auc": 0.8572665363572264,
+            "ece": 0.04430681125589246
+          },
+          "logistic": {
+            "n": 810,
+            "failures": 177,
+            "completion_rate": 0.7814814814814814,
+            "log_loss": 0.37917110792576825,
+            "brier": 0.12187722979806045,
+            "auc": 0.8612382966949599,
+            "ece": 0.049408928103171955
+          },
+          "prevalence": {
+            "n": 810,
+            "failures": 177,
+            "completion_rate": 0.7814814814814814,
+            "log_loss": 0.5430823485084728,
+            "brier": 0.17584784348710125,
+            "auc": 0.5,
+            "ece": 0.07127178897790398
+          }
+        },
+        "2017461": {
+          "catboost": {
+            "n": 643,
+            "failures": 137,
+            "completion_rate": 0.7869362363919129,
+            "log_loss": 0.37174698879456397,
+            "brier": 0.11933583678743559,
+            "auc": 0.8556446726868814,
+            "ece": 0.03460622571580762
+          },
+          "logistic": {
+            "n": 643,
+            "failures": 137,
+            "completion_rate": 0.7869362363919129,
+            "log_loss": 0.38210533615936904,
+            "brier": 0.12056277868617715,
+            "auc": 0.8522402700441418,
+            "ece": 0.04367337918423531
+          },
+          "prevalence": {
+            "n": 643,
+            "failures": 137,
+            "completion_rate": 0.7869362363919129,
+            "log_loss": 0.5335018316586807,
+            "brier": 0.1719994782186831,
+            "auc": 0.5,
+            "ece": 0.06581703406747264
+          }
+        }
+      },
+      "match_bootstrap_logloss_gain_95_ci": [
+        0.002896191393085076,
+        0.012097642164009739
+      ],
+      "statistical_gate_passed": false,
+      "noise_stress": {
+        "1m": {
+          "n": 2925,
+          "failures": 604,
+          "completion_rate": 0.7935042735042735,
+          "log_loss": 0.3814255357105478,
+          "brier": 0.12347265258569873,
+          "auc": 0.8405032085393656,
+          "ece": 0.030550263400145113,
+          "mean_absolute_probability_change": 0.04803350017434831,
+          "logistic_same_noise": {
+            "n": 2925,
+            "failures": 604,
+            "completion_rate": 0.7935042735042735,
+            "log_loss": 0.38304312990620565,
+            "brier": 0.12359345381093399,
+            "auc": 0.8413827392280674,
+            "ece": 0.033420763882462796
+          }
+        },
+        "2m": {
+          "n": 2925,
+          "failures": 604,
+          "completion_rate": 0.7935042735042735,
+          "log_loss": 0.40057077481635156,
+          "brier": 0.12904734324900782,
+          "auc": 0.8200714181772529,
+          "ece": 0.03169746321761079,
+          "mean_absolute_probability_change": 0.07109070063901005,
+          "logistic_same_noise": {
+            "n": 2925,
+            "failures": 604,
+            "completion_rate": 0.7935042735042735,
+            "log_loss": 0.4030943831325689,
+            "brier": 0.12928983518455558,
+            "auc": 0.8191712010408849,
+            "ece": 0.039072206849313396
+          }
+        }
+      }
+    },
+    "visible": {
+      "audit": {
+        "1874553": {
+          "attempts_successful": 700,
+          "included_successful": 590,
+          "target_or_passer_not_visible_successful": 99,
+          "attempts_unsuccessful": 135,
+          "included_unsuccessful": 101,
+          "off_pitch_successful": 11,
+          "target_or_passer_not_visible_unsuccessful": 34,
+          "attempts_offside": 2,
+          "included_offside": 2
+        },
+        "1886347": {
+          "attempts_successful": 735,
+          "included_successful": 607,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "attempts_unsuccessful": 115,
+          "included_unsuccessful": 84,
+          "target_or_passer_not_visible_unsuccessful": 30,
+          "target_or_passer_not_visible_successful": 121,
+          "off_pitch_successful": 7,
+          "off_pitch_unsuccessful": 1
+        },
+        "1899585": {
+          "attempts_unsuccessful": 131,
+          "unknown_target_unsuccessful": 1,
+          "attempts_successful": 606,
+          "included_successful": 502,
+          "target_or_passer_not_visible_successful": 103,
+          "included_unsuccessful": 86,
+          "target_or_passer_not_visible_unsuccessful": 42,
+          "attempts_offside": 4,
+          "included_offside": 3,
+          "off_pitch_unsuccessful": 2,
+          "target_or_passer_not_visible_offside": 1,
+          "off_pitch_successful": 1
+        },
+        "1925299": {
+          "attempts_successful": 780,
+          "included_successful": 578,
+          "attempts_unsuccessful": 127,
+          "target_or_passer_not_visible_unsuccessful": 44,
+          "target_or_passer_not_visible_successful": 195,
+          "included_unsuccessful": 82,
+          "attempts_offside": 5,
+          "included_offside": 3,
+          "off_pitch_successful": 6,
+          "no_visible_defenders_successful": 1,
+          "target_or_passer_not_visible_offside": 2,
+          "off_pitch_unsuccessful": 1
+        },
+        "1927964": {
+          "attempts_successful": 902,
+          "target_or_passer_not_visible_successful": 108,
+          "attempts_unsuccessful": 92,
+          "included_unsuccessful": 70,
+          "included_successful": 789,
+          "target_or_passer_not_visible_unsuccessful": 21,
+          "off_pitch_successful": 5,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "off_pitch_unsuccessful": 1
+        },
+        "1953632": {
+          "attempts_successful": 759,
+          "included_successful": 605,
+          "off_pitch_successful": 18,
+          "target_or_passer_not_visible_successful": 133,
+          "attempts_unsuccessful": 102,
+          "included_unsuccessful": 65,
+          "target_or_passer_not_visible_unsuccessful": 32,
+          "attempts_offside": 4,
+          "included_offside": 2,
+          "target_or_passer_not_visible_offside": 2,
+          "off_pitch_unsuccessful": 2,
+          "invalid_target_unsuccessful": 3,
+          "invalid_target_successful": 3
+        },
+        "1959846": {
+          "attempts_successful": 680,
+          "included_successful": 559,
+          "attempts_unsuccessful": 133,
+          "target_or_passer_not_visible_unsuccessful": 38,
+          "included_unsuccessful": 92,
+          "target_or_passer_not_visible_successful": 111,
+          "off_pitch_successful": 10,
+          "off_pitch_unsuccessful": 3,
+          "attempts_offside": 2,
+          "included_offside": 2
+        },
+        "1986691": {
+          "attempts_successful": 662,
+          "included_successful": 574,
+          "attempts_unsuccessful": 100,
+          "included_unsuccessful": 69,
+          "target_or_passer_not_visible_successful": 84,
+          "target_or_passer_not_visible_unsuccessful": 28,
+          "off_pitch_successful": 4,
+          "off_pitch_unsuccessful": 3,
+          "attempts_offside": 4,
+          "target_or_passer_not_visible_offside": 1,
+          "included_offside": 3
+        },
+        "1996436": {
+          "attempts_successful": 528,
+          "included_successful": 450,
+          "attempts_unsuccessful": 130,
+          "included_unsuccessful": 98,
+          "target_or_passer_not_visible_unsuccessful": 29,
+          "target_or_passer_not_visible_successful": 65,
+          "off_pitch_successful": 13,
+          "off_pitch_unsuccessful": 3,
+          "attempts_offside": 2,
+          "included_offside": 2
+        },
+        "1996435": {
+          "attempts_successful": 741,
+          "target_or_passer_not_visible_successful": 79,
+          "attempts_unsuccessful": 133,
+          "target_or_passer_not_visible_unsuccessful": 23,
+          "included_unsuccessful": 108,
+          "included_successful": 646,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 16,
+          "attempts_offside": 4,
+          "included_offside": 3,
+          "target_or_passer_not_visible_offside": 1
+        },
+        "2006229": {
+          "attempts_successful": 723,
+          "included_successful": 587,
+          "attempts_unsuccessful": 137,
+          "included_unsuccessful": 114,
+          "target_or_passer_not_visible_unsuccessful": 22,
+          "attempts_offside": 1,
+          "target_or_passer_not_visible_offside": 1,
+          "target_or_passer_not_visible_successful": 126,
+          "off_pitch_successful": 10,
+          "off_pitch_unsuccessful": 1
+        },
+        "2006363": {
+          "attempts_unsuccessful": 121,
+          "unknown_target_unsuccessful": 1,
+          "included_unsuccessful": 84,
+          "attempts_successful": 723,
+          "included_successful": 598,
+          "target_or_passer_not_visible_successful": 124,
+          "target_or_passer_not_visible_unsuccessful": 36,
+          "off_pitch_successful": 1,
+          "attempts_offside": 1,
+          "target_or_passer_not_visible_offside": 1
+        },
+        "2007448": {
+          "attempts_unsuccessful": 117,
+          "included_unsuccessful": 70,
+          "attempts_successful": 632,
+          "included_successful": 515,
+          "target_or_passer_not_visible_unsuccessful": 46,
+          "target_or_passer_not_visible_successful": 108,
+          "off_pitch_successful": 9,
+          "off_pitch_unsuccessful": 1,
+          "attempts_offside": 3,
+          "included_offside": 2,
+          "target_or_passer_not_visible_offside": 1
+        },
+        "2007721": {
+          "attempts_successful": 706,
+          "included_successful": 588,
+          "target_or_passer_not_visible_successful": 115,
+          "attempts_unsuccessful": 139,
+          "target_or_passer_not_visible_unsuccessful": 29,
+          "included_unsuccessful": 110,
+          "off_pitch_successful": 2,
+          "attempts_offside": 2,
+          "included_offside": 2,
+          "no_visible_defenders_successful": 1
+        },
+        "2010085": {
+          "attempts_unsuccessful": 124,
+          "unknown_target_unsuccessful": 1,
+          "attempts_successful": 710,
+          "included_successful": 553,
+          "included_unsuccessful": 85,
+          "target_or_passer_not_visible_unsuccessful": 36,
+          "target_or_passer_not_visible_successful": 153,
+          "off_pitch_successful": 4,
+          "no_visible_defenders_unsuccessful": 1,
+          "attempts_offside": 2,
+          "target_or_passer_not_visible_offside": 1,
+          "included_offside": 1,
+          "off_pitch_unsuccessful": 1
+        },
+        "2011166": {
+          "attempts_successful": 498,
+          "included_successful": 391,
+          "target_or_passer_not_visible_successful": 101,
+          "attempts_unsuccessful": 127,
+          "target_or_passer_not_visible_unsuccessful": 32,
+          "included_unsuccessful": 92,
+          "off_pitch_successful": 6,
+          "attempts_offside": 5,
+          "target_or_passer_not_visible_offside": 3,
+          "off_pitch_unsuccessful": 3,
+          "included_offside": 2
+        },
+        "2013725": {
+          "attempts_successful": 604,
+          "target_or_passer_not_visible_successful": 128,
+          "included_successful": 468,
+          "attempts_unsuccessful": 154,
+          "target_or_passer_not_visible_unsuccessful": 52,
+          "attempts_offside": 8,
+          "target_or_passer_not_visible_offside": 2,
+          "included_offside": 6,
+          "included_unsuccessful": 100,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 8
+        },
+        "2015213": {
+          "attempts_unsuccessful": 132,
+          "target_or_passer_not_visible_unsuccessful": 32,
+          "attempts_successful": 601,
+          "included_successful": 440,
+          "attempts_offside": 3,
+          "included_offside": 3,
+          "target_or_passer_not_visible_successful": 155,
+          "included_unsuccessful": 97,
+          "off_pitch_successful": 6,
+          "off_pitch_unsuccessful": 3
+        },
+        "2016236": {
+          "attempts_unsuccessful": 178,
+          "included_unsuccessful": 104,
+          "target_or_passer_not_visible_unsuccessful": 72,
+          "attempts_successful": 642,
+          "included_successful": 460,
+          "target_or_passer_not_visible_successful": 176,
+          "off_pitch_unsuccessful": 2,
+          "off_pitch_successful": 6,
+          "attempts_offside": 3,
+          "target_or_passer_not_visible_offside": 2,
+          "included_offside": 1
+        },
+        "2017461": {
+          "attempts_unsuccessful": 134,
+          "included_unsuccessful": 86,
+          "attempts_successful": 517,
+          "included_successful": 403,
+          "target_or_passer_not_visible_unsuccessful": 48,
+          "target_or_passer_not_visible_successful": 107,
+          "off_pitch_successful": 6,
+          "attempts_offside": 3,
+          "target_or_passer_not_visible_offside": 2,
+          "included_offside": 1,
+          "no_visible_defenders_successful": 1
+        }
+      },
+      "counts": {
+        "train": {
+          "n": 8162,
+          "failures": 1077,
+          "completion_rate": 0.8680470472923303,
+          "log_loss": 0.3900823988251601,
+          "brier": 0.11454137097939719,
+          "auc": 0.5,
+          "ece": 3.3306690738754696e-16
+        },
+        "calibration": {
+          "n": 2411,
+          "failures": 364,
+          "completion_rate": 0.8490253007051016,
+          "log_loss": 0.4259155740809099,
+          "brier": 0.12854316631094212,
+          "auc": 0.5,
+          "ece": 0.019021746587228994
+        },
+        "test": {
+          "n": 2169,
+          "failures": 398,
+          "completion_rate": 0.8165053019824804,
+          "log_loss": 0.48717676312055536,
+          "brier": 0.15248094532656428,
+          "auc": 0.5,
+          "ece": 0.05154174530985012
+        }
+      },
+      "metrics": {
+        "catboost": {
+          "n": 2169,
+          "failures": 398,
+          "completion_rate": 0.8165053019824804,
+          "log_loss": 0.34949487748969876,
+          "brier": 0.11042134162867828,
+          "auc": 0.8529774791518292,
+          "ece": 0.02868573613284753
+        },
+        "logistic": {
+          "n": 2169,
+          "failures": 398,
+          "completion_rate": 0.8165053019824804,
+          "log_loss": 0.3573541131780448,
+          "brier": 0.11169105927595366,
+          "auc": 0.8458540585479629,
+          "ece": 0.02623594409068431
+        },
+        "prevalence": {
+          "n": 2169,
+          "failures": 398,
+          "completion_rate": 0.8165053019824804,
+          "log_loss": 0.48717676312055536,
+          "brier": 0.15248094532656428,
+          "auc": 0.5,
+          "ece": 0.05154174530985012
+        }
+      },
+      "per_match": {
+        "2013725": {
+          "catboost": {
+            "n": 574,
+            "failures": 106,
+            "completion_rate": 0.8153310104529616,
+            "log_loss": 0.3413424165329882,
+            "brier": 0.10782356719407248,
+            "auc": 0.862300435413643,
+            "ece": 0.03261975747167049
+          },
+          "logistic": {
+            "n": 574,
+            "failures": 106,
+            "completion_rate": 0.8153310104529616,
+            "log_loss": 0.34452136456211896,
+            "brier": 0.10882247906074013,
+            "auc": 0.8556684405741009,
+            "ece": 0.028308028506867613
+          },
+          "prevalence": {
+            "n": 574,
+            "failures": 106,
+            "completion_rate": 0.8153310104529616,
+            "log_loss": 0.489388894061614,
+            "brier": 0.15334533438676384,
+            "auc": 0.5,
+            "ece": 0.052716036839368874
+          }
+        },
+        "2015213": {
+          "catboost": {
+            "n": 540,
+            "failures": 100,
+            "completion_rate": 0.8148148148148148,
+            "log_loss": 0.33892722245901047,
+            "brier": 0.10811281665312018,
+            "auc": 0.8708181818181817,
+            "ece": 0.0423576117572013
+          },
+          "logistic": {
+            "n": 540,
+            "failures": 100,
+            "completion_rate": 0.8148148148148148,
+            "log_loss": 0.351224828809354,
+            "brier": 0.11114222661886083,
+            "auc": 0.8527272727272728,
+            "ece": 0.0333467800634786
+          },
+          "prevalence": {
+            "n": 540,
+            "failures": 100,
+            "completion_rate": 0.8148148148148148,
+            "log_loss": 0.4903613036499317,
+            "brier": 0.1537253029476541,
+            "auc": 0.5,
+            "ece": 0.05323223247751574
+          }
+        },
+        "2016236": {
+          "catboost": {
+            "n": 565,
+            "failures": 105,
+            "completion_rate": 0.8141592920353983,
+            "log_loss": 0.3723302755884471,
+            "brier": 0.11712254908994299,
+            "auc": 0.8285300207039338,
+            "ece": 0.03333333842472838
+          },
+          "logistic": {
+            "n": 565,
+            "failures": 105,
+            "completion_rate": 0.8141592920353983,
+            "log_loss": 0.37946395100932084,
+            "brier": 0.11875530198595892,
+            "auc": 0.8253830227743273,
+            "ece": 0.040553443490597973
+          },
+          "prevalence": {
+            "n": 565,
+            "failures": 105,
+            "completion_rate": 0.8141592920353983,
+            "log_loss": 0.4915961777731493,
+            "brier": 0.15420782939444838,
+            "auc": 0.5,
+            "ece": 0.053887755256932235
+          }
+        },
+        "2017461": {
+          "catboost": {
+            "n": 490,
+            "failures": 87,
+            "completion_rate": 0.8224489795918367,
+            "log_loss": 0.3443602782650676,
+            "brier": 0.10828163509123047,
+            "auc": 0.8510025384330167,
+            "ece": 0.04920334849803986
+          },
+          "logistic": {
+            "n": 490,
+            "failures": 87,
+            "completion_rate": 0.8224489795918367,
+            "log_loss": 0.35364748642286803,
+            "brier": 0.10751072773964694,
+            "auc": 0.8524286243974788,
+            "ece": 0.0457859226587598
+          },
+          "prevalence": {
+            "n": 490,
+            "failures": 87,
+            "completion_rate": 0.8224489795918367,
+            "log_loss": 0.47598006041699087,
+            "brier": 0.14810583933820207,
+            "auc": 0.5,
+            "ece": 0.045598067700493794
+          }
+        }
+      },
+      "match_bootstrap_logloss_gain_95_ci": [
+        0.0045320436272537675,
+        0.010962310709542466
+      ],
+      "statistical_gate_passed": true,
+      "noise_stress": {
+        "1m": {
+          "n": 2169,
+          "failures": 398,
+          "completion_rate": 0.8165053019824804,
+          "log_loss": 0.3650981847675476,
+          "brier": 0.11478854098345441,
+          "auc": 0.8298735348112669,
+          "ece": 0.021264703095698105,
+          "mean_absolute_probability_change": 0.04911395158048821,
+          "logistic_same_noise": {
+            "n": 2169,
+            "failures": 398,
+            "completion_rate": 0.8165053019824804,
+            "log_loss": 0.3725084506654563,
+            "brier": 0.11684470185994686,
+            "auc": 0.8210235253058062,
+            "ece": 0.02442286557020664
+          }
+        },
+        "2m": {
+          "n": 2169,
+          "failures": 398,
+          "completion_rate": 0.8165053019824804,
+          "log_loss": 0.39536305715061903,
+          "brier": 0.12525416750437388,
+          "auc": 0.792091456718942,
+          "ece": 0.04123095181373282,
+          "mean_absolute_probability_change": 0.0750583466258081,
+          "logistic_same_noise": {
+            "n": 2169,
+            "failures": 398,
+            "completion_rate": 0.8165053019824804,
+            "log_loss": 0.39910408796207536,
+            "brier": 0.12549150249936625,
+            "auc": 0.7853454170911021,
+            "ece": 0.035223998697298406
+          }
+        }
+      }
+    }
+  },
+  "source_manifests": [
+    {
+      "match": 1874553,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "92507490abbbeec7697227581c864cfb0a96c29b214dd63dcaa48929bb6c6408",
+        "match.json": "e6974e402779d8be44e75bf88ef2a3acfd4d025b87b3fc57f518fa826a645ad8",
+        "tracking_original": "ea97f58f8eaad925feaeacc6395ec24860dd80027af8a89450276adebd29d265",
+        "release.json": "7cb9dc78d58e2e7e610426c723b5b5c3d7d57dcf02cb015c83c335ef56aa9623"
+      },
+      "release_frames": 837
+    },
+    {
+      "match": 1886347,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "b21368b9b94eb8f83032fe14a2a8da88ab7eda048b4f8078c06d0e6955d12bfb",
+        "match.json": "30c608e78663e9f490b3545479a3ce67b171f418c5133d5609cb249a2466abb2",
+        "tracking_original": "3577e2803da95390f8b2f85d47829eb55fbbfee6211c94adc65db0dc78e46b41",
+        "release.json": "4269c17e646b2bcc6b68aa0b63ca69ae6d542563843f206ca9166b4bb0ef62f4"
+      },
+      "release_frames": 852
+    },
+    {
+      "match": 1899585,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "14c62ffc99aa5fd62998c238036873509a9d82ced44354697a1db4251424d557",
+        "match.json": "41de8cb74a0512fcf0cbaaa5c615ae3e7dcaaf6745b9c78a050b59b906b1cb06",
+        "tracking_original": "90b6289ec2181192d1793ec6240fbbe8225ff0219c7956710c6278c31a661100",
+        "release.json": "cf7704c55c9ce3b0123155014f7b245ae64c3b8a1b90d1ea164d8e358970879a"
+      },
+      "release_frames": 741
+    },
+    {
+      "match": 1925299,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "2557acbdcba6547d764b9f7c277c3d7e81a4d58692d6c20c2bfa28625ae0cce3",
+        "match.json": "f4345b32c0fdd7c9990df70050b3a74f57b1992cf762e20f2a4d309bd2fba7d2",
+        "tracking_original": "48528be40ad82fa3e2b232e1af8d311705f7d6d119925ef199d2b59ea36fd3c9",
+        "release.json": "2736b8a638d360cfa4d81fc525966c8034776487fed427ed97922535e68ee0e2"
+      },
+      "release_frames": 912
+    },
+    {
+      "match": 1927964,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "638747f76b43690974f95958952dfe62c9e50d64648f9456f43f66d5d91201f3",
+        "match.json": "f967f911c20f5c5f8c89bbe2020a30c92731173616d5a1e4bafeb65435278b76",
+        "tracking_original": "858c7a756ca3d33017f864775af5999d2c0f364e58ab60ae040c8b9ebab17827",
+        "release.json": "3ac2ce348805977d73f6de750b09523ba608a99380cd4cbf99ee456e57043c93"
+      },
+      "release_frames": 996
+    },
+    {
+      "match": 1953632,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "d1f676ebb182da585da128fc80d468e27fb676e254abc47531daf920d977e51f",
+        "match.json": "366c8dd6b504d4f4ace5685040648b0f30081043a44f01663b8b7e077e6bfde8",
+        "tracking_original": "1c2014f97c3eff1ce2475203512c9d126930d7599c036105c9ac442d1de1667e",
+        "release.json": "aeafe9fe792e120d2008e5a506a69745e2801c0314df82ad0146d5271df44769"
+      },
+      "release_frames": 865
+    },
+    {
+      "match": 1959846,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "aa3d08a927a84f2b42d976cc10401e9efc52468744e0a7a86cb0d3dc2e288058",
+        "match.json": "4bbe2058af53edd42d5e3acd7fb28ecb8c79e4afb16cb9b77a6fe9b58f6e516b",
+        "tracking_original": "5ba2d87f6fd1ba3138301b369bd9266be69416a2d799a3fba5b5ec8a52e1284b",
+        "release.json": "0101ed1ff0b3390b1f0d7b0cf03ca0dea3657fae8ef7605417638dc16a9205b7"
+      },
+      "release_frames": 815
+    },
+    {
+      "match": 1986691,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "c2f7102092970368cc487353d6e93e06522f8d3f184326cced63fa167ca0d9f5",
+        "match.json": "754f6a6fd0d996236cf553ef5c3c24513274b0db024cb6833a7419b08d55dd68",
+        "tracking_original": "630e946950fe459f5e48872b01a36e6dfc319cf9027e7b98156150bb6e2c30f6",
+        "release.json": "88b2f0b4d4d2c398e1afb85ee705423895a0850f1f483bd5ddb6f6c1c68a12b2"
+      },
+      "release_frames": 766
+    },
+    {
+      "match": 1996436,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "94e7d7cc23ace6fd3eda12fb869eb2a0fef49402d7d72b7fb8155b4b2588da2d",
+        "match.json": "4e8999668a79fccd43f01e5538d7595b4614ec6061d648b831a96951e495c78a",
+        "tracking_original": "fab9d331e06f3042c83ac17798901b49bb259c99a8f3b319cd0146263cde65e7",
+        "release.json": "1ea90ba9c7a7f76b252019c5a29e8f5e1e2e7074c4d011b5a99e916935c807c9"
+      },
+      "release_frames": 660
+    },
+    {
+      "match": 1996435,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "379e5bbd90df47d2358a2bfc5b741f7626b934db780ff33d3337a8b1d5efc87c",
+        "match.json": "f54179645d3c3f308a7094086283277f2a7c99da5f3919302e622cbd82f9d065",
+        "tracking_original": "f42764d8bde290e8f738fa21141cadbed75408314b0b337bbf1d5a3444540a02",
+        "release.json": "42031b911c4cb9e7f19c6b76826e3feacd35f125e2205ae0c45a884faa84ea57"
+      },
+      "release_frames": 878
+    },
+    {
+      "match": 2006229,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "6308c15890803ed5cd44e8bc2fbb1844cce20bd59d63b154aec82977af8c6588",
+        "match.json": "87386df74b45eb7ccac80742c603763146cb2b61f47561122355fe246d8795eb",
+        "tracking_original": "3ee193ba01f1fe2cbce087eca8a881c21b8b0ea3485ae6c3d7e32e8b2f51e738",
+        "release.json": "047c2b9b14f03445854c513a8c98eefe92408494215a86e2eab3f9b79caa8981"
+      },
+      "release_frames": 861
+    },
+    {
+      "match": 2006363,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "430d5f840723c4c667b907e161716265b5ae4b87b4466a4883d3b95b5b5e5a58",
+        "match.json": "26d4068baf7454d1e066b6e70715da6c7ac016b14963a3bfa3ed99ed7c3aba79",
+        "tracking_original": "61dfdbd83f8e654127b249b8503f062338c14ec0c9e65404bcf70fb7c1346bd4",
+        "release.json": "358e8478d6f8df2fc70774198c270caa47a1773b9ac0aded4b36e2df9d8719d0"
+      },
+      "release_frames": 845
+    },
+    {
+      "match": 2007448,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "076e7a85949a1aca485bf202823a2b04b6d5eb20212faac1e51d346c6f4ac2a7",
+        "match.json": "434b31c032656be4a89e7042eadd442d4dfb468e4bfa87ce188102f314262873",
+        "tracking_original": "12d00d6e4257218812df6e4c4263c49387ba0313a83ff8d826c4416828f9c798",
+        "release.json": "170b988f171aadc8fc14b1af516ae83e547237fb3e0ccb659755a74d7e5b63af"
+      },
+      "release_frames": 752
+    },
+    {
+      "match": 2007721,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "c102f35837a9e50f642bd3378f9303ccd4d9a40d07717a12423966c3fb66fe36",
+        "match.json": "0ed112bc955eb341bc25005f9a7bb3fdf040223c8e1765646225c47e974b6139",
+        "tracking_original": "fea913b8d4cbde8d85c6bdf5f1a4b3fd203b78227e976a171c8ab0946705d378",
+        "release.json": "cb140ed01e5f7aa515eaf5bb625d75745189b427e8e08ca717b3d6b6560637eb"
+      },
+      "release_frames": 847
+    },
+    {
+      "match": 2010085,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "792b2ac103e314835b4e7d5a213b67093497c4a8a3756dfae3ec66b059de6ee3",
+        "match.json": "3222413d358251e1ac1cdde1f5ee2fd126b0d9cc3470c2aa1bb07177a09ef24d",
+        "tracking_original": "04562d9754b2977c80430535e9b5733426bc4ce910db56fe7a3760876211ac5a",
+        "release.json": "f9f6fe0af6eb32f4f5ecfb3be2e5a33ad6bb53206df095e10bbaf097797e8c3e"
+      },
+      "release_frames": 836
+    },
+    {
+      "match": 2011166,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "7c2827cea8135395b77f70592c59721189da3b6c9abc94688884c073c3233a18",
+        "match.json": "6b381b8bd338859c394c1992da137436e2e09cd609a81ac94d5f5f941d35d1bc",
+        "tracking_original": "8ec2937050930d87e4f52b2d65515f70ef8edd0ae2814bf40155c4448133390e",
+        "release.json": "78ad15f00388733f7279d63139062c1ae654091e719edaf17443f547cd1ceb8e"
+      },
+      "release_frames": 630
+    },
+    {
+      "match": 2013725,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "20bd127c17768d70dade9a76b43c1201c2c5e10f6c89d420847250136270ad83",
+        "match.json": "c8b9372fbd2e79ddcbb859b51b5086111ed7f3cd84ca0b457091c7d0e5209df3",
+        "tracking_original": "13eb83329814ed5f5d73da8f8ab5c5979d6c8a7858e89e28a7fa8072f91fb250",
+        "release.json": "41cb6d12baef47615c21393b4ee4ca547b98e024a705c4b7844a54dcd11ec96a"
+      },
+      "release_frames": 766
+    },
+    {
+      "match": 2015213,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "1452564da8278500f4672152a27e361d3f5f1b9d741493e598e5bf7729a88811",
+        "match.json": "300342194bf3dcd9fe356ed30df26fd0ee6e8caeb8ce5d8cfd27cf90cd995dff",
+        "tracking_original": "413990d0024d84856ce1f2a16866b8887472c0cea22c61caef0d1f46505a609e",
+        "release.json": "f308010f985b0fefd50588e56e0604e3f37d07c66b04168b78303b7d6fd2c429"
+      },
+      "release_frames": 736
+    },
+    {
+      "match": 2016236,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "425274b44a124ec5e81ff8f2819cebd22702065d0f4e4f8070306db9ae97590a",
+        "match.json": "93ccf67cead82def1acda87d3cf550fd42f96cb0e1adbff9eeb8824077980495",
+        "tracking_original": "d78555f9dfd7d1ce9de38066d3c98e6d54417c6d45d73b1f1ce7e26f07263d8f",
+        "release.json": "39f38061c231b668a66d4f7e5a157f5b6ad4618e1f19fa2e2851e01023643c43"
+      },
+      "release_frames": 823
+    },
+    {
+      "match": 2017461,
+      "commit": "4340d274572876239c154c90bc507a9b3250a656",
+      "hashes": {
+        "events.csv": "d4ce943cd9b912cfcf1f6d2744c9f4ecd6db4d5f7bcd6152b946e2f5ba308878",
+        "match.json": "db27759bf734dc8e3d9e56f047965cc7c74833bc3d0345ee3821ab97681ce4b9",
+        "tracking_original": "59cfa5588efee041da439f44df5b5b92f2b7305571dc831164e3d05f7415787a",
+        "release.json": "58ce33192b7d4053eedf0a394dc7d84685e38e062fab0dbc426719c5a740af43"
+      },
+      "release_frames": 654
+    }
+  ],
+  "production_approved": false,
+  "real_screenshot_validation": false,
+  "script_sha256": "cdb07442177a404e13611f04a6c3bb26ce61df4b49f12769ef9bc1a3fa080476"
+}
