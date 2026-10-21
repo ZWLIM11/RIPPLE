@@ -1,0 +1,19 @@
+.playbook-library{border:1px solid #d5e1db;border-radius:14px;background:#fff;margin-bottom:16px;overflow:hidden}
+.playbook-library>summary{display:flex;justify-content:space-between;gap:12px;cursor:pointer;padding:18px 20px;font-weight:700;background:#f2f6f3}
+.playbook-library>summary:before{content:'+';color:#14705a}.playbook-library[open]>summary:before{content:'−'}
+.playbook-content{padding:4px 20px 20px}.playbook-content>label,.share-board>label{display:block;margin:16px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.playbook-row{display:flex;gap:8px;flex-wrap:wrap}.playbook-row input,.playbook-row select{flex:1;min-width:140px}
+.workspace-app .playbook-row input,.workspace-app #boardLink,.workspace-app #challengeReason{box-sizing:border-box;border:1px solid #cad8d0;background:white;border-radius:8px;padding:12px;font:inherit;color:#18382d;min-height:44px;max-width:100%}
+.share-board{padding:24px;background:#f0f6f1;border:1px solid #cbded0;border-radius:14px;margin-bottom:28px}.share-board h3{font-size:28px;margin:8px 0}.share-board #boardLink{width:100%;font-size:13px}
+.incoming-board{padding:20px;background:#fff7df;border:1px solid #d7be7a;border-radius:14px;margin-bottom:16px}.incoming-board p{margin:8px 0}
+.pitch-focus-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.pitch-focus-bar label{font-size:12px;font-weight:700}.pitch-focus-bar .fine{flex:1;min-width:160px}
+.pitch-focused{overflow:hidden}.workspace-app #tactics.pitch-focus{position:fixed;inset:8px;z-index:1000;overflow:auto;margin:0;border:1px solid #bfd7ca;box-shadow:0 0 0 20px #103b32;border-radius:14px;padding:16px;background:#f6f9f5}
+.pitch-focus .pitch-focus-bar{position:sticky;top:-16px;background:#f6f9f5;z-index:2;padding:10px 0;margin:0}
+.focus-edit{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.focus-edit span{margin-right:auto;font-weight:700}
+.pitch-focus .pitch-wrap{max-height:70dvh;overflow:auto}.workspace-app #pitch{touch-action:pan-x pan-y}.workspace-app #pitch .player,.workspace-app #pitch #ball{touch-action:none}
+.workspace-app .pitch-focus>h2,.workspace-app .pitch-focus>.section-help,.workspace-app .pitch-focus>.toolbar,.workspace-app .pitch-focus>#walkthrough,.workspace-app .pitch-focus>#steps{display:none}
+.workspace-app .pitch-focus #pitch{min-width:720px}
+.mapping-assist{background:#f0f5ed;border:1px solid #dae2d2;border-radius:10px;padding:12px;margin:12px 0}.mapping-assist p{margin-bottom:0}
+.challenge-panel{padding:22px;background:#edf3ec;border:1px solid #cfddc9;border-radius:14px;margin-bottom:24px}.challenge-panel h3{font-size:26px;margin:6px 0}.challenge-panel p{max-width:76ch}.challenge-panel #challengeWorkspace{border-top:1px solid #c7d7c2;margin-top:20px;padding-top:18px}.challenge-panel textarea{display:block;width:100%;margin-top:8px}.challenge-panel li{padding:12px 0;border-bottom:1px solid #d1decd;line-height:1.6;overflow-wrap:anywhere}.challenge-panel ol{padding-left:22px}
+@media(max-width:600px){.playbook-library>summary{padding:16px;font-size:14px}.playbook-library>summary .fine{font-size:11px}.playbook-content{padding:4px 14px 14px}.playbook-row input,.playbook-row select{flex-basis:100%;width:100%}.playbook-row button{flex:1}.share-board,.challenge-panel{padding:16px}.share-board h3,.challenge-panel h3{font-size:23px}.pitch-focus-bar .fine{flex-basis:100%}.workspace-app #tactics.pitch-focus{inset:0;border-radius:0;padding:12px}.focus-edit button{flex:1}.focus-edit span{flex-basis:100%}.pitch-focus .pitch-focus-bar{top:-12px}.pitch-focus .pitch-wrap{max-height:62dvh}}
+@media(prefers-reduced-motion:reduce){.pitch-focus{scroll-behavior:auto}}

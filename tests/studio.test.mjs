@@ -63,9 +63,10 @@ function loadUI(options={}){
   const dir=new URL('../prototypes/pass-detective/',import.meta.url);
   const html=readFileSync(new URL('index.html',dir),'utf8');
   const errors=[],console=new VirtualConsole();console.on('jsdomError',e=>errors.push(e));
-  const dom=new JSDOM(html,{runScripts:'outside-only',url:options.storage?'https://ripple.test/':'file:///prototype/index.html',pretendToBeVisual:true,virtualConsole:console});
+  const dom=new JSDOM(html,{runScripts:'outside-only',url:options.url||(options.storage?'https://ripple.test/':'file:///prototype/index.html'),pretendToBeVisual:true,virtualConsole:console});
   dom.window.fetch=async()=>({ok:true,json:async()=>({ai:false,vision:false})});
   if(options.draft)dom.window.localStorage.setItem('ripple.board.v1',options.draft);
+  if(options.library)dom.window.localStorage.setItem('ripple.library.v1',options.library);
   dom.window.structuredClone=structuredClone;
   dom.window.HTMLElement.prototype.scrollIntoView=function(){};
   const context=dom.getInternalVMContext();
@@ -74,6 +75,99 @@ function loadUI(options={}){
   }
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
+
+test('named scenarios persist, safely render names, load with undo and recover removed entries',()=>{
+  const {$,dom,context,errors}=loadUI({storage:true});
+  try{
+    $('scenarioName').value='<img src=x onerror=alert(1)>';$('saveScenario').click();
+    assert.equal($('scenarioList').options.length,1);assert.equal($('scenarioList').querySelector('img'),null);
+    const saved=dom.window.localStorage.getItem('ripple.library.v1');
+    const fresh=loadUI({storage:true,library:saved});
+    assert.equal(fresh.$('scenarioList').options[0].textContent,$('scenarioName').value);fresh.dom.window.close();
+    const x=Number($('px').value);$('px').value=49;$('px').dispatchEvent(new dom.window.Event('input'));
+    $('loadScenario').click();assert.equal(Number($('px').value),x);
+    $('undoBoard').click();assert.equal(Number($('px').value),49);
+    $('scenarioName').value='High press';$('renameScenario').click();assert.equal($('scenarioList').options[0].textContent,'High press');
+    $('deleteScenario').click();assert.equal($('loadScenario').disabled,true);
+    $('undoRemoveScenario').click();assert.equal($('loadScenario').disabled,false);
+    $('startReplay').click();assert.equal($('saveScenario').disabled,true);assert.equal($('loadScenario').disabled,true);
+    assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});
+
+test('library failure is truthful and a corrupt stored library does not crash the board',()=>{
+  const ui=loadUI({storage:true,library:'{bad'});
+  try{assert.match(ui.$('libraryStatus').textContent,/could not be read/);assert.ok(ui.$('cards').children.length);}finally{ui.dom.window.close();}
+  const denied=loadUI();
+  try{denied.$('scenarioName').value='Test';denied.$('saveScenario').click();assert.match(denied.$('libraryStatus').textContent,/Storage unavailable/);assert.equal(denied.$('loadScenario').disabled,true);}finally{denied.dom.window.close();}
+});
+
+test('share codec round trips canonical boards, rejects tampering and only loads on request',()=>{
+  const ui=loadUI({storage:true});
+  let code;
+  try{
+    const source=vm.runInContext('structuredClone(state)',ui.context);
+    code=ui.dom.window.RipplePlaybook.encode(source);
+    assert.ok(code.length<12000);assert.equal(JSON.stringify(ui.dom.window.RipplePlaybook.decode(code)),JSON.stringify(source));
+    assert.throws(()=>ui.dom.window.RipplePlaybook.decode('!'.repeat(13000)));
+    const parsed=JSON.parse(Buffer.from(code,'base64url'));parsed.p[0][1]=999;
+    assert.throws(()=>ui.dom.window.RipplePlaybook.decode(Buffer.from(JSON.stringify(parsed)).toString('base64url')));
+    ui.$('createBoardLink').click();assert.match(ui.$('boardLink').value,/^https:\/\/ripple.test\/#board=/);
+    assert.equal(ui.$('boardLink').value.includes('image'),false);
+  }finally{ui.dom.window.close();}
+  const draft=initial();draft.players[0].x=12;
+  const linked=loadUI({storage:true,url:'https://ripple.test/#board='+code,draft:JSON.stringify({schemaVersion:1,kind:'pass-detective-board',state:draft})});
+  try{
+    assert.equal(vm.runInContext('state.players[0].x',linked.context),12);
+    linked.$('loadSharedBoard').click();assert.notEqual(vm.runInContext('state.players[0].x',linked.context),12);
+    linked.$('undoBoard').click();assert.equal(vm.runInContext('state.players[0].x',linked.context),12);
+  }finally{linked.dom.window.close();}
+  const invalid=loadUI({storage:true,url:'https://ripple.test/#board=bogus'});
+  try{assert.equal(invalid.$('loadSharedBoard').disabled,true);assert.match(invalid.$('sharedSummary').textContent,/invalid/);}finally{invalid.dom.window.close();}
+});
+
+test('challenge requires both choice and reason, keeps future outcomes hidden and resets between decisions',()=>{
+  const {$,dom,context,errors}=loadUI({storage:true});
+  try{
+    $('startChallenge').click();assert.equal($('revealPass').disabled,true);assert.equal($('autoReplay').disabled,true);assert.equal($('decisionSeek').disabled,true);
+    $('pickCandidate').click();assert.equal($('revealPass').disabled,true);
+    $('challengeReason').value='Space ahead of receiver';$('challengeReason').dispatchEvent(new dom.window.Event('input'));
+    assert.equal($('revealPass').disabled,false);
+    $('replayFocus').value='blue-8';$('replayFocus').dispatchEvent(new dom.window.Event('change'));
+    assert.equal($('autoReplay').disabled,true);assert.equal($('nextDecision').disabled,true);
+    $('revealPass').click();assert.equal(dom.window.RipplePlaybook.journal.length,1);assert.equal($('challengeReason').disabled,true);
+    $('nextDecision').click();assert.equal($('challengeReason').value,'');assert.equal($('revealPass').disabled,true);
+    assert.equal(vm.runInContext('ReplayModel.observed(replayMatch,replayIndex,replayRevealed).length',context),1);
+    $('endChallenge').click();assert.equal($('autoReplay').disabled,false);assert.equal($('revealPass').disabled,false);
+    $('startChallenge').click();assert.equal(dom.window.RipplePlaybook.journal.length,0);
+    $('exitReplay').click();assert.equal($('challengeWorkspace').hidden,true);assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});
+
+test('mapping assistance detects close players, skips ball overlap and supports removal undo',()=>{
+  const {$,dom,context}=loadUI();
+  try{
+    dom.window.HTMLCanvasElement.prototype.getContext=()=>new Proxy({},{get:()=>()=>{}});
+    vm.runInContext('snapshotImage={}; calibration=[{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:1}]; mappedPoints.set("blue-1",{x:.2,y:.2});mappedPoints.set("blue-2",{x:.201,y:.2});mappedPoints.set("ball",{x:.2,y:.2});drawMapping()',context);
+    assert.equal(dom.window.RipplePlaybook.duplicates().length,1);assert.match($('mappingWarnings').textContent,/blue-1 \/ blue-2/);
+    const next=vm.runInContext('mappingIds.find(id=>!mappedPoints.has(id))',context);
+    $('nextMissing').click();assert.equal($('mappingTarget').value,next);
+    $('mappingTarget').value='blue-2';$('mappingTarget').dispatchEvent(new dom.window.Event('change'));$('removeMarker').click();
+    assert.equal(dom.window.RipplePlaybook.duplicates().length,0);$('undoMark').click();assert.equal(dom.window.RipplePlaybook.duplicates().length,1);
+    $('startReplay').click();assert.equal($('nextMissing').disabled,true);assert.equal($('removeMarker').disabled,true);
+  }finally{dom.window.close();}
+});
+
+test('expanded pitch restores focus, zooms and retains one touch target per player',()=>{
+  const {$,dom,context}=loadUI();
+  try{
+    $('focusPitch').focus();$('focusPitch').click();assert.equal($('tactics').getAttribute('aria-modal'),'true');
+    $('pitchZoom').value='2';$('pitchZoom').dispatchEvent(new dom.window.Event('change'));assert.equal($('pitch').style.width,'max(200%, 1440px)');
+    vm.runInContext('render();render()',context);assert.equal($('pitch').querySelectorAll('.touch-target').length,22);
+    dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape'}));
+    assert.equal($('tactics').classList.contains('pitch-focus'),false);assert.equal(dom.window.document.activeElement,$('focusPitch'));
+  }finally{dom.window.close();}
+});
 test('draft history supports undo, redo, reload, and clear without erasing current state',()=>{
   const {$,dom,context}=loadUI({storage:true});
   try{

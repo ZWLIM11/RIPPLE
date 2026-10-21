@@ -1,6 +1,26 @@
 /* Display-only translations. Model identifiers, exports and input values stay canonical. */
 (()=>{
   const dictionary={
+    'Wyscout follow-up experiment':'Eksperimen susulan Wyscout',
+    'Trained on 176,133 English league simple passes. Tested on 250,436 French league passes across 380 untouched matches.':'Dilatih dengan 176,133 hantaran mudah liga England. Diuji dengan 250,436 hantaran liga Perancis daripada 380 perlawanan ujian berasingan.',
+    'This experiment also missed the 2% improvement gate. Release location alone cannot compare intended receivers. Different datasets have different pass populations; these scores are not a head-to-head comparison with StatsBomb.':'Eksperimen ini juga tidak mencapai ambang peningkatan 2%. Lokasi pelepasan sahaja tidak boleh membandingkan penerima sasaran. Populasi hantaran berbeza mengikut set data; skor ini tidak boleh dibandingkan secara langsung dengan StatsBomb.',
+    'The tactical board continues to use timing calculations and heuristic rankings. Neither research classifier is deployed.':'Papan taktikal terus menggunakan pengiraan masa dan kedudukan heuristik. Kedua-dua pengelas penyelidikan tidak digunakan dalam aplikasi.',
+    'My playbook':'Koleksi senario saya','Save · revisit · share':'Simpan · buka semula · kongsi',
+    'Keep up to 20 named scenarios on this device. Save the current board, or pick a saved scenario to load it. Download JSON for a backup.':'Simpan sehingga 20 senario bernama pada peranti ini. Simpan papan semasa atau buka senario tersimpan. Muat turun JSON sebagai sandaran.',
+    'Scenario name':'Nama senario','Save new scenario':'Simpan senario baharu','Saved scenarios':'Senario tersimpan','Load':'Buka','Rename':'Namakan semula','Remove':'Buang','Undo remove':'Batal pembuangan',
+    'No saved scenarios yet':'Belum ada senario tersimpan','Scenario saved on this device.':'Senario disimpan pada peranti ini.','Scenario loaded. Undo restores your previous board.':'Senario dibuka. Batal untuk memulihkan papan sebelumnya.','Scenario renamed.':'Nama senario ditukar.','Scenario restored.':'Senario dipulihkan.',
+    'Scenario removed. You can undo this removal until the page is closed.':'Senario dibuang. Anda boleh membatalkan pembuangan sebelum halaman ditutup.','Enter a scenario name first.':'Masukkan nama senario dahulu.',
+    'Storage unavailable or full. Download board JSON to keep your work.':'Storan tidak tersedia atau penuh. Muat turun JSON papan untuk menyimpan kerja anda.',
+    'PASS IT ON':'KONGSI ANALISIS','Share the situation.':'Kongsi situasi ini.','Create board link':'Cipta pautan papan','Copy link':'Salin pautan','Board link':'Pautan papan',
+    'Create a link to this board’s positions and movement settings. Anyone with the link can read them. Images, saved scenarios and challenge notes are excluded.':'Cipta pautan kedudukan dan tetapan pergerakan papan ini. Sesiapa dengan pautan boleh membacanya. Imej, senario tersimpan dan nota cabaran tidak disertakan.',
+    'Link ready. It captures this board now; later edits do not change the link.':'Pautan sedia. Ia merakam papan semasa; suntingan kemudian tidak mengubah pautan.','Link copied.':'Pautan disalin.','Someone shared a board with you':'Seseorang berkongsi papan dengan anda','Load shared board':'Buka papan dikongsi','Dismiss':'Tutup',
+    'This link is invalid or unsupported. Your current board has not changed.':'Pautan ini tidak sah atau tidak disokong. Papan semasa anda tidak berubah.',
+    'Expand pitch ↗':'Besarkan padang ↗','Exit expanded pitch':'Keluar padang besar','Pitch zoom':'Zum padang','Drag a player. Scroll the grass to pan.':'Seret pemain. Tatal kawasan rumput untuk mengalihkan paparan.','Make selected player the passer':'Jadikan pemain pilihan penghantar','Done / close pitch':'Selesai / tutup padang',
+    'Next missing marker →':'Penanda belum diisi seterusnya →','Remove selected marker':'Buang penanda pilihan',
+    'No nearby duplicate player markers found. This checks proximity only, not player identity.':'Tiada penanda pemain bertindih berdekatan dikesan. Semakan ini hanya mengukur jarak, bukan identiti pemain.',
+    'YOUR TURN, COACH':'GILIRAN ANDA, JURULATIH','Decision challenge':'Cabaran keputusan','Start decision challenge':'Mulakan cabaran keputusan','Why this pass?':'Mengapa hantaran ini?','Leave challenge':'Keluar cabaran',
+    'Choose a route and explain your reasoning before the reveal. Review timing evidence beside the synthetic action. There is no accuracy score for unobserved alternatives.':'Pilih laluan dan terangkan alasan sebelum hasil didedahkan. Semak bukti masa bersama tindakan sintetik. Tiada skor ketepatan untuk alternatif yang belum diperhatikan.',
+    'Choose a candidate and write your reason before revealing.':'Pilih calon dan tulis alasan sebelum mendedahkan hasil.',
     'FOOTBALL INTELLIGENCE':'KECERDASAN BOLA SEPAK','Local analysis':'Analisis tempatan','WORKSPACE':'RUANG KERJA',
     'Tactics board':'Papan taktikal','Match replay':'Ulangan perlawanan','Screenshot lab':'Makmal tangkap layar','Pass insights':'Cerapan hantaran','Reports & model':'Laporan dan model',
     'Every pass has a story.':'Setiap hantaran ada ceritanya.','Explore the space.':'Terokai ruang.','Understand the decision.':'Fahami keputusan.',
@@ -233,7 +253,7 @@
     const ms=language()==='ms',walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
     let node;
     while(node=walker.nextNode()){
-      if(node.parentElement.closest('script,style,pre,code,textarea,#analysisAnswer,#decisionStory,#replayRecap,#studioContributions,#studioMoments,#broadcastText'))continue;
+      if(node.parentElement.closest('script,style,pre,code,textarea,#scenarioList,#challengeJournal,#analysisAnswer,#decisionStory,#replayRecap,#studioContributions,#studioMoments,#broadcastText'))continue;
       let saved=originals.get(node);
       if(saved&&node.nodeValue===saved.output&&saved.ms===ms)continue;
       if(!saved||node.nodeValue!==saved.output)saved={source:node.nodeValue};

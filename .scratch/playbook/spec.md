@@ -1,0 +1,5 @@
+# Playbook release
+
+Implement named device-local scenarios, accessible mobile pitch focus, screenshot placement assistance, synthetic decision challenges and validated board links. Preserve current ranking semantics and do not claim observed alternative outcomes. Test locally before pushing RIPPLE main.
+
+Train a fresh Wyscout completion-context experiment. No endpoint coordinates, outcome tags or player identities as inputs. Training/validation/calibration: disjoint England match groups (seed 42, 70/15/15). Untouched test: France. Compare fixed CatBoost (depth 6 and 8, 600 iterations, early stopping) against logistic and constant baselines. Select configuration using validation log loss only. Platt calibration on calibration matches; publish test metrics once. Statistical gate: >=2% relative log loss improvement over logistic, no worse Brier, ECE <=.03 and match-bootstrap improvement CI excluding zero. Even passing this gate does not validate intended-receiver prediction, so no production model integration.
