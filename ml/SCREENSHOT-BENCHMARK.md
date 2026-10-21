@@ -1,5 +1,13 @@
 # Real screenshot benchmark: panoramic pilot inspected
 
+## Follow-up: matching landmarks and events acquired
+
+Downloaded 118577 provider keypoints (65 correspondences) and raw events (1,873 annotations) through the authenticated dataset session. They stay local under `work/screenshot-benchmark/`. Events have gameTime, label, position, team and visibility, but no explicit intended receiver or completion outcome. Raw match timing remains unaligned to the four-minute MOT clip.
+
+Run `python ml/probe_panorama_mapping.py` to reproduce a fixed thin-plate spline fit on all 54 boundary landmarks, withholding all 11 interior landmarks without tuning. Mean coordinate residual was **9.70m** versus **10.92m** for four-corner homography; maxima were **19.82m** and **23.97m**. This measures provider-landmark consistency, not independent player-position accuracy. Both methods are unsuitable for this pilot. The diagnostic image was visually reviewed and internal pitch markings remain distorted. Do not promote the spline.
+
+Report: `panorama-mapping-118577.json`. Next: verify provider camera intrinsics/remapping, align clip timing, and obtain independent intended-target/outcome review. Zero pass outcomes scored; no app or deployed model changes.
+
 ## Update: supplied 118577 clip
 
 The user supplied `118577.mp4`. Its SHA-256 matches the provider's published file hash: `f0dfbef3b496867bd2a1261c9a4d4c538d3861bf15b50109e9287c6a1371fc04`. Decoded metadata: 270,151,489 bytes, 4096x1080, 25fps, 6,000 frames, 240 seconds.

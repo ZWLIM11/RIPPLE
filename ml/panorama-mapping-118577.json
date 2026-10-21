@@ -1,0 +1,97 @@
+{
+  "source_url": "https://huggingface.co/datasets/atomscott/soccertrack-v2/blob/main/raw/118577/118577_keypoints.json",
+  "source_sha256": "e0d3698bf49aa2dc0a44f4b8a9f1b9beb543fe091458ed5387caf1b2a1f5ee0d",
+  "fit_landmarks": 54,
+  "holdout_landmarks": 11,
+  "split": "all boundary points for fitting, all interior points held out; no tuning",
+  "holdout_pitch_points": [
+    [
+      16.5,
+      13.84
+    ],
+    [
+      16.5,
+      54.16
+    ],
+    [
+      5.5,
+      43.16
+    ],
+    [
+      5.5,
+      24.84
+    ],
+    [
+      88.5,
+      54.16
+    ],
+    [
+      88.5,
+      13.84
+    ],
+    [
+      99.5,
+      24.84
+    ],
+    [
+      99.5,
+      43.16
+    ],
+    [
+      52.5,
+      43.15
+    ],
+    [
+      52.5,
+      34.0
+    ],
+    [
+      52.5,
+      24.85
+    ]
+  ],
+  "four_corner_homography": {
+    "mean_error_m": 10.916316255284631,
+    "median_error_m": 9.92562636022616,
+    "max_error_m": 23.97201293998509,
+    "errors_m": [
+      11.820856400759723,
+      9.211445812392654,
+      3.9865903075271367,
+      4.302269499507518,
+      9.92562636022616,
+      12.85492453165875,
+      4.623980077911228,
+      4.369060238099359,
+      14.615667412311756,
+      20.397045227751576,
+      23.97201293998509
+    ]
+  },
+  "boundary_thin_plate_spline": {
+    "mean_error_m": 9.70059698837039,
+    "median_error_m": 8.425141626268317,
+    "max_error_m": 19.823040906813905,
+    "errors_m": [
+      10.720477848447107,
+      8.425141626268317,
+      3.6033294647749172,
+      4.725176355684895,
+      7.400237765443216,
+      10.739381785541923,
+      3.743061842252445,
+      2.9416504856174246,
+      19.823040906813905,
+      18.995958005842393,
+      15.589110785387746
+    ]
+  },
+  "pass_outcomes_scored": 0,
+  "production_approved": false,
+  "limitations": [
+    "Provider landmark consistency only; not independent annotation accuracy.",
+    "One fixed camera; no evidence of generalization to broadcast screenshots.",
+    "Forward and inverse splines fitted separately; rectified view is diagnostic only.",
+    "Clip timing, intended receivers and outcomes remain unverified."
+  ]
+}
