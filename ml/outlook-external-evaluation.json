@@ -1,0 +1,434 @@
+{
+  "source": "StatsBomb Open Data, UEFA Euro 2024",
+  "revision": "4b73468fc5b0f1950f9f66fada70ad3a4f9327cb",
+  "match_ids": [
+    3930166,
+    3930159,
+    3930163,
+    3930181,
+    3930178,
+    3930160,
+    3930170,
+    3938643,
+    3938641,
+    3938642,
+    3938639,
+    3938638,
+    3938640,
+    3938637,
+    3938644,
+    3941019,
+    3942227,
+    3930174,
+    3930162,
+    3930176,
+    3930169,
+    3942819,
+    3943043,
+    3942752,
+    3942382,
+    3942349,
+    3930180,
+    3930171,
+    3942226,
+    3938645,
+    3930184,
+    3941022,
+    3941021,
+    3941020,
+    3941018,
+    3941017,
+    3930182,
+    3930179,
+    3940983,
+    3940878,
+    3930177,
+    3930173,
+    3930172,
+    3930167,
+    3930168,
+    3930165,
+    3930164,
+    3930161,
+    3930183,
+    3930175,
+    3930158
+  ],
+  "model_hashes": {
+    "shot_creation.cbm": "683d9cdeecce483e678914007ce764188feed21d1df980173983ed03ae7caa00",
+    "shot_creation.joblib": "dca58612ba8dc5fb77c1cc4f80787c806657269021934217a31d9045e8c10a2c",
+    "shot_scoring.cbm": "bf636941a4b0b354e2251ae5f909a2fa18e09871acd3e60ce241522fd3cd79c1",
+    "shot_scoring.joblib": "df42389ce75c233563c6064e4e51aaf1bc53a0cd623c0bcdbe382d57b0cd7798"
+  },
+  "data_manifest_sha256": "7cd28f7431a7da6d91d451da7d33c026868ecfeafc43a714073299affd1940ab",
+  "training_or_recalibration_performed": false,
+  "production_approved": false,
+  "shot_scoring": {
+    "rows": 1201,
+    "positives": 95,
+    "matches": 51,
+    "metrics": {
+      "catboost": {
+        "log_loss": 0.2554228055376351,
+        "brier": 0.06949974457546586,
+        "roc_auc": 0.7121157323688969,
+        "ece": 0.016461443550084033,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 953,
+            "predicted": 0.043442945727669886,
+            "observed": 0.05141657922350472
+          },
+          {
+            "lower": 0.1,
+            "count": 184,
+            "predicted": 0.1314566588284186,
+            "observed": 0.14673913043478262
+          },
+          {
+            "lower": 0.2,
+            "count": 38,
+            "predicted": 0.24629847049683717,
+            "observed": 0.3684210526315789
+          },
+          {
+            "lower": 0.3,
+            "count": 19,
+            "predicted": 0.33099063909024595,
+            "observed": 0.21052631578947367
+          },
+          {
+            "lower": 0.4,
+            "count": 4,
+            "predicted": 0.4500811746212221,
+            "observed": 0.0
+          },
+          {
+            "lower": 0.5,
+            "count": 3,
+            "predicted": 0.5431804147431992,
+            "observed": 0.3333333333333333
+          }
+        ]
+      },
+      "logistic": {
+        "log_loss": 0.25464643399999454,
+        "brier": 0.06874310470196371,
+        "roc_auc": 0.7194584562672505,
+        "ece": 0.016594043372937527,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 970,
+            "predicted": 0.04153631814667059,
+            "observed": 0.049484536082474224
+          },
+          {
+            "lower": 0.1,
+            "count": 171,
+            "predicted": 0.13590916033116515,
+            "observed": 0.18128654970760233
+          },
+          {
+            "lower": 0.2,
+            "count": 30,
+            "predicted": 0.23766800655914772,
+            "observed": 0.2
+          },
+          {
+            "lower": 0.3,
+            "count": 16,
+            "predicted": 0.3370088979308537,
+            "observed": 0.25
+          },
+          {
+            "lower": 0.4,
+            "count": 8,
+            "predicted": 0.42683090273702406,
+            "observed": 0.375
+          },
+          {
+            "lower": 0.5,
+            "count": 3,
+            "predicted": 0.5524977837239974,
+            "observed": 0.3333333333333333
+          },
+          {
+            "lower": 0.6,
+            "count": 1,
+            "predicted": 0.644629468001514,
+            "observed": 1.0
+          },
+          {
+            "lower": 0.7,
+            "count": 2,
+            "predicted": 0.7552237205314609,
+            "observed": 0.5
+          }
+        ]
+      },
+      "training_constant": {
+        "log_loss": 0.2770156406468245,
+        "brier": 0.07291322546190555,
+        "roc_auc": 0.5,
+        "ece": 0.008330944613550634,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 1201,
+            "predicted": 0.08743169398907104,
+            "observed": 0.0791007493755204
+          }
+        ]
+      }
+    },
+    "logloss_difference_match_bootstrap_95": [
+      -0.0077916771242209255,
+      0.009562830980842383
+    ],
+    "checks": {
+      "logloss_gain_2_percent": false,
+      "brier_better": false,
+      "ece_under_005": true,
+      "match_bootstrap_better": false
+    },
+    "screen_passed": false
+  },
+  "shot_creation": {
+    "rows": 34010,
+    "positives": 1654,
+    "matches": 51,
+    "metrics": {
+      "catboost": {
+        "log_loss": 0.14158119014076662,
+        "brier": 0.037749139150498635,
+        "roc_auc": 0.8721651998631308,
+        "ece": 0.0044480878786696265,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 28784,
+            "predicted": 0.019463102582846052,
+            "observed": 0.018065591995553083
+          },
+          {
+            "lower": 0.1,
+            "count": 3324,
+            "predicted": 0.1469619816308785,
+            "observed": 0.13537906137184116
+          },
+          {
+            "lower": 0.2,
+            "count": 1089,
+            "predicted": 0.23659612555624834,
+            "observed": 0.26262626262626265
+          },
+          {
+            "lower": 0.3,
+            "count": 336,
+            "predicted": 0.33606608377005043,
+            "observed": 0.38095238095238093
+          },
+          {
+            "lower": 0.4,
+            "count": 90,
+            "predicted": 0.4515498802444871,
+            "observed": 0.34444444444444444
+          },
+          {
+            "lower": 0.5,
+            "count": 181,
+            "predicted": 0.5719275126428419,
+            "observed": 0.5414364640883977
+          },
+          {
+            "lower": 0.6,
+            "count": 112,
+            "predicted": 0.6460549758007877,
+            "observed": 0.5625
+          },
+          {
+            "lower": 0.7,
+            "count": 49,
+            "predicted": 0.7511716682978898,
+            "observed": 0.8367346938775511
+          },
+          {
+            "lower": 0.8,
+            "count": 45,
+            "predicted": 0.8314259420425456,
+            "observed": 0.8222222222222222
+          }
+        ]
+      },
+      "logistic": {
+        "log_loss": 0.1412644569832243,
+        "brier": 0.03759492333188852,
+        "roc_auc": 0.8728616911197868,
+        "ece": 0.0034833652876325298,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 29171,
+            "predicted": 0.021532134108624833,
+            "observed": 0.01899146412532995
+          },
+          {
+            "lower": 0.1,
+            "count": 2982,
+            "predicted": 0.13922958551903686,
+            "observed": 0.14118041582830315
+          },
+          {
+            "lower": 0.2,
+            "count": 898,
+            "predicted": 0.2421736448215531,
+            "observed": 0.2594654788418708
+          },
+          {
+            "lower": 0.3,
+            "count": 441,
+            "predicted": 0.34725034992468834,
+            "observed": 0.34467120181405897
+          },
+          {
+            "lower": 0.4,
+            "count": 216,
+            "predicted": 0.44289218714526585,
+            "observed": 0.44907407407407407
+          },
+          {
+            "lower": 0.5,
+            "count": 112,
+            "predicted": 0.5476841810509986,
+            "observed": 0.49107142857142855
+          },
+          {
+            "lower": 0.6,
+            "count": 70,
+            "predicted": 0.6462340740317912,
+            "observed": 0.7
+          },
+          {
+            "lower": 0.7,
+            "count": 49,
+            "predicted": 0.741800868381848,
+            "observed": 0.6530612244897959
+          },
+          {
+            "lower": 0.8,
+            "count": 48,
+            "predicted": 0.8457637380253292,
+            "observed": 0.8958333333333334
+          },
+          {
+            "lower": 0.9,
+            "count": 23,
+            "predicted": 0.9426699262095039,
+            "observed": 0.782608695652174
+          }
+        ]
+      },
+      "training_constant": {
+        "log_loss": 0.19448801277390948,
+        "brier": 0.04626934080779338,
+        "roc_auc": 0.5,
+        "ece": 0.001315523337892921,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 34010,
+            "predicted": 0.049948278409930554,
+            "observed": 0.04863275507203763
+          }
+        ]
+      }
+    },
+    "logloss_difference_match_bootstrap_95": [
+      -0.000200957305748755,
+      0.0008365547116234777
+    ],
+    "checks": {
+      "logloss_gain_2_percent": false,
+      "brier_better": false,
+      "ece_under_005": true,
+      "match_bootstrap_better": false
+    },
+    "screen_passed": false
+  },
+  "match_outlook": {
+    "0": {
+      "matches": 51,
+      "brier_sum": 0.6876139128827043,
+      "brier_match_bootstrap_95": [
+        0.6421203496267888,
+        0.7294292391228262
+      ],
+      "log_loss": 1.1291435433673573,
+      "logloss_match_bootstrap_95": [
+        1.064448436181468,
+        1.1891612884075105
+      ]
+    },
+    "30": {
+      "matches": 51,
+      "brier_sum": 0.5641939788903426,
+      "brier_match_bootstrap_95": [
+        0.4729629633373112,
+        0.6562088280121865
+      ],
+      "log_loss": 0.9442054020917074,
+      "logloss_match_bootstrap_95": [
+        0.8127528649400144,
+        1.0777661477408842
+      ]
+    },
+    "60": {
+      "matches": 51,
+      "brier_sum": 0.45613209935251664,
+      "brier_match_bootstrap_95": [
+        0.33033623445847843,
+        0.5815607193225385
+      ],
+      "log_loss": 0.7546724045662866,
+      "logloss_match_bootstrap_95": [
+        0.5761898682540316,
+        0.9408750402722347
+      ]
+    },
+    "75": {
+      "matches": 51,
+      "brier_sum": 0.5112928929545818,
+      "brier_match_bootstrap_95": [
+        0.3449040995739735,
+        0.6795537361868988
+      ],
+      "log_loss": 0.8089124043751394,
+      "logloss_match_bootstrap_95": [
+        0.5795835787737647,
+        1.0403009156734329
+      ]
+    },
+    "85": {
+      "matches": 51,
+      "brier_sum": 0.37878729848727155,
+      "brier_match_bootstrap_95": [
+        0.18642934232366176,
+        0.5815978468528378
+      ],
+      "log_loss": 0.6656686252581673,
+      "logloss_match_bootstrap_95": [
+        0.35983280575409937,
+        0.9915506018211745
+      ]
+    }
+  },
+  "limitations": [
+    "Same data provider and national-team domain; not broad deployment validation.",
+    "Recorded shot pressure/body part and completed-pass endpoint are event annotations, not screenshot inputs.",
+    "Regulation outcome includes stoppage goals; assumed added time is zero.",
+    "No joint possession/turnover/rebound transition validation or counterfactual action ground truth.",
+    "No screenshot pass outcomes have been independently annotated."
+  ]
+}

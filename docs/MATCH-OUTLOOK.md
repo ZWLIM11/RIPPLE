@@ -51,3 +51,12 @@ Next research: train and calibrate shot creation and scoring on appropriate inde
 | Mobile layout | Earlier 390px MVP check passed. Latest follow-up browser viewport override did not change actual viewport, so no new phone verification is claimed. |
 
 Live follow-up checks: scenario calculation, curved route preview, save/load and JSON export/import all worked without observed console errors. A pending-import race was fixed and regression-tested for reset, board edits and saved-scenario loads. Final local checks: 58 app tests passed and Cloudflare deployment dry run passed. Software correctness does not establish prediction accuracy.
+
+
+## Verification update: external holdout and phone UI
+
+The `2fd3de3` import fix was confirmed live by comparing Cloudflare's outcome-ui.js with the local tested source (normalized line endings): exact match. A new 51-match Euro 2024 frozen-model evaluation is documented in `ml/OUTLOOK.md`; both candidates failed the comparative screen again. The user chose to keep screenshot probabilities experimental pending independent labels.
+
+Phone layout was checked through a local iframe of width 390px (375px available content after its scrollbar), using the same app sources. Confirmed no page-wide horizontal overflow in Match outlook or Screenshot lab; calculation, deterministic full-time draw, save/load, loft plotting and two-visible-player practice analysis worked. The table and navigation have their own horizontal scrolling. This is responsive browser testing, not physical iOS/Android device testing. One unattributed MutationObserver error appeared in the wrapper console; the tested app interactions completed. Direct live-tab checks previously showed no console errors.
+
+All 22 public HTML/JavaScript/CSS assets were compared against Cloudflare and matched the tested build after line-ending normalization. Four extraction audits and four screenshot-runner software tests passed. No application source changed in this verification commit; the previously passed 58-test app build is unchanged.
