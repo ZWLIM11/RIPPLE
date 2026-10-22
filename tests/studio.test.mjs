@@ -447,3 +447,15 @@ test('decision flip UI computes evidence then invalidates it after a board edit'
   assert.match($('decisionFlipResult').textContent,/Board changed/);
  }finally{dom.window.close();}
 });
+
+test('keep possession restores assumptions and supports older saved scenarios',()=>{
+ const {$,dom}=loadUI({storage:true});try{
+  const choose=()=>[...$('wpActions').querySelectorAll('button')].find(b=>b.getAttribute('aria-label').includes('Keep possession')).click();
+  choose();assert.equal($('wpGoal').disabled,true);assert.equal($('motionRun').disabled,true);
+  $('wpRetention').value='92';$('wpEvaluate').click();assert.match($('wpScenario').textContent,/retention 92.0%/);
+  $('wpSaveSession').click();const saved=JSON.parse(dom.window.localStorage.getItem('ripple.match.v1'));
+  $('wpRetention').value='20';$('wpLoadSession').click();assert.equal($('wpRetention').value,'92');$('wpEvaluate').click();assert.match($('wpScenario').textContent,/Possession retained/);
+  delete saved.fields.wpRetention;dom.window.localStorage.setItem('ripple.match.v1',JSON.stringify(saved));$('wpLoadSession').click();assert.equal($('wpRetention').value,'80');
+  $('wpEvaluate').click();$('wpWindow').value='20';$('wpWindow').dispatchEvent(new dom.window.Event('input'));assert.doesNotMatch($('wpActions').textContent,/illustrative/);
+ }finally{dom.window.close();}
+});

@@ -18,7 +18,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   <h3>3. Explore an action’s possible outcomes</h3><p id="wpSelected">Choose an action above.</p>
   <p>Enter your own hypothetical probabilities. They are not inferred from the heuristic scores. The same inputs can produce the same impact for different actions. Change them only when your scenario assumptions differ.</p>
   <div class="outcome-grid">
-  ${field('wpSuccess','Pass completes · assumed %',75,0,100)}${field('wpCreation','Shot created after completion · assumed %',30,0,100)}${field('wpGoal','Shot scores if taken · assumed %',10,0,100)}${field('wpCounter','Counter goal after failed pass / shot · assumed %',5,0,100)}${field('wpWindow','Action + counter window · seconds',15,1,120)}
+  ${field('wpRetention','Possession retained · assumed %',80,0,100)}${field('wpSuccess','Pass completes · assumed %',75,0,100)}${field('wpCreation','Shot created after completion · assumed %',30,0,100)}${field('wpGoal','Shot scores if taken · assumed %',10,0,100)}${field('wpCounter','Opponent goal after failure / turnover · assumed %',5,0,100)}${field('wpWindow','Action + counter window · seconds',15,1,120)}
   </div><button id="wpEvaluate" class="primary" disabled>Calculate illustrative impact</button><div id="wpScenario" aria-live="polite"></div>
   <p class="fine">The branches replace all goal generation during the selected action window. The Poisson baseline resumes afterwards, so an explicit goal is not counted twice. No-goal possession branches share the same future rates; rebounds and counters after a completed pass followed by a missed shot are omitted. This is a scenario comparison, not a validated tactical recommendation.</p>`;
   document.querySelector('.layout').append(matchPanel);
@@ -26,7 +26,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   const persistence=document.createElement('div');persistence.className='toolbar';
   persistence.innerHTML='<button id="wpSaveSession">Save match scenario</button><button id="wpLoadSession">Load saved scenario</button><button id="wpExport">Export match JSON</button><label>Import match JSON<input id="wpImport" type="file" accept=".json,application/json"></label><p id="wpStorageStatus" role="status"></p>';
   matchPanel.append(persistence);
-  const fieldIds=['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate','wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow'];
+  const fieldIds=['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate','wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow','wpRetention'];
   const num=id=>{const el=$(id);if(el.value===''||!el.checkValidity())throw Error(`Check ${el.parentElement.textContent.trim()}.`);return Number(el.value);};
   const context=()=>({homeScore:num('wpHomeScore'),awayScore:num('wpAwayScore'),minute:num('wpMinute'),stoppage:num('wpStoppage'),homeRate:num('wpHomeRate'),awayRate:num('wpAwayRate'),side:$('wpSide').value});
   const pct=n=>(100*n).toFixed(1)+'%', pp=n=>(n>=0?'+':'')+(100*n).toFixed(2)+' pp';
@@ -50,12 +50,13 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
           actions.push({key:c.key,kind:'pass',label:`Pass to ${c.receiver} · ${c.target.label} · ${c.speed} m/s · ${c.foot}`,pass:c.score,shot:OutcomeModel.shot(state,c.target,teamId),seconds:c.total,target:c.target});
           if(actions.length===3)break;
         }
+        actions.push({key:'keep-'+owner.id,kind:'keep',label:'Keep possession · hold or recycle',pass:null,shot:null,seconds:0});
         actions.push({key:'direct-'+owner.id,kind:'shot',label:`Direct shot · ${owner.id}`,pass:null,shot:OutcomeModel.shot(state,state.ball,teamId),seconds:0,target:{x:teamId==='blue'?105:0,y:34}});
       }
-      $('wpBoardNote').textContent=replayActive?'Exit synthetic replay to explore a separate match scenario.':!owner?'Assign a passer on the tactics board first.':owner.team!==teamId?'The analysed team must match the tactics-board passer. Change the team above or the passer.':`${actions.filter(a=>a.kind==='pass').length} feasible passing options plus a hypothetical direct shot. Rejected passes are excluded. Open Tactics board to drag players, then return here.`;
+      $('wpBoardNote').textContent=replayActive?'Exit synthetic replay to explore a separate match scenario.':!owner?'Assign a passer on the tactics board first.':owner.team!==teamId?'The analysed team must match the tactics-board passer. Change the team above or the passer.':`${actions.filter(a=>a.kind==='pass').length} feasible passing options plus hypothetical keep-possession and direct-shot scenarios. Rejected passes are excluded. Open Tactics board to drag players, then return here.`;
       for(const a of actions){
         const tr=document.createElement('tr'),saved=scenarios.get(a.key);
-        for(const value of [a.label,a.pass===null?'—':a.pass.toFixed(0)+' / 100',a.shot.score.toFixed(0)+' / 100',`${a.shot.distance.toFixed(1)} m / ${a.shot.angleDegrees.toFixed(1)}°`,saved?pp(saved.wpa)+' · illustrative':'Not estimated']){const td=document.createElement('td');td.textContent=value;tr.append(td);}
+        for(const value of [a.label,a.pass===null?'—':a.pass.toFixed(0)+' / 100',a.shot?a.shot.score.toFixed(0)+' / 100':'—',a.shot?`${a.shot.distance.toFixed(1)} m / ${a.shot.angleDegrees.toFixed(1)}°`:'No assumed shot',saved?pp(saved.wpa)+' · illustrative':'Not estimated']){const td=document.createElement('td');td.textContent=value;tr.append(td);}
         const td=document.createElement('td'),b=document.createElement('button');b.textContent='Explore';b.setAttribute('aria-label','Explore '+a.label);b.onclick=()=>{selected=a.key;selection();};td.append(b);tr.append(td);$('wpActions').append(tr);
       }
       selection();
@@ -65,36 +66,42 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
     $('motionPlot')?.replaceChildren();if($('motionResult'))$('motionResult').textContent='Selection changed. Plot again.';
     const a=actions.find(a=>a.key===selected);
     $('wpEvaluate').disabled=!a;
-    $('wpSuccess').disabled=$('wpCreation').disabled=a?.kind==='shot';
-    $('wpSelected').textContent=a?`${a.label}. ${a.shot.blockers} marked blockers; nearest opponent ${a.shot.pressure===null?'unknown':a.shot.pressure.toFixed(1)+' m'}; goalkeeper distance ${a.shot.keeperDistance===null?'unknown':a.shot.keeperDistance.toFixed(1)+' m'}. Shooting score excludes goalkeeper reach and player skill.`:'Choose an action above.';
+    $('wpSuccess').disabled=$('wpCreation').disabled=a?.kind!=='pass';
+    $('wpGoal').disabled=a?.kind==='keep';
+    for(const id of ['wpSuccess','wpCreation'])$(id).parentElement.hidden=a?.kind==='keep'||a?.kind==='shot';
+    $('wpGoal').parentElement.hidden=a?.kind==='keep';
+    $('wpRetention').disabled=a?.kind!=='keep';
+    $('wpRetention').parentElement.hidden=a?.kind!=='keep';
+    if($('motionRun'))$('motionRun').disabled=!a||a.kind==='keep';
+    $('wpSelected').textContent=a?.kind==='keep'?'Hold or recycle possession without an own-team shot during the selected window. Retention and turnover are assumptions, not inferred from pressure. Both no-goal branches use identical future rates; possession itself adds no learned advantage. Consuming time can favour a lead or hurt a trailing team. No dribble path or safe recycling pass is guaranteed.':a?`${a.label}. ${a.shot.blockers} marked blockers; nearest opponent ${a.shot.pressure===null?'unknown':a.shot.pressure.toFixed(1)+' m'}; goalkeeper distance ${a.shot.keeperDistance===null?'unknown':a.shot.keeperDistance.toFixed(1)+' m'}. Shooting score excludes goalkeeper reach and player skill.`:'Choose an action above.';
     $('wpScenario').replaceChildren();
   }
   $('wpEvaluate').onclick=()=>{
     $('wpScenario').replaceChildren();
     try{
       const a=actions.find(a=>a.key===selected);if(!a)throw Error('Choose a current action first.');
-      const p={success:a.kind==='shot'?1:num('wpSuccess')/100,creation:a.kind==='shot'?1:num('wpCreation')/100,goal:num('wpGoal')/100,counter:num('wpCounter')/100,seconds:num('wpWindow')};
+      const p={success:a.kind==='keep'?num('wpRetention')/100:a.kind==='shot'?1:num('wpSuccess')/100,creation:a.kind==='keep'?0:a.kind==='shot'?1:num('wpCreation')/100,goal:a.kind==='keep'?0:num('wpGoal')/100,counter:num('wpCounter')/100,seconds:num('wpWindow')};
       if(p.seconds<a.seconds)throw Error('Action window must include the pass preparation and flight time.');
       const r=OutcomeModel.scenario(context(),a.kind,p);scenarios.set(a.key,r);draw();
-      const summary=document.createElement('p');summary.textContent=`Illustrative ${a.label}: immediate goal ${pct(r.immediateGoal)}; expected win ${pct(r.expected)} versus baseline ${pct(r.baseline)}; change ${pp(r.wpa)} (percentage points). User assumptions: completion ${pct(p.success)}, shot creation ${pct(p.creation)}, shot scoring ${pct(p.goal)}, counter goal after failure ${pct(p.counter)}; window ${p.seconds}s.`;
+      const summary=document.createElement('p');summary.textContent=`Illustrative ${a.label}: immediate goal ${pct(r.immediateGoal)}; expected win ${pct(r.expected)} versus baseline ${pct(r.baseline)}; change ${pp(r.wpa)} (percentage points). User assumptions: ${a.kind==='keep'?'retention':'completion'} ${pct(p.success)}, shot creation ${pct(p.creation)}, shot scoring ${pct(p.goal)}, counter goal after failure ${pct(p.counter)}; window ${p.seconds}s.`;
       const list=document.createElement('ul');for(const b of r.branches){const li=document.createElement('li');li.textContent=`${b.label}: ${pct(b.probability)} branch weight; ${pct(b.win)} win probability afterwards.`;list.append(li);}
       $('wpScenario').append(summary,list);
     }catch(e){$('wpScenario').textContent=e.message;}
   };
   for(const id of ['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate'])$(id).addEventListener('input',()=>{clearScenario();draw();});
-  for(const id of ['wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow'])$(id).addEventListener('input',()=>{scenarios.delete(selected);draw();$('wpScenario').textContent='Assumptions changed. Calculate again to update this scenario.';});
+  for(const id of ['wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow','wpRetention'])$(id).addEventListener('input',()=>{if(id==='wpWindow')clearScenario();else scenarios.delete(selected);draw();$('wpScenario').textContent='Assumptions changed. Calculate again to update this scenario.';});
   $('wpReset').onclick=()=>{importVersion++;for(const [id,value]of Object.entries({wpHome:'Home',wpAway:'Away',wpHomeScore:1,wpAwayScore:1,wpMinute:80,wpStoppage:0,wpTeam:'blue',wpSide:'home',wpHomeRate:1.5,wpAwayRate:1.2}))$(id).value=value;clearScenario();draw();};
   const old=render;render=function(){old();const next=JSON.stringify([state.players,state.ball,state.owner,state.cfg,state.objective,replayActive]);if(next!==signature){importVersion++;signature=next;clearScenario();draw();}};
   function packet(){
     if(replayActive)throw Error('Exit replay before saving a match scenario.');
     OutcomeModel.validate(context());
-    for(const id of ['wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow'])num(id);
+    for(const id of ['wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow','wpRetention'])num(id);
     return {version:1,kind:'ripple-match-scenario',board:{schemaVersion:1,kind:'pass-detective-board',state:structuredClone(state)},fields:Object.fromEntries(fieldIds.map(id=>[id,$(id).value])),selected,interpretation:'User assumptions; not calibrated predictions. Reload recomputes results.'};
   }
   function restore(data){
     if(replayActive)throw Error('Exit replay before importing a match scenario.');
     if(data?.version!==1||data.kind!=='ripple-match-scenario'||!data.fields)throw Error('Unsupported match scenario file.');
-    const next=SnapshotModel.validate(data.board,initial()),f=data.fields;
+    const next=SnapshotModel.validate(data.board,initial()),f={wpRetention:'80',...data.fields};
     for(const id of fieldIds){
       if(typeof f[id]!=='string'||f[id].length>80)throw Error('Invalid scenario field.');
       const el=$(id);
@@ -116,6 +123,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   matchPanel.append(motion);
   $('motionRun').onclick=()=>{try{
     const a=actions.find(a=>a.key===selected);if(!a)throw Error('Explore an action in the comparison table first.');
+    if(a.kind==='keep')throw Error('Keep possession has no assumed trajectory.');
     const t=OutcomeModel.trajectory(state.ball,a.target,{speed:num('motionSpeed'),curve:num('motionCurve'),height:num('motionHeight'),vx:num('motionVX'),vy:num('motionVY')});
     $('motionResult').textContent=`Assumed route: ${t.length.toFixed(1)} m horizontally, ${t.duration.toFixed(2)} s travel, ${t.horizontalSpeed.toFixed(1)} m/s average horizontal speed. Receiver shifts ${t.receiverShift.toFixed(1)} m under constant velocity.${t.outsidePitch?' Route leaves the pitch.':''} Loft ignores the ground-speed input. Position uncertainty and interceptions are not evaluated.`;
     const path=t.points.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');

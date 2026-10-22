@@ -46,15 +46,19 @@ const OutcomeModel=(()=>{
     return {distance,angleDegrees:angle*180/Math.PI,pressure,blockers,keeperDistance:keeper?Math.hypot(keeper.x-point.x,keeper.y-point.y):null,score};
   }
   function scenario(s,kind,p){
-    validate(s);if(!['pass','shot'].includes(kind))throw Error('Unknown action.');
+    validate(s);if(!['pass','shot','keep'].includes(kind))throw Error('Unknown action.');
     for(const key of ['success','creation','goal','counter'])number(p[key],0,1,key);
     number(p.seconds,1,120,'action window');
     const base=outcome(s);if(base.remaining*60<p.seconds)throw Error('Action window exceeds remaining match time.');
     const after={...s,minute:s.minute+p.seconds/60};
     const scoring=s.side==='home'?'homeScore':'awayScore',conceding=s.side==='home'?'awayScore':'homeScore';
-    const own=kind==='shot'?p.goal:p.success*p.creation*p.goal;
+    const own=kind==='keep'?0:kind==='shot'?p.goal:p.success*p.creation*p.goal;
     const failure=kind==='shot'?1-p.goal:1-p.success;
-    const branches=[
+    const branches=kind==='keep'?[
+      {label:'Possession retained, no shot',probability:p.success,delta:0},
+      {label:'Turnover, no opponent goal',probability:(1-p.success)*(1-p.counter),delta:0},
+      {label:'Turnover followed by opponent goal',probability:(1-p.success)*p.counter,delta:-1}
+    ]:[
       {label:'Goal scored',probability:own,delta:1},
       {label:kind==='pass'?'Completed pass, no shot':'Shot does not score; no counter goal',probability:kind==='pass'?p.success*(1-p.creation):failure*(1-p.counter),delta:0},
       ...(kind==='pass'?[{label:'Completed pass, shot does not score',probability:p.success*p.creation*(1-p.goal),delta:0},

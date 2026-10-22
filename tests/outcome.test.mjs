@@ -55,3 +55,16 @@ test('shot heuristic responds to pressure and respects attack direction',()=>{
   s.players.find(p=>p.id==='coral-2').x=91;s.players.find(p=>p.id==='coral-2').y=34;
   assert.ok(M.shot(s,q,'blue').score<a.score);
 });
+
+test('keep possession has exhaustive retention and turnover branches, no invented own goal',()=>{
+ const p={success:.8,creation:0,goal:0,counter:.2,seconds:15};
+ const r=M.scenario(base,'keep',p);assert.equal(r.immediateGoal,0);
+ assert.ok(Math.abs(r.branches.reduce((s,b)=>s+b.probability,0)-1)<1e-12);
+ assert.ok(Math.abs(r.branches[2].probability-.04)<1e-12);
+ assert.equal(r.branches[0].win,r.branches[1].win);
+ assert.ok(M.scenario(base,'keep',{...p,success:1}).expected>r.expected);
+ assert.equal(M.scenario({...base,homeScore:2,minute:89.75},'keep',{...p,success:1}).expected,1);
+ assert.equal(M.scenario({...base,minute:89.75},'keep',{...p,success:1}).expected,0);
+ assert.throws(()=>M.scenario({...base,minute:90},'keep',p));
+ assert.throws(()=>M.scenario(base,'keep',{...p,success:-.1}));
+});

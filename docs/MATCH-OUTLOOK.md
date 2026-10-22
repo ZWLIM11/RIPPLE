@@ -64,3 +64,9 @@ All 22 public HTML/JavaScript/CSS assets were compared against Cloudflare and ma
 ## Transition audit follow-up
 
 See `ml/WPA-VALIDATION.md` and `ml/transition-audit.json`: 179 matches, 120,021 eligible pass windows and 4,033 shot windows. The audit identifies omitted goal branches and sparse opponent-goal labels. It does not validate alternative-action WPA. Screenshot probabilities remain experimental at the user's explicit request.
+
+## Keep-possession action
+
+Match outlook now compares pass, hypothetical direct shot and **Keep possession · hold or recycle**. The latter explicitly assumes no own-team shot during the selected window. With assumed retention R and opponent-goal probability T conditional on turnover, branches are R (retained/no shot), (1-R)(1-T) (turnover/no goal), and (1-R)T (turnover/opponent goal). Their weights sum to one. No-goal branches share unchanged future rates; no calibrated value is assigned to retained possession itself. Consuming time can favour a leading team or disadvantage a trailing team. No safe recycling route or dribble trajectory is inferred.
+
+The retention input is separate from passing completion. Irrelevant shot fields are hidden for this action, and the motion plot is unavailable because no route is defined. Changing the shared action window invalidates all comparison results. Version-1 saved scenarios remain compatible: files without a retention field load with an explicit 80% assumption that must be reviewed; new saves/exports include the entered retention and selected action. Screenshot probabilities remain experimental.
