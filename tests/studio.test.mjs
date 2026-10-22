@@ -76,6 +76,27 @@ function loadUI(options={}){
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
 
+test('visible route needs only two teammates, not a ball or complete roster',()=>{
+  const {$,dom,context,errors}=loadUI({storage:true});
+  try{
+    dom.window.HTMLCanvasElement.prototype.getContext=()=>new Proxy({},{get:()=>()=>{}});
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    vm.runInContext('snapshotImage={};calibration=[{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:1}];mappedPoints.set("blue-1",{x:.1,y:.5});mappedPoints.set("ball",{x:.2,y:.5});drawMapping()',context);
+    assert.equal($('measureFrame').disabled,true);
+    vm.runInContext('mappedPoints.delete("ball");mappedPoints.set("blue-2",{x:.9,y:.5});drawMapping()',context);
+    assert.equal($('measureFrame').disabled,false);
+    assert.equal($('frameReceiver').value,'blue-2');
+    $('measureFrame').click();
+    assert.match($('frameResult').textContent,/84.0 m apart/);
+    assert.match($('frameResult').textContent,/20 players unknown/);
+    assert.equal($('applyImage').closest('details').open,false);
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    vm.runInContext('mappedPoints.delete("blue-2");mappedPoints.set("coral-1",{x:.9,y:.5});drawMapping()',context);
+    assert.equal($('measureFrame').disabled,true);
+    assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});
+
 test('partial frame geometry maps known landmarks without importing unknown players',()=>{
   const {$,dom,context,errors}=loadUI({storage:true});
   try{

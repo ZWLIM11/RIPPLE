@@ -16,7 +16,7 @@
   };
   const update=()=>{
     $('mappingProgress').value=calibration.length+mappedPoints.size;
-    $('markerProgress').textContent=`${calibration.length} / 4 corners · ${mappedPoints.size} / 23 positions`;
+    $('markerProgress').textContent=`${calibration.length} / 4 corners · ${[...mappedPoints.keys()].filter(id=>id!=='ball').length} visible players marked`;
     $('markerChecklist').replaceChildren();
     for(const id of mappingIds){
       const b=document.createElement('button');b.type='button';

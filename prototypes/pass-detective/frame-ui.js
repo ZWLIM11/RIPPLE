@@ -20,14 +20,20 @@
   region.innerHTML='<label for="frameRegion">What area can you calibrate?</label><select id="frameRegion"><option value="full">Entire pitch · full board</option><option value="leftHalf">Left half · visible positions only</option><option value="rightHalf">Right half · visible positions only</option><option value="leftBox">Left penalty area · visible positions only</option><option value="rightBox">Right penalty area · visible positions only</option></select><p>Mark the four corners of the selected rectangle in order: upper-left, upper-right, lower-right, lower-left, with Blue attacking right. Use actual pitch-line intersections, not the image edges. All four must be visible. Standard 105 × 68 m pitch dimensions are assumed. If the landmarks are missing, use another frame.</p><p id="frameCoverage" role="status"></p>';
   $('imageWorkspace').prepend(region);
   snapshotPanel.querySelector('p.fine').textContent='Upload or paste a screenshot. Calibrate a visible pitch rectangle, then review player positions. A single frame cannot establish movement, facing, foot ability or actual possession. This is an exploratory tool, not a live pass-success predictor.';
-  $('imageWorkspace').querySelector('p.notice').textContent='Full-board mode needs the whole pitch and every player. Partial mode analyses only marked positions inside the chosen rectangle; unseen players stay unknown. It cannot rank passes as safe or estimate completion rates.';
-  $('snapshotCanvas').parentElement.nextElementSibling.textContent='Mark player ground contact points (feet), not heads. Assign team and player labels manually. Full-board import needs all 22 players and the ball. In partial mode, mark only identifiable players inside the calibrated rectangle; leave everyone else unknown. Review retained movement and foot assumptions before using full-board rankings.';
+  $('frameRegion').options[0].textContent='Entire pitch · visible positions only';
+  $('imageWorkspace').querySelector('p.notice').textContent='Analyse the players visible in your screenshot. You do not need all 22 players or a ball marker. Mark the passer, a teammate and any visible opponents inside the calibrated area. Off-screen players stay unknown.';
+  $('snapshotCanvas').parentElement.nextElementSibling.textContent='Mark each visible player at their feet and assign a team/player label. After marking two teammates, choose Analyse visible route. Add visible opponents to include their positions in the analysis. No need to fill the remaining player slots.';
+  const optional=document.createElement('details');
+  optional.innerHTML='<summary>Optional: import a complete tactical board</summary><p>This separate action requires all 22 players and the ball on an entire-pitch image. Visible-route analysis above works without them.</p>';
+  $('imageWorkspace').append(optional);
+  optional.append($('applyImage'));$('applyImage').textContent='Import complete board';$('applyImage').classList.remove('primary');
   const oldDraw=drawMapping;
   drawMapping=function(){
     oldDraw();const partial=$('frameRegion').value!=='full';
     if(partial){$('applyImage').disabled=true;if(calibration.length<4)$('mappingInstruction').textContent=`Region corner ${calibration.length+1}/4: ${['upper-left','upper-right','lower-right','lower-left'][calibration.length]}.`;}
     const known=[...mappedPoints.keys()].filter(id=>id!=='ball').length;
-    $('frameCoverage').textContent=`${known} / 22 players marked; ${22-known} unknown. `+(partial?'Partial view: no full-board import, safety ranking or completion percentage.':'Mark all players and the ball to import a full board.');
+    $('frameCoverage').textContent=`${known} visible players marked. Analyse two teammates whenever ready; off-screen players remain unknown.`;
+    if(calibration.length===4)$('mappingInstruction').textContent=`Mark visible players at their feet. ${known} players marked; no full-roster requirement.`;
     refreshVisible();
   };
   $('frameRegion').onchange=()=>{imageLoadVersion++;calibration=[];mappedPoints.clear();mappingHistory=[];drawMapping();};
@@ -51,15 +57,23 @@
     };$('kitCandidates').append(b);});
   };
   const visible=document.createElement('div');visible.className='share-board';
-  visible.innerHTML='<h3>Explore visible positions</h3><p>Select two marked teammates to measure their separation and nearby marked opponents. Missing players may block the route. Distances are approximate; these measurements do not establish a safe pass.</p><div class="toolbar"><label for="framePasser">Passer</label><select id="framePasser"></select><label for="frameReceiver">Receiver</label><select id="frameReceiver"></select><button id="measureFrame">Measure visible route</button></div><p id="frameResult" role="status">Mark at least two teammates to begin.</p>';
-  $('imageWorkspace').append(visible);
+  visible.innerHTML='<h3>Analyse this view</h3><p>Select a marked passer and teammate. We measure their separation and nearby marked opponents using only this view. Missing players may block the route. Distances are approximate; these measurements do not establish a safe pass.</p><div class="toolbar"><label for="framePasser">Passer</label><select id="framePasser"></select><label for="frameReceiver">Receiver</label><select id="frameReceiver"></select><button id="measureFrame" class="primary">Analyse visible route</button></div><p id="frameResult" role="status">Mark at least two teammates to begin.</p>';
+  localAssist.before(visible);
   function refreshVisible(){
     for(const id of ['framePasser','frameReceiver']){const selected=$(id).value;$(id).replaceChildren();for(const p of initial().players)if(mappedPoints.has(p.id))$(id).add(new Option(p.id,p.id));if(mappedPoints.has(selected))$(id).value=selected;}
-    $('frameResult').textContent='Choose two marked teammates and measure. Unmarked players are unknown.';
-    $('measureFrame').disabled=replayActive||calibration.length!==4||mappedPoints.size<2;
+    const a=$('framePasser').value;
+    if($('frameReceiver').value===a||$('frameReceiver').value.split('-')[0]!==a.split('-')[0]){
+      const teammate=[...$('frameReceiver').options].find(o=>o.value!==a&&o.value.split('-')[0]===a.split('-')[0]);
+      if(teammate)$('frameReceiver').value=teammate.value;
+    }
+    const ids=[...mappedPoints.keys()].filter(id=>id!=='ball');
+    const ready=ids.some((id,i)=>ids.some((other,j)=>i!==j&&id.split('-')[0]===other.split('-')[0]));
+    $('frameResult').textContent=calibration.length!==4?'Mark the four pitch landmarks first.':ready?'Ready: choose two teammates and analyse this view. Unmarked players are unknown.':'Mark at least two teammates. A ball marker is optional.';
+    $('measureFrame').disabled=replayActive||calibration.length!==4||!ready;
   }
   $('measureFrame').onclick=()=>{
     try{
+      if(replayActive||calibration.length!==4)throw Error('Finish calibration and exit replay before analysing.');
       const a=$('framePasser').value,b=$('frameReceiver').value;
       if(!a||!b||a===b||a.split('-')[0]!==b.split('-')[0])throw Error('Choose two different marked teammates.');
       const projected=id=>FrameModel.project(calibration,mappedPoints.get(id),$('frameRegion').value);
@@ -69,5 +83,6 @@
     }catch(e){$('frameResult').textContent=e.message;}
   };
   $('framePasser').onchange=$('frameReceiver').onchange=()=>{$('frameResult').textContent='Selection changed. Measure again to update the result.';};
+  $('imageWorkspace').append(optional);
   drawMapping();
 })();

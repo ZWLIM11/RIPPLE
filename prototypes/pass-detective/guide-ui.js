@@ -19,7 +19,7 @@
     [studioPanel,'explanations','Understand the decision','Select a passing card first, then choose Explain candidate. Local explanations work without Azure. Test passing window shows how much defender movement changes the result; Animate estimated route previews the calculation, not recorded match footage.'],
     [comparePanel,'compare-pass','Try a what-if comparison','Pin the inspected candidate, return to the pitch, and move a defender. Come back here to compare the same pass before and after. The pinned target stays fixed even if you move its receiver. Clear comparison starts over.'],
     [replayPanel,'match-replay','Practice on a synthetic match','Load a synthetic match, inspect the pitch and select a passing card. Choose inspected candidate records your choice; Reveal observed outcome shows what happened in the synthetic sequence. Next advances the timeline. Exit replay unlocks board editing.'],
-    [snapshotPanel,'snapshot-import','Bring your own snapshot','Use an image with all four pitch corners and all 22 players visible. Upload it, click the four requested corners in order, then mark each player’s feet and the ball. Apply mapped snapshot unlocks when every position is marked. Review the passer and player settings afterwards.']
+    [snapshotPanel,'snapshot-import','Bring your own snapshot','Upload or paste a screenshot and select a visible pitch region. Mark its four pitch-line corners, then mark the feet of the players you can see. Choose two teammates and Analyse visible route. All 22 players and a ball marker are not required. Off-screen players remain unknown.']
   ];
   for(const [panel,id,title,copy] of sections){
     panel.id=id;panel.tabIndex=-1;
