@@ -22,7 +22,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   </div><button id="wpEvaluate" class="primary" disabled>Calculate illustrative impact</button><div id="wpScenario" aria-live="polite"></div>
   <p class="fine">The branches replace all goal generation during the selected action window. The Poisson baseline resumes afterwards, so an explicit goal is not counted twice. No-goal possession branches share the same future rates; rebounds and counters after a completed pass followed by a missed shot are omitted. This is a scenario comparison, not a validated tactical recommendation.</p>`;
   document.querySelector('.layout').append(matchPanel);
-  let actions=[],selected=null,scenarios=new Map(),signature='';
+  let actions=[],selected=null,scenarios=new Map(),signature='',importVersion=0;
   const persistence=document.createElement('div');persistence.className='toolbar';
   persistence.innerHTML='<button id="wpSaveSession">Save match scenario</button><button id="wpLoadSession">Load saved scenario</button><button id="wpExport">Export match JSON</button><label>Import match JSON<input id="wpImport" type="file" accept=".json,application/json"></label><p id="wpStorageStatus" role="status"></p>';
   matchPanel.append(persistence);
@@ -83,8 +83,8 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   };
   for(const id of ['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate'])$(id).addEventListener('input',()=>{clearScenario();draw();});
   for(const id of ['wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow'])$(id).addEventListener('input',()=>{scenarios.delete(selected);draw();$('wpScenario').textContent='Assumptions changed. Calculate again to update this scenario.';});
-  $('wpReset').onclick=()=>{for(const [id,value]of Object.entries({wpHome:'Home',wpAway:'Away',wpHomeScore:1,wpAwayScore:1,wpMinute:80,wpStoppage:0,wpTeam:'blue',wpSide:'home',wpHomeRate:1.5,wpAwayRate:1.2}))$(id).value=value;clearScenario();draw();};
-  const old=render;render=function(){old();const next=JSON.stringify([state.players,state.ball,state.owner,state.cfg,state.objective,replayActive]);if(next!==signature){signature=next;clearScenario();draw();}};
+  $('wpReset').onclick=()=>{importVersion++;for(const [id,value]of Object.entries({wpHome:'Home',wpAway:'Away',wpHomeScore:1,wpAwayScore:1,wpMinute:80,wpStoppage:0,wpTeam:'blue',wpSide:'home',wpHomeRate:1.5,wpAwayRate:1.2}))$(id).value=value;clearScenario();draw();};
+  const old=render;render=function(){old();const next=JSON.stringify([state.players,state.ball,state.owner,state.cfg,state.objective,replayActive]);if(next!==signature){importVersion++;signature=next;clearScenario();draw();}};
   function packet(){
     if(replayActive)throw Error('Exit replay before saving a match scenario.');
     OutcomeModel.validate(context());
@@ -109,9 +109,8 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
     $('wpStorageStatus').textContent='Scenario restored. Review assumptions and calculate to regenerate the result.';
   }
   $('wpSaveSession').onclick=()=>{try{localStorage.setItem('ripple.match.v1',JSON.stringify(packet()));$('wpStorageStatus').textContent='Match scenario saved on this device.';}catch(e){$('wpStorageStatus').textContent='Not saved: '+e.message;}};
-  $('wpLoadSession').onclick=()=>{try{const text=localStorage.getItem('ripple.match.v1');if(!text)throw Error('No saved match scenario.');restore(JSON.parse(text));}catch(e){$('wpStorageStatus').textContent='Not loaded: '+e.message;}};
+  $('wpLoadSession').onclick=()=>{importVersion++;try{const text=localStorage.getItem('ripple.match.v1');if(!text)throw Error('No saved match scenario.');restore(JSON.parse(text));}catch(e){$('wpStorageStatus').textContent='Not loaded: '+e.message;}};
   $('wpExport').onclick=()=>{try{const data=packet(),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='ripple-match-scenario.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('wpStorageStatus').textContent='Scenario export prepared; it includes the tactical board and assumptions.';}catch(e){$('wpStorageStatus').textContent='Not exported: '+e.message;}};
-  let importVersion=0;
   $('wpImport').onchange=async e=>{const version=++importVersion,file=e.target.files[0];if(!file)return;try{if(file.size>200000)throw Error('Use a JSON file below 200 KB.');const text=await file.text();if(version!==importVersion)return;restore(JSON.parse(text));}catch(error){$('wpStorageStatus').textContent='Not imported: '+error.message;}finally{if(version===importVersion)e.target.value='';}};
   const motion=document.createElement('details');motion.innerHTML=`<summary>Optional motion lab · assumed trajectories</summary><p>Explore route shape and constant receiver velocity. This does not change pass feasibility, xG or match probabilities. Curve is a geometric arc; loft uses ideal ballistic airtime without drag. No defender interception or player acceleration is evaluated here.</p><div class="outcome-grid">${field('motionSpeed','Ground speed · m/s',16,1,35,.1)}${field('motionCurve','Sideways bend · m',0,-15,15,.1)}${field('motionHeight','Peak height · m (0 = ground)',0,0,15,.1)}${field('motionVX','Receiver horizontal velocity · m/s',0,-10,10,.1)}${field('motionVY','Receiver vertical velocity · m/s',0,-10,10,.1)}</div><button id="motionRun">Plot selected action</button><p id="motionResult" role="status"></p><div id="motionPlot"></div>`;
   matchPanel.append(motion);

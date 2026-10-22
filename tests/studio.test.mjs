@@ -417,3 +417,25 @@ test('local explanation and animation work without network and cancel on board c
     assert.equal(errors.length,0,errors.map(e=>e.message).join('\n'));
   }finally{dom.window.close();}
 });
+
+
+test('pending match import cannot overwrite a newer reset or board edit',async()=>{
+  for(const change of ['reset','board','load']){
+    const {$,dom,context}=loadUI({storage:true});
+    try{
+      $('wpMinute').value='75';$('wpSaveSession').click();
+      const saved=dom.window.localStorage.getItem('ripple.match.v1');
+      let finish;
+      const pending=$('wpImport').onchange({target:{files:[{size:100,text:()=>new Promise(resolve=>{finish=resolve;})}],value:'pending'}});
+      if(change==='reset')$('wpReset').click();
+      if(change==='board')vm.runInContext('state.players[0].x=18;render()',context);
+      if(change==='load'){
+        const newer=JSON.parse(saved);newer.fields.wpMinute='85';
+        dom.window.localStorage.setItem('ripple.match.v1',JSON.stringify(newer));$('wpLoadSession').click();
+      }
+      finish(saved);await pending;
+      assert.equal($('wpMinute').value,change==='reset'?'80':change==='load'?'85':'75');
+      if(change==='board')assert.equal(vm.runInContext('state.players[0].x',context),18);
+    }finally{dom.window.close();}
+  }
+});

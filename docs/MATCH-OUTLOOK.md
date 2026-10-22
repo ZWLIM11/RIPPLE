@@ -33,3 +33,21 @@ Research training and historical test results: `ml/OUTLOOK.md` and `ml/outlook-e
 `npm test` covers normalization, symmetry, bounds, full time/stoppage, missing probabilities, action branches, turn-over costs, mirror geometry, no mutation, UI invalidation and existing functionality. Browser checks cover the scenario calculation and 390px mobile layout. These are software tests, not prediction validation.
 
 Next research: train and calibrate shot creation and scoring on appropriate independent shot/possession data, jointly model turnover/possession transitions, then validate match forecasts and action scenarios on held-out matches. Do not train on the screenshot benchmark or claim that these user-entered scenarios validate the trained passing model.
+
+## Spec completion audit (22 October 2026)
+
+| Requirement | Status and evidence |
+| --- | --- |
+| Audit existing shooting calculation | Complete: none existed; isolated transparent geometry heuristic added. |
+| Preserve passing, presets, dragging, screenshots and replay | Complete at software-test level; existing engine retained. |
+| Match context and normalized Poisson W/D/L | Complete, experimental; normalization, boundaries and full-time tests pass. |
+| Action comparison and adverse outcome branches | Complete as user-assumed scenarios, not calibrated WPA. |
+| Grounded explanation and educational simulator | Complete with computed branch weights, assumptions and percentage-point changes. |
+| Scenario persistence and export/import | Complete; live Cloudflare save/restore and exported JSON round trip verified. |
+| Motion stretch goals | Partial: existing pass animation plus isolated curve/loft/constant-velocity illustrations. Curved/lofted defender interception prediction is not implemented. |
+| Train shot scoring and creation models | Research completed; both CatBoost candidates failed the comparative promotion screen. See ../ml/OUTLOOK.md. |
+| Historical outcome evaluation | Initial 64-match evaluation completed; insufficient to claim broad production calibration. |
+| Calibrated pass-to-shot-to-win pipeline | Open: joint transition/counter modelling and independent screenshot outcome validation still required. |
+| Mobile layout | Earlier 390px MVP check passed. Latest follow-up browser viewport override did not change actual viewport, so no new phone verification is claimed. |
+
+Live follow-up checks: scenario calculation, curved route preview, save/load and JSON export/import all worked without observed console errors. A pending-import race was fixed and regression-tested for reset, board edits and saved-scenario loads. Final local checks: 58 app tests passed and Cloudflare deployment dry run passed. Software correctness does not establish prediction accuracy.
