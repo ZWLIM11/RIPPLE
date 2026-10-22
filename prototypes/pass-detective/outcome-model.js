@@ -68,5 +68,16 @@ const OutcomeModel=(()=>{
       b.win=outcome(next).win;expected+=b.probability*b.win;}
     return {baseline:base.win,expected,wpa:expected-base.win,immediateGoal:own,branches};
   }
-  return {validate,outcome,percentages,shot,scenario};
+  function trajectory(a,b,{speed=16,curve=0,height=0,vx=0,vy=0}={}){
+    for(const p of [a,b]){number(p.x,0,105,'position x');number(p.y,0,68,'position y');}
+    number(speed,1,35,'ball speed');number(curve,-15,15,'curve');number(height,0,15,'height');number(vx,-10,10,'velocity x');number(vy,-10,10,'velocity y');
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<.1)throw Error('Choose different start and target positions.');
+    const points=[];let length=0;
+    for(let i=0;i<=100;i++){const t=i/100,bend=4*curve*t*(1-t);const p={x:a.x+dx*t-dy/d*bend,y:a.y+dy*t+dx/d*bend,z:4*height*t*(1-t)};if(i){const prev=points[i-1];length+=Math.hypot(p.x-prev.x,p.y-prev.y);}points.push(p);}
+    // A loft uses ballistic airtime; speed is only the ground-route horizontal speed.
+    const duration=height>0?Math.sqrt(8*height/9.81):length/speed;
+    return {points,length,duration,horizontalSpeed:length/duration,receiverAfter:{x:b.x+vx*duration,y:b.y+vy*duration},receiverShift:Math.hypot(vx,vy)*duration,
+      outsidePitch:points.some(p=>p.x<0||p.x>105||p.y<0||p.y>68)};
+  }
+  return {validate,outcome,percentages,shot,scenario,trajectory};
 })();

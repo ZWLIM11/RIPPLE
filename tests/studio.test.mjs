@@ -76,6 +76,19 @@ function loadUI(options={}){
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
 
+test('match scenarios save and restore board plus assumptions; invalid saves do not corrupt state',()=>{
+  const {$,dom,context,errors}=loadUI({storage:true});
+  try{
+    $('wpMinute').value='75';$('wpSaveSession').click();assert.match($('wpStorageStatus').textContent,/saved/);
+    $('wpMinute').value='85';vm.runInContext('state.players[0].x=18;render()',context);
+    $('wpLoadSession').click();assert.equal($('wpMinute').value,'75');assert.equal(vm.runInContext('state.players[0].x',context),5);
+    const bad=JSON.parse(dom.window.localStorage.getItem('ripple.match.v1'));bad.fields.wpMinute='NaN';
+    dom.window.localStorage.setItem('ripple.match.v1',JSON.stringify(bad));const before=vm.runInContext('JSON.stringify(state)',context);
+    $('wpLoadSession').click();assert.match($('wpStorageStatus').textContent,/Not loaded/);assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});
+
 test('match outlook computes scenarios and clears stale results after context or board edits',()=>{
   const {$,dom,context,errors}=loadUI();
   try{

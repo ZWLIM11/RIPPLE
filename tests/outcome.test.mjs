@@ -5,6 +5,14 @@ import {readFileSync} from 'node:fs';
 import {initial} from '../model-loader.mjs';
 const M=vm.runInNewContext(readFileSync(new URL('../prototypes/pass-detective/outcome-model.js',import.meta.url),'utf8')+'\nOutcomeModel');
 const base={homeScore:1,awayScore:1,minute:80,stoppage:0,homeRate:1.5,awayRate:1.5,side:'home'};
+test('motion lab separates curved path, ballistic airtime and assumed receiver motion',()=>{
+  const a={x:20,y:34},b={x:40,y:34};
+  const flat=M.trajectory(a,b,{speed:10});assert.ok(Math.abs(flat.duration-2)<1e-10);
+  const bend=M.trajectory(a,b,{speed:10,curve:5});assert.ok(bend.length>flat.length);
+  const loft=M.trajectory(a,b,{height:4.905,vx:2});assert.equal(loft.duration,2);assert.equal(loft.receiverShift,4);
+  assert.equal(loft.points[0].z,0);assert.equal(loft.points[100].z,0);
+  assert.throws(()=>M.trajectory(a,b,{height:-1}));assert.throws(()=>M.trajectory(a,a));
+});
 test('Poisson normalized, symmetric and stable at extremes',()=>{
   for(const minute of [0,80,90])for(const rate of [0,1.5,10]){
     const o=M.outcome({...base,minute,homeRate:rate,awayRate:rate});

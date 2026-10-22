@@ -1,0 +1,841 @@
+{
+  "source": "StatsBomb Open Data",
+  "revision": "4b73468fc5b0f1950f9f66fada70ad3a4f9327cb",
+  "seed": 20261020,
+  "partitions": {
+    "train": [
+      7546,
+      7579,
+      7547,
+      7549,
+      8652,
+      7562,
+      7563,
+      7577,
+      8655,
+      7583,
+      7570,
+      7552,
+      8658,
+      7555,
+      7580,
+      8651,
+      7581,
+      7551,
+      7566,
+      7545,
+      7569,
+      7586,
+      7542,
+      7541,
+      7538,
+      7544,
+      7533,
+      7561,
+      7558,
+      7584,
+      8657,
+      7560,
+      7537,
+      7585,
+      7571,
+      7548,
+      7578,
+      7557,
+      7525,
+      8649,
+      7536,
+      7550,
+      7543,
+      7530,
+      7532,
+      7554,
+      7540,
+      7535
+    ],
+    "calibration": [
+      7556,
+      8650,
+      7568,
+      7529,
+      7582,
+      7553,
+      7534,
+      7567,
+      7576,
+      7531,
+      7564,
+      7559,
+      7572,
+      7565,
+      7539,
+      8656
+    ],
+    "test": [
+      3857254,
+      3857255,
+      3857256,
+      3857257,
+      3857258,
+      3857259,
+      3857260,
+      3857261,
+      3857262,
+      3857263,
+      3857264,
+      3857265,
+      3857266,
+      3857267,
+      3857268,
+      3857269,
+      3857270,
+      3857271,
+      3857272,
+      3857273,
+      3857274,
+      3857275,
+      3857276,
+      3857277,
+      3857278,
+      3857279,
+      3857280,
+      3857281,
+      3857282,
+      3857283,
+      3857284,
+      3857285,
+      3857286,
+      3857287,
+      3857288,
+      3857289,
+      3857290,
+      3857291,
+      3857292,
+      3857293,
+      3857294,
+      3857295,
+      3857296,
+      3857297,
+      3857298,
+      3857299,
+      3857300,
+      3857301,
+      3869117,
+      3869118,
+      3869151,
+      3869152,
+      3869219,
+      3869220,
+      3869253,
+      3869254,
+      3869321,
+      3869354,
+      3869420,
+      3869486,
+      3869519,
+      3869552,
+      3869684,
+      3869685
+    ]
+  },
+  "production_approved": false,
+  "shot_scoring": {
+    "features": [
+      "x",
+      "y",
+      "distance",
+      "angle",
+      "pressure",
+      "header"
+    ],
+    "partitions": {
+      "train": {
+        "rows": 1098,
+        "positives": 96,
+        "matches": 48
+      },
+      "calibration": {
+        "rows": 398,
+        "positives": 29,
+        "matches": 16
+      },
+      "test": {
+        "rows": 1325,
+        "positives": 144,
+        "matches": 64
+      }
+    },
+    "metrics": {
+      "catboost": {
+        "log_loss": 0.3027344345161627,
+        "brier": 0.08815788261792266,
+        "roc_auc": 0.7843488333803745,
+        "ece": 0.03604129590039899,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 1042,
+            "predicted": 0.04368896309781256,
+            "observed": 0.06429942418426103
+          },
+          {
+            "lower": 0.1,
+            "count": 194,
+            "predicted": 0.1339808131189626,
+            "observed": 0.21649484536082475
+          },
+          {
+            "lower": 0.2,
+            "count": 45,
+            "predicted": 0.2516894202170991,
+            "observed": 0.35555555555555557
+          },
+          {
+            "lower": 0.3,
+            "count": 30,
+            "predicted": 0.32875987098632214,
+            "observed": 0.43333333333333335
+          },
+          {
+            "lower": 0.4,
+            "count": 9,
+            "predicted": 0.46272611845675915,
+            "observed": 0.5555555555555556
+          },
+          {
+            "lower": 0.5,
+            "count": 5,
+            "predicted": 0.524849893299612,
+            "observed": 0.2
+          }
+        ]
+      },
+      "logistic": {
+        "log_loss": 0.2991828809053888,
+        "brier": 0.08649865225222562,
+        "roc_auc": 0.7769516182143192,
+        "ece": 0.03288387984093739,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 1032,
+            "predicted": 0.04331040740442395,
+            "observed": 0.06395348837209303
+          },
+          {
+            "lower": 0.1,
+            "count": 208,
+            "predicted": 0.13666123148422088,
+            "observed": 0.20673076923076922
+          },
+          {
+            "lower": 0.2,
+            "count": 46,
+            "predicted": 0.2412923205570533,
+            "observed": 0.32608695652173914
+          },
+          {
+            "lower": 0.3,
+            "count": 17,
+            "predicted": 0.35395474559566564,
+            "observed": 0.35294117647058826
+          },
+          {
+            "lower": 0.4,
+            "count": 7,
+            "predicted": 0.44011052772905856,
+            "observed": 0.7142857142857143
+          },
+          {
+            "lower": 0.5,
+            "count": 8,
+            "predicted": 0.5608176431332885,
+            "observed": 0.625
+          },
+          {
+            "lower": 0.6,
+            "count": 3,
+            "predicted": 0.6495083449952502,
+            "observed": 0.3333333333333333
+          },
+          {
+            "lower": 0.7,
+            "count": 3,
+            "predicted": 0.7371100417211224,
+            "observed": 0.6666666666666666
+          },
+          {
+            "lower": 0.8,
+            "count": 1,
+            "predicted": 0.8173068711557692,
+            "observed": 1.0
+          }
+        ]
+      },
+      "constant": {
+        "log_loss": 0.3463891955080502,
+        "brier": 0.09731952536372124,
+        "roc_auc": 0.5,
+        "ece": 0.02124755129394784,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 1325,
+            "predicted": 0.08743169398907102,
+            "observed": 0.10867924528301887
+          }
+        ]
+      }
+    },
+    "logloss_difference_match_bootstrap_95": [
+      -0.005239752292968335,
+      0.011465806791456359
+    ],
+    "checks": {
+      "logloss_gain_2_percent": false,
+      "brier_better": false,
+      "ece_under_005": true,
+      "match_bootstrap_better": false
+    },
+    "statistical_screen_passed": false,
+    "production_approved": false
+  },
+  "shot_creation": {
+    "features": [
+      "x",
+      "y",
+      "distance",
+      "angle"
+    ],
+    "partitions": {
+      "train": {
+        "rows": 27068,
+        "positives": 1352,
+        "matches": 48
+      },
+      "calibration": {
+        "rows": 9728,
+        "positives": 547,
+        "matches": 16
+      },
+      "test": {
+        "rows": 41335,
+        "positives": 1689,
+        "matches": 64
+      }
+    },
+    "metrics": {
+      "catboost": {
+        "log_loss": 0.12148081739840122,
+        "brier": 0.031932744811417536,
+        "roc_auc": 0.8843905702829424,
+        "ece": 0.003962147981302541,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 35835,
+            "predicted": 0.01743630984315842,
+            "observed": 0.015487651737128506
+          },
+          {
+            "lower": 0.1,
+            "count": 3543,
+            "predicted": 0.14594204343138575,
+            "observed": 0.12870448772226925
+          },
+          {
+            "lower": 0.2,
+            "count": 1105,
+            "predicted": 0.23851304014259195,
+            "observed": 0.2334841628959276
+          },
+          {
+            "lower": 0.3,
+            "count": 320,
+            "predicted": 0.3363683694691189,
+            "observed": 0.346875
+          },
+          {
+            "lower": 0.4,
+            "count": 99,
+            "predicted": 0.45038433998572036,
+            "observed": 0.3939393939393939
+          },
+          {
+            "lower": 0.5,
+            "count": 216,
+            "predicted": 0.5706894448225537,
+            "observed": 0.5925925925925926
+          },
+          {
+            "lower": 0.6,
+            "count": 110,
+            "predicted": 0.6466552614383861,
+            "observed": 0.5727272727272728
+          },
+          {
+            "lower": 0.7,
+            "count": 57,
+            "predicted": 0.749367493669711,
+            "observed": 0.6666666666666666
+          },
+          {
+            "lower": 0.8,
+            "count": 50,
+            "predicted": 0.8357675419680415,
+            "observed": 0.82
+          }
+        ]
+      },
+      "logistic": {
+        "log_loss": 0.1210150810710655,
+        "brier": 0.03178937432576931,
+        "roc_auc": 0.8853677948004433,
+        "ece": 0.004198760417281124,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 36198,
+            "predicted": 0.019065698457280664,
+            "observed": 0.016022984695287033
+          },
+          {
+            "lower": 0.1,
+            "count": 3196,
+            "predicted": 0.13698814433925063,
+            "observed": 0.1276595744680851
+          },
+          {
+            "lower": 0.2,
+            "count": 910,
+            "predicted": 0.24156857745136234,
+            "observed": 0.24615384615384617
+          },
+          {
+            "lower": 0.3,
+            "count": 450,
+            "predicted": 0.3423960446837778,
+            "observed": 0.3288888888888889
+          },
+          {
+            "lower": 0.4,
+            "count": 234,
+            "predicted": 0.4410944929290874,
+            "observed": 0.43162393162393164
+          },
+          {
+            "lower": 0.5,
+            "count": 132,
+            "predicted": 0.5467400046891676,
+            "observed": 0.6060606060606061
+          },
+          {
+            "lower": 0.6,
+            "count": 87,
+            "predicted": 0.6495170775569997,
+            "observed": 0.6091954022988506
+          },
+          {
+            "lower": 0.7,
+            "count": 67,
+            "predicted": 0.748424268559579,
+            "observed": 0.6119402985074627
+          },
+          {
+            "lower": 0.8,
+            "count": 34,
+            "predicted": 0.8531340977702092,
+            "observed": 0.8529411764705882
+          },
+          {
+            "lower": 0.9,
+            "count": 27,
+            "predicted": 0.9498253098107505,
+            "observed": 0.9259259259259259
+          }
+        ]
+      },
+      "constant": {
+        "log_loss": 0.17159684044047202,
+        "brier": 0.03927418736941834,
+        "roc_auc": 0.5,
+        "ece": 0.009087022815398076,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "count": 41335,
+            "predicted": 0.049948278409930554,
+            "observed": 0.04086125559453248
+          }
+        ]
+      }
+    },
+    "logloss_difference_match_bootstrap_95": [
+      6.668237806768673e-05,
+      0.0008781197473460861
+    ],
+    "checks": {
+      "logloss_gain_2_percent": false,
+      "brier_better": false,
+      "ece_under_005": true,
+      "match_bootstrap_better": false
+    },
+    "statistical_screen_passed": false,
+    "production_approved": false
+  },
+  "match_outlook": {
+    "home_rate_from_train": 1.4375,
+    "away_rate_from_train": 1.125,
+    "test_matches": 64,
+    "per_minute": {
+      "0": {
+        "matches": 64,
+        "multiclass_brier_sum": 0.6432757765640948,
+        "log_loss": 1.0643638427897635,
+        "training_outcome_frequency_brier": 0.6506076388888888,
+        "reliability_bins": {
+          "win": [
+            {
+              "lower": 0.4,
+              "count": 64,
+              "predicted": 0.4422356219992127,
+              "observed": 0.453125
+            }
+          ],
+          "draw": [
+            {
+              "lower": 0.2,
+              "count": 64,
+              "predicted": 0.26227035696627915,
+              "observed": 0.234375
+            }
+          ],
+          "loss": [
+            {
+              "lower": 0.2,
+              "count": 64,
+              "predicted": 0.2954940210345083,
+              "observed": 0.3125
+            }
+          ]
+        }
+      },
+      "30": {
+        "matches": 64,
+        "multiclass_brier_sum": 0.6015693350268667,
+        "log_loss": 1.0034822029748722,
+        "training_outcome_frequency_brier": 0.6506076388888888,
+        "reliability_bins": {
+          "win": [
+            {
+              "lower": 0.0,
+              "count": 1,
+              "predicted": 0.04067004625455044,
+              "observed": 0.0
+            },
+            {
+              "lower": 0.1,
+              "count": 8,
+              "predicted": 0.1456730608323297,
+              "observed": 0.25
+            },
+            {
+              "lower": 0.3,
+              "count": 45,
+              "predicted": 0.38962464834520877,
+              "observed": 0.4666666666666667
+            },
+            {
+              "lower": 0.7,
+              "count": 8,
+              "predicted": 0.7263590988977794,
+              "observed": 0.5
+            },
+            {
+              "lower": 0.9,
+              "count": 2,
+              "predicted": 0.9494336652341351,
+              "observed": 1.0
+            }
+          ],
+          "draw": [
+            {
+              "lower": 0.0,
+              "count": 2,
+              "predicted": 0.03975519076460768,
+              "observed": 0.0
+            },
+            {
+              "lower": 0.1,
+              "count": 9,
+              "predicted": 0.18137245380262568,
+              "observed": 0.3333333333333333
+            },
+            {
+              "lower": 0.2,
+              "count": 8,
+              "predicted": 0.24395158751287913,
+              "observed": 0.0
+            },
+            {
+              "lower": 0.3,
+              "count": 45,
+              "predicted": 0.33673445055257056,
+              "observed": 0.26666666666666666
+            }
+          ],
+          "loss": [
+            {
+              "lower": 0.0,
+              "count": 10,
+              "predicted": 0.06834004271744278,
+              "observed": 0.1
+            },
+            {
+              "lower": 0.2,
+              "count": 45,
+              "predicted": 0.27364090110222056,
+              "observed": 0.26666666666666666
+            },
+            {
+              "lower": 0.6,
+              "count": 8,
+              "predicted": 0.6103753516547913,
+              "observed": 0.75
+            },
+            {
+              "lower": 0.8,
+              "count": 1,
+              "predicted": 0.8543269391676703,
+              "observed": 1.0
+            }
+          ]
+        }
+      },
+      "60": {
+        "matches": 64,
+        "multiclass_brier_sum": 0.39481785713679557,
+        "log_loss": 0.7010049380331429,
+        "training_outcome_frequency_brier": 0.6506076388888888,
+        "reliability_bins": {
+          "win": [
+            {
+              "lower": 0.0,
+              "count": 15,
+              "predicted": 0.04034470076132796,
+              "observed": 0.0
+            },
+            {
+              "lower": 0.2,
+              "count": 24,
+              "predicted": 0.28391956944629315,
+              "observed": 0.2916666666666667
+            },
+            {
+              "lower": 0.7,
+              "count": 15,
+              "predicted": 0.7895441683214206,
+              "observed": 0.8666666666666667
+            },
+            {
+              "lower": 0.9,
+              "count": 10,
+              "predicted": 0.9805974907243181,
+              "observed": 0.9
+            }
+          ],
+          "draw": [
+            {
+              "lower": 0.0,
+              "count": 16,
+              "predicted": 0.030150470110157295,
+              "observed": 0.125
+            },
+            {
+              "lower": 0.1,
+              "count": 15,
+              "predicted": 0.1743904391229115,
+              "observed": 0.06666666666666667
+            },
+            {
+              "lower": 0.2,
+              "count": 9,
+              "predicted": 0.2228322277681648,
+              "observed": 0.1111111111111111
+            },
+            {
+              "lower": 0.5,
+              "count": 24,
+              "predicted": 0.5056245988751277,
+              "observed": 0.4583333333333333
+            }
+          ],
+          "loss": [
+            {
+              "lower": 0.0,
+              "count": 25,
+              "predicted": 0.02254952292325317,
+              "observed": 0.04
+            },
+            {
+              "lower": 0.2,
+              "count": 24,
+              "predicted": 0.2104558316785793,
+              "observed": 0.25
+            },
+            {
+              "lower": 0.7,
+              "count": 9,
+              "predicted": 0.7160804305537067,
+              "observed": 0.8888888888888888
+            },
+            {
+              "lower": 0.9,
+              "count": 6,
+              "predicted": 0.9389126583218715,
+              "observed": 0.8333333333333334
+            }
+          ]
+        }
+      },
+      "75": {
+        "matches": 64,
+        "multiclass_brier_sum": 0.3539925656373358,
+        "log_loss": 0.6351757107904445,
+        "training_outcome_frequency_brier": 0.6506076388888888,
+        "reliability_bins": {
+          "win": [
+            {
+              "lower": 0.0,
+              "count": 15,
+              "predicted": 0.011642881039959968,
+              "observed": 0.0
+            },
+            {
+              "lower": 0.1,
+              "count": 22,
+              "predicted": 0.18045677150023345,
+              "observed": 0.22727272727272727
+            },
+            {
+              "lower": 0.8,
+              "count": 13,
+              "predicted": 0.8625041815543546,
+              "observed": 0.8461538461538461
+            },
+            {
+              "lower": 0.9,
+              "count": 14,
+              "predicted": 0.9936290544073201,
+              "observed": 0.9285714285714286
+            }
+          ],
+          "draw": [
+            {
+              "lower": 0.0,
+              "count": 21,
+              "predicted": 0.009491065758919823,
+              "observed": 0.09523809523809523
+            },
+            {
+              "lower": 0.1,
+              "count": 21,
+              "predicted": 0.13833250285939297,
+              "observed": 0.09523809523809523
+            },
+            {
+              "lower": 0.6,
+              "count": 22,
+              "predicted": 0.6820474100541211,
+              "observed": 0.5
+            }
+          ],
+          "loss": [
+            {
+              "lower": 0.0,
+              "count": 27,
+              "predicted": 0.006171902718420313,
+              "observed": 0.0
+            },
+            {
+              "lower": 0.1,
+              "count": 22,
+              "predicted": 0.1374958184456455,
+              "observed": 0.2727272727272727
+            },
+            {
+              "lower": 0.8,
+              "count": 8,
+              "predicted": 0.8195432284997665,
+              "observed": 1.0
+            },
+            {
+              "lower": 0.9,
+              "count": 7,
+              "predicted": 0.9821019314444943,
+              "observed": 0.8571428571428571
+            }
+          ]
+        }
+      },
+      "85": {
+        "matches": 64,
+        "multiclass_brier_sum": 0.13748520986876797,
+        "log_loss": 0.2654949306388461,
+        "training_outcome_frequency_brier": 0.6506076388888888,
+        "reliability_bins": {
+          "win": [
+            {
+              "lower": 0.0,
+              "count": 38,
+              "predicted": 0.035297506866749616,
+              "observed": 0.07894736842105263
+            },
+            {
+              "lower": 0.9,
+              "count": 26,
+              "predicted": 0.9757373417831489,
+              "observed": 1.0
+            }
+          ],
+          "draw": [
+            {
+              "lower": 0.0,
+              "count": 46,
+              "predicted": 0.03472883478484416,
+              "observed": 0.021739130434782608
+            },
+            {
+              "lower": 0.8,
+              "count": 18,
+              "predicted": 0.8716424215511225,
+              "observed": 0.7777777777777778
+            }
+          ],
+          "loss": [
+            {
+              "lower": 0.0,
+              "count": 44,
+              "predicted": 0.02337944488433362,
+              "observed": 0.022727272727272728
+            },
+            {
+              "lower": 0.9,
+              "count": 20,
+              "predicted": 0.9486869144883965,
+              "observed": 0.95
+            }
+          ]
+        }
+      }
+    },
+    "production_calibrated": false,
+    "limitations": "Neutral-tournament home designation; rates not team-strength specific. Snapshot minute uses provider clock, regulation outcomes include stoppage; baseline sets added time to zero. Extra time and shootouts excluded. Repeated snapshots are not independent matches."
+  },
+  "limitations": [
+    "2022 was used in earlier pass research; untouched for this fixed experiment, not an entirely new project holdout.",
+    "Shot scoring uses actual pre-shot pressure/body part, unavailable from screenshot geometry alone.",
+    "Shot creation is conditional on observed completed ground passes and uses recorded endpoint; not failed-pass intent or alternative-action causal value.",
+    "No joint possession/counter model or counterfactual WPA validation. No screenshot promotion."
+  ]
+}

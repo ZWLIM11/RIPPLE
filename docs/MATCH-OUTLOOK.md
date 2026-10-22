@@ -18,7 +18,15 @@ The explicit branches replace goal generation over a user-selected action/counte
 
 ## Try it
 
-Run `npm start`, open the printed URL, then choose **06 Match outlook**. Set team/score/minute/rates. The analysed team must match the board passer. Explore an action, edit probabilities, and calculate illustrative impact. Compare different action assumptions in the table. Change the score or a player on the tactics board: stale scenarios are cleared. Reset restores match defaults. Match context is session-only and is not included in existing board JSON exports. The new panel is currently English; existing app translations remain available elsewhere.
+Run `npm start`, open the printed URL, then choose **06 Match outlook**. Set team/score/minute/rates. The analysed team must match the board passer. Explore an action, edit probabilities, and calculate illustrative impact. Compare different action assumptions in the table. Change the score or a player on the tactics board: stale scenarios are cleared. Reset restores match defaults. Match context has a separate match-scenario save/export format; existing board-only JSON exports are unchanged. The new panel is currently English; existing app translations remain available elsewhere.
+
+## Follow-up features
+
+Save/load a match scenario locally or export/import a versioned JSON containing the full board, match context, selected action and current probability assumptions. Imported input is validated before mutation; results are recomputed, never trusted from a file. Existing board-only JSON remains compatible and separate. Comparative table history is not serialized; the selected scenario can be recalculated after loading.
+
+The optional motion lab plots geometric curved paths and ideal lofted trajectories. Ground duration = sampled horizontal arc length / entered speed. Loft airtime = sqrt(8 × peak height / 9.81), with peak-height parabola and implied horizontal speed; the ground speed field does not control loft airtime. Entered receiver velocity extrapolates a constant vector. These are illustrative mechanics, not learned motion or interception assessments; they do not feed WPA or alter the passing ranker. No physical Magnus-force/aerodynamic curve model is claimed.
+
+Research training and historical test results: `ml/OUTLOOK.md` and `ml/outlook-evaluation.json`. Both new CatBoost experiments failed their comparative deployment screen. Consequently validated xG/shot-creation/WPA remains **not completed**; the software cannot manufacture that evidence. The app continues to expose explicit assumptions.
 
 ## Verification and next steps
 
