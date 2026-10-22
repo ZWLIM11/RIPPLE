@@ -20,7 +20,7 @@ const pure=[script('passing-model'),ui.slice(start,end),
 await writeFile(new URL('models.mjs',out),pure+'\nexport {PassingModel,initial,SnapshotModel,MatchIntelligence};\n');
 const files=['index.html','comparison.js','snapshot-model.js','snapshot-ui.js','replay-model.js',
   'replay-ui.js','intelligence.js','studio-ui.js','vision-ui.js','guide-ui.js','studio.css',
-  'workspace.js','workspace.css','snapshot-tools.js','locale.js','playbook.js','playbook.css','frame-model.js','frame-ui.js'];
+  'workspace.js','workspace.css','snapshot-tools.js','locale.js','playbook.js','playbook.css','frame-model.js','frame-ui.js','outcome-model.js','outcome-ui.js','outcome.css'];
 // Fail closed if stale/unexpected build files could accidentally become public.
 for(const entry of await readdir(assets)){
   if(!files.includes(entry)&&entry!=='_headers')throw Error(`Unexpected output asset: ${entry}. Use a fresh dist directory.`);

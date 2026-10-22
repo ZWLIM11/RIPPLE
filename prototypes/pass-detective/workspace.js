@@ -5,7 +5,7 @@
   document.querySelector('header').innerHTML='<a class="brand" href="#tactics" aria-label="RIPPLE home"><span class="brand-icon">≋</span> RIPPLE<span class="brand-tag">FOOTBALL INTELLIGENCE</span></a><div class="header-right"><span class="live-dot"></span><span>Local analysis</span></div>';
   const rail=document.createElement('nav');rail.className='workspace-rail';rail.setAttribute('aria-label','Workspace');
   rail.innerHTML='<div class="rail-caption">WORKSPACE</div>'+[
-    ['analysis','01','Tactics board'],['replay','02','Match replay'],['snapshot','03','Screenshot lab'],['insights','04','Pass insights'],['report','05','Reports & model']
+    ['analysis','01','Tactics board'],['replay','02','Match replay'],['snapshot','03','Screenshot lab'],['insights','04','Pass insights'],['report','05','Reports & model'],['outlook','06','Match outlook']
   ].map(([id,n,name])=>`<button data-view="${id}"><span>${n}</span>${name}<b>↗</b></button>`).join('')+
     '<div class="rail-bottom"><div class="rail-ball">◎</div><strong>Every pass has a story.</strong><p>Explore the space.<br>Understand the decision.</p><span>PASS DETECTIVE / V2</span></div>';
   document.body.insertBefore(rail,main);
@@ -24,9 +24,10 @@
   report.innerHTML='<div class="eyebrow">TAKE THE ANALYSIS WITH YOU</div><h2>A decision worth sharing.</h2><p>Download a self-contained report with the current pitch, selected pass, timing evidence and assumptions. Open the HTML file in a browser and choose Print to save a PDF.</p><div class="toolbar"><button id="downloadReport" class="primary">Download analysis report ↗</button><button id="downloadPitch">Download pitch SVG</button></div><p id="reportStatus" role="status"></p><div class="model-result"><span class="pill">RESEARCH ONLY</span><h3>CatBoost completion-context model</h3><p>44,847 held-out passes · 64 matches · 2022 World Cup</p><div class="research-metrics"><div><strong>0.7286</strong><span>ROC AUC</span></div><div><strong>0.2263</strong><span>Log loss</span></div><div><strong>0.93%</strong><span>Improvement vs logistic</span></div></div><p>The minimum improvement gate was 2%. This model did not pass and cannot compare alternative receivers. The board uses timing calculations and heuristic rankings, not completion probabilities.</p><p>Next research requires intended-target spatial data, a fresh holdout, calibration and evaluation against the app’s inputs.</p></div>';
   layout.append(report);
   const views={
+    outlook:['MATCH SCENARIOS','Match outlook','Explore the result under explicit assumptions.',[matchPanel]],
     analysis:['THE NEXT MOVE','Tactics board','Shape the play. Compare the options.',[boardSection,aside,$('route-evidence'),$('compare-pass')]],
     replay:['READ THE GAME','Match replay','Choose your pass before the synthetic outcome is revealed.',[replayPanel,boardSection,aside]],
-    snapshot:['FROM FRAME TO FIELD','Screenshot lab','Turn a full-pitch image into an editable tactical board.',[snapshotPanel]],
+    snapshot:['FROM FRAME TO FIELD','Screenshot lab','Analyse the players visible in your screenshot.',[snapshotPanel]],
     insights:['BEHIND THE DECISION','Pass insights','Understand the selected route and challenge its assumptions.',[studioPanel,boardSection,aside,$('route-evidence'),$('compare-pass')]],
     report:['EVIDENCE, NOT GUESSWORK','Reports & model','Keep your analysis. Know the model’s limits.',[report,roster,model]]
   };
@@ -70,7 +71,7 @@
   };
   $('appLanguage').onchange=()=>{$('studioLanguage').value=$('appLanguage').value;$('studioLanguage').dispatchEvent(new Event('change'));};
   $('studioLanguage').addEventListener('change',()=>{$('appLanguage').value=language();});
-  document.querySelector('.footnote').textContent='Experimental passing analysis · Positions and movement settings are assumptions. No completion probabilities are displayed.';
+  document.querySelector('.footnote').textContent='Experimental passing analysis · Positions and movement settings are assumptions. Match outlook probabilities use explicit experimental assumptions.';
   // Fold secondary editing controls without removing their keyboard-accessible inputs.
   for(const [id,label] of [['player-settings','Player settings'],['movement-settings','Movement assumptions']]){
     const panel=$(id),details=document.createElement('details'),summary=document.createElement('summary');

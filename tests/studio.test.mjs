@@ -76,6 +76,29 @@ function loadUI(options={}){
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
 
+test('match outlook computes scenarios and clears stale results after context or board edits',()=>{
+  const {$,dom,context,errors}=loadUI();
+  try{
+    dom.window.RippleWorkspace.showView('outlook');
+    assert.equal($('match-outlook').hidden,false);
+    assert.match($('wpDashboard').textContent,/Win.*Draw.*Loss/);
+    const buttons=$('wpActions').querySelectorAll('button');buttons[buttons.length-1].click();
+    assert.equal($('wpSuccess').disabled,true);$('wpEvaluate').click();
+    assert.match($('wpScenario').textContent,/Illustrative.*percentage points/);
+    $('wpGoal').value='';$('wpGoal').dispatchEvent(new dom.window.Event('input'));$('wpEvaluate').click();
+    assert.match($('wpScenario').textContent,/Check/);
+    $('wpGoal').value='10';$('wpEvaluate').click();
+    vm.runInContext('state.players[0].x+=1;render()',context);
+    assert.equal($('wpScenario').textContent,'');
+    $('wpMinute').value='90';$('wpMinute').dispatchEvent(new dom.window.Event('input'));
+    assert.match($('wpDashboard').textContent,/Draw 100.0%/);
+    $('wpEvaluate').click();assert.match($('wpScenario').textContent,/exceeds remaining/);
+    $('wpHomeScore').value='-1';$('wpHomeScore').dispatchEvent(new dom.window.Event('input'));
+    assert.equal($('wpDashboard').textContent,'');assert.equal($('wpEvaluate').disabled,true);
+    assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});
+
 test('visible route needs only two teammates, not a ball or complete roster',()=>{
   const {$,dom,context,errors}=loadUI({storage:true});
   try{

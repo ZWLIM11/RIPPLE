@@ -1,5 +1,11 @@
 # Pass Detective
 
+**Shot opportunity**: An uncalibrated geometry heuristic for a potential shooting position. Not xG or the probability of getting a shot away.
+
+**Experimental match outlook**: Win, draw and loss probabilities under independent Poisson goal counts with user-assumed future scoring rates.
+
+**Illustrative action impact**: Expected post-action win probability minus baseline under explicit user-assumed outcome branches, expressed in percentage points. Not validated Win Probability Added.
+
 Pass Detective explains passing decisions and their match context to football fans using synthetic matches.
 
 ## Language

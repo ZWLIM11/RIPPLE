@@ -2,7 +2,7 @@ const visionArea=document.createElement('div');visionArea.id='visionReview';
 visionArea.innerHTML=`<div class="toolbar"><button id="suggestMarkers" disabled>Suggest markers with AI</button><span class="fine" id="visionAvailability">Optional vision service not configured.</span></div>
 <p class="fine">Optional: clicking Suggest sends a resized screenshot to your configured Azure vision deployment.
 Only use images you may share. It suggests visible blue/coral players with readable shirt numbers; unknown identities are omitted.
-Review each suggestion before accepting. Four-corner calibration and all player/ball positions are still required.</p>
+Review each suggestion before accepting. Calibrate the visible region and mark two teammates to analyse a route. Only complete-board import requires every player and the ball.</p>
 <div id="visionSuggestions"></div>`;
 $('imageWorkspace').append(visionArea);
 let visionAvailable=false;
