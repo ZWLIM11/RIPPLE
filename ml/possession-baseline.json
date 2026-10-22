@@ -1,0 +1,73 @@
+{
+  "target": "Last recorded possession annotation within 15 seconds belongs to acting team; not continuous control at horizon",
+  "features": [
+    "x",
+    "y",
+    "pressure",
+    "minute"
+  ],
+  "partitions": {
+    "train": {
+      "rows": 29240,
+      "matches": 48,
+      "positive": 23173
+    },
+    "calibration": {
+      "rows": 10483,
+      "matches": 16,
+      "positive": 8610
+    },
+    "test": {
+      "rows": 44337,
+      "matches": 64,
+      "positive": 35737
+    }
+  },
+  "excluded_missing_origin_or_unknown_possession": 0,
+  "logistic": {
+    "log_loss": 0.4919229057688215,
+    "brier": 0.1563388959490528,
+    "roc_auc": 0.5370035826981481,
+    "ece": 0.016933888127961115,
+    "reliability_bins": [
+      {
+        "lower": 0.7,
+        "count": 315,
+        "predicted": 0.7979313485622964,
+        "observed": 0.6222222222222222
+      },
+      {
+        "lower": 0.8,
+        "count": 44022,
+        "predicted": 0.8231440966592224,
+        "observed": 0.8073463268365817
+      }
+    ]
+  },
+  "training_constant": {
+    "log_loss": 0.4924921462449232,
+    "brier": 0.15652779057002858,
+    "roc_auc": 0.5,
+    "ece": 0.013520820218308582,
+    "reliability_bins": [
+      {
+        "lower": 0.7,
+        "count": 44337,
+        "predicted": 0.7925102599179208,
+        "observed": 0.8060310801362294
+      }
+    ]
+  },
+  "logloss_difference_match_bootstrap_95": [
+    -0.002521107581476243,
+    0.0014118732293990442
+  ],
+  "production_approved": false,
+  "limitations": [
+    "2022 is reused development evaluation, not untouched external validation.",
+    "No intended target input: cannot rank alternative receivers.",
+    "Last provider possession can be stale across stoppages.",
+    "Goal and possession branches are not jointly modelled; this is not WPA.",
+    "No screenshot features or accuracy validation."
+  ]
+}

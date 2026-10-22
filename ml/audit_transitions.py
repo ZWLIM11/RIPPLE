@@ -49,7 +49,7 @@ def audit(events,home,away):
                 branch='omitted_failed_pass_own_goal' if own else 'failure_opponent_goal' if opp else 'failure_no_goal'
             else:
                 branch='goal' if own else 'failure_opponent_goal' if opp else 'failure_no_goal'
-            records.append({'kind':kind,'branch':branch,'completed':completed,'own_goal':own,'opponent_goal':opp,'own_shot_in_window':own_shot,'same_possession_shot':same_possession_shot,'last_recorded_possession':('own' if future[-1].get('possession_team',{}).get('id')==team else 'opponent' if future[-1].get('possession_team',{}).get('id') in [home,away] else 'unknown')})
+            records.append({'event_id':e.get('id'),'origin':e.get('location'),'pressure':bool(e.get('under_pressure',False)),'minute':e.get('minute',0),'kind':kind,'branch':branch,'completed':completed,'own_goal':own,'opponent_goal':opp,'own_shot_in_window':own_shot,'same_possession_shot':same_possession_shot,'last_recorded_possession':('own' if future[-1].get('possession_team',{}).get('id')==team else 'opponent' if future[-1].get('possession_team',{}).get('id') in [home,away] else 'unknown')})
     return records,excluded
 
 def summarize(matches):

@@ -14,6 +14,13 @@ const FrameModel=(()=>{
       const d=Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy);clearance=clearance===null?d:Math.min(clearance,d);}
     return {distance,clearance};
   }
+  function missingSensitivity(a,b,opponents){
+    const base=lane(a,b,opponents),dx=b.x-a.x,dy=b.y-a.y,d=base.distance;
+    return [0,1,3,5].map(offset=>{
+      const positions=[-1,1].map(sign=>({x:(a.x+b.x)/2-sign*dy/d*offset,y:(a.y+b.y)/2+sign*dx/d*offset})).filter(p=>p.x>=0&&p.x<=105&&p.y>=0&&p.y<=68);
+      return {offset,clearance:positions.length?Math.min(...positions.map(p=>lane(a,b,[...opponents,p]).clearance)):null};
+    });
+  }
   function blobs(data,width,height,color,tolerance=65){
     const mask=new Uint8Array(width*height),visited=new Uint8Array(width*height),out=[];
     for(let i=0;i<mask.length;i++){const j=i*4,r=data[j],g=data[j+1],b=data[j+2];
@@ -25,5 +32,5 @@ const FrameModel=(()=>{
       if(queue.length>=5&&queue.length<width*height*.008)out.push({x:(sumX/queue.length+.5)/width,y:(sumY/queue.length+.5)/height,size:queue.length});
     }return out.sort((a,b)=>b.size-a.size).slice(0,30);
   }
-  return {regions,project,lane,blobs};
+  return {regions,project,lane,missingSensitivity,blobs};
 })();

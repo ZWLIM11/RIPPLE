@@ -78,3 +78,17 @@ $('exportComparison').onclick = () => {
 const renderBoard = render;
 render = function() { renderBoard(); renderComparison(); };
 renderComparison();
+
+// On-demand, bounded search; never runs while dragging or changes the live board.
+const flipPanel=document.createElement('div');flipPanel.className='share-board';
+flipPanel.innerHTML='<h3>What changes the recommendation?</h3><p>Test the three opponents closest to the leading route, moving one at a time toward that segment in 1 m steps, up to 6 m. This is a sampled sensitivity check, not movement prediction or a guaranteed minimum.</p><button id="findDecisionFlip">Find a decision flip</button><p id="decisionFlipResult" role="status">Start with a tactics-board scenario, then run the check.</p>';
+comparePanel.append(flipPanel);
+$('findDecisionFlip').onclick=()=>{
+  try{
+    if(replayActive)throw Error('Exit replay before testing a decision.');
+    const r=MatchIntelligence.decisionFlip(state,PassingModel);
+    $('decisionFlipResult').textContent=r.defender?`Moving ${r.defender} ${r.moved.toFixed(1)} m toward the original route, from (${r.from.x.toFixed(1)}, ${r.from.y.toFixed(1)}) to (${r.to.x.toFixed(1)}, ${r.to.y.toFixed(1)}), changes the leading receiver from ${r.baseline} to ${r.next||'none: no viable pass'}. First change found in this search; all other settings stay fixed. Heuristic ranking only.`:`No receiver change found in ${r.tested} tested positions. ${r.baseline} stays first within this limited search. Other directions, players or smaller movements could change it.`;
+  }catch(e){$('decisionFlipResult').textContent=e.message;}
+};
+let flipSignature='';const renderBeforeFlip=render;
+render=function(){renderBeforeFlip();const next=JSON.stringify([state.players,state.ball,state.owner,state.cfg,state.objective,replayActive]);if(next!==flipSignature){flipSignature=next;$('decisionFlipResult').textContent='Board changed. Run the sensitivity check again.';}};

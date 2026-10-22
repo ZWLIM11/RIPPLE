@@ -439,3 +439,11 @@ test('pending match import cannot overwrite a newer reset or board edit',async()
     }finally{dom.window.close();}
   }
 });
+
+test('decision flip UI computes evidence then invalidates it after a board edit',()=>{
+ const {$,dom,context}=loadUI();try{
+  $('findDecisionFlip').click();assert.match($('decisionFlipResult').textContent,/Moving|No receiver change/);
+  vm.runInContext('state.players[0].x+=1;render()',context);
+  assert.match($('decisionFlipResult').textContent,/Board changed/);
+ }finally{dom.window.close();}
+});

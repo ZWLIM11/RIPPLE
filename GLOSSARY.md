@@ -62,3 +62,6 @@ A heuristic assessment of how demanding a pass is to execute and control. It is 
 A research classifier estimating observed ground-pass completion from release
 location, annotated pressure and passing foot. It does not distinguish alternative
 receivers and is not currently used by the tactical board.
+
+**Decision flip**:
+A change in the leading viable receiver found in a bounded hypothetical defender displacement search. Not a guaranteed minimum perturbation or prediction of movement.

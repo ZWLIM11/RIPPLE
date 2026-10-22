@@ -86,5 +86,25 @@ const MatchIntelligence = (() => {
       ids.add(m.id);return {id:m.id,x:m.x,y:m.y,confidence:m.confidence};
     });
   }
-  return {facts,sensitivity,moments,contributions,recap,overlay,visionSuggestions,name,outcome};
+  function decisionFlip(state,model){
+    const ranked=s=>model.candidates(s).map(c=>model.evaluate(s,c)).filter(c=>c.viable).sort((a,b)=>b.score-a.score);
+    const baseline=ranked(state)[0];if(!baseline)throw Error('No viable baseline pass. Try another board.');
+    const owner=state.players.find(p=>p.id===state.owner),a=state.ball,b=baseline.target;
+    const dx=b.x-a.x,dy=b.y-a.y,len=dx*dx+dy*dy;
+    if(!len)throw Error('Route has no length.');
+    const defenders=state.players.filter(p=>p.team!==owner.team).map(p=>{
+      const t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/len));
+      const target={x:a.x+t*dx,y:a.y+t*dy};return {p,target,d:Math.hypot(target.x-p.x,target.y-p.y)};
+    }).sort((a,b)=>a.d-b.d).slice(0,3);
+    let tested=0;
+    for(let step=1;step<=6;step++)for(const {p,target,d} of defenders){
+      if(d<.01||step-1>=d)continue;
+      const moved=Math.min(step,d),copy=JSON.parse(JSON.stringify(state)),q=copy.players.find(x=>x.id===p.id);
+      q.x=p.x+(target.x-p.x)*moved/d;q.y=p.y+(target.y-p.y)*moved/d;
+      const best=ranked(copy)[0];tested++;
+      if(!best||best.receiver!==baseline.receiver)return {baseline:baseline.receiver,next:best?.receiver??null,defender:p.id,moved,from:{x:p.x,y:p.y},to:{x:q.x,y:q.y},tested};
+    }
+    return {baseline:baseline.receiver,next:baseline.receiver,tested};
+  }
+  return {decisionFlip,facts,sensitivity,moments,contributions,recap,overlay,visionSuggestions,name,outcome};
 })();

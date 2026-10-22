@@ -58,8 +58,11 @@
   };
   const visible=document.createElement('div');visible.className='share-board';
   visible.innerHTML='<h3>Analyse this view</h3><p>Select a marked passer and teammate. We measure their separation and nearby marked opponents using only this view. Missing players may block the route. Distances are approximate; these measurements do not establish a safe pass.</p><div class="toolbar"><label for="framePasser">Passer</label><select id="framePasser"></select><label for="frameReceiver">Receiver</label><select id="frameReceiver"></select><button id="measureFrame" class="primary">Analyse visible route</button></div><p id="frameResult" role="status">Mark at least two teammates to begin.</p>';
+  const sensitivity=document.createElement('div');sensitivity.innerHTML='<h4>What if an opponent is unmarked?</h4><p>We place one hypothetical opponent near the route midpoint at several offsets. This does not locate a real player or establish whether that position is outside the camera view.</p><div id="missingPlayerResult" role="status">Analyse a visible route to explore the assumptions.</div>';
+  visible.append(sensitivity);
   localAssist.before(visible);
   function refreshVisible(){
+    $('missingPlayerResult').textContent='Marks changed. Analyse again.';
     for(const id of ['framePasser','frameReceiver']){const selected=$(id).value;$(id).replaceChildren();for(const p of initial().players)if(mappedPoints.has(p.id))$(id).add(new Option(p.id,p.id));if(mappedPoints.has(selected))$(id).value=selected;}
     const a=$('framePasser').value;
     if($('frameReceiver').value===a||$('frameReceiver').value.split('-')[0]!==a.split('-')[0]){
@@ -79,10 +82,15 @@
       const projected=id=>FrameModel.project(calibration,mappedPoints.get(id),$('frameRegion').value);
       const opponents=[...mappedPoints.keys()].filter(id=>id!=='ball'&&id.split('-')[0]!==a.split('-')[0]);
       const report=FrameModel.lane(projected(a),projected(b),opponents.map(projected));
+      $('missingPlayerResult').replaceChildren();
+      if(opponents.length>=11)$('missingPlayerResult').textContent='All opponent slots are marked. Review their positions rather than adding an extra player.';
+      else for(const row of FrameModel.missingSensitivity(projected(a),projected(b),opponents.map(projected))){
+        const line=document.createElement('p');line.textContent=`Assumed opponent ${row.offset} m sideways from the midpoint: ${row.clearance===null?'no in-pitch test position':row.clearance.toFixed(1)+' m minimum segment clearance'}.`;$('missingPlayerResult').append(line);
+      }
       $('frameResult').textContent=`${a} → ${b}: ${report.distance.toFixed(1)} m apart. `+(report.clearance===null?'No marked opponent projects onto this segment.':`Closest marked opponent is ${report.clearance.toFixed(1)} m from the straight segment.`)+` ${22-[...mappedPoints.keys()].filter(id=>id!=='ball').length} players unknown. No safety verdict or completion probability; missing players and movement can change the result.`;
-    }catch(e){$('frameResult').textContent=e.message;}
+    }catch(e){$('frameResult').textContent=e.message;$('missingPlayerResult').replaceChildren();}
   };
-  $('framePasser').onchange=$('frameReceiver').onchange=()=>{$('frameResult').textContent='Selection changed. Measure again to update the result.';};
+  $('framePasser').onchange=$('frameReceiver').onchange=()=>{$('frameResult').textContent='Selection changed. Measure again to update the result.';$('missingPlayerResult').textContent='Selection changed. Analyse again.';};
   $('imageWorkspace').append(optional);
   drawMapping();
 })();
