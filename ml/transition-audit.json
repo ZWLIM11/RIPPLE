@@ -1,0 +1,155 @@
+{
+  "window_seconds": 15,
+  "production_approved": false,
+  "revision": "4b73468fc5b0f1950f9f66fada70ad3a4f9327cb",
+  "cohorts": {
+    "worldcup2018": {
+      "pass": {
+        "attempts": 39723,
+        "matches": 64,
+        "branch_counts": {
+          "completed_no_shot": 34023,
+          "failure_no_goal": 3021,
+          "completed_shot_no_goal": 2403,
+          "goal": 233,
+          "omitted_completed_pass_opponent_goal": 23,
+          "failure_opponent_goal": 10,
+          "omitted_failed_pass_own_goal": 10
+        },
+        "last_recorded_possession_counts": {
+          "own": 31783,
+          "opponent": 7940
+        },
+        "omitted_branch_attempts": 33,
+        "goals_for": 243,
+        "goals_against": 33,
+        "opponent_goal_window_rate_95": [
+          0.000455904407390555,
+          0.0012788363629677205
+        ]
+      },
+      "shot": {
+        "attempts": 1506,
+        "matches": 64,
+        "branch_counts": {
+          "failure_no_goal": 1356,
+          "goal": 150
+        },
+        "last_recorded_possession_counts": {
+          "opponent": 267,
+          "own": 1239
+        },
+        "omitted_branch_attempts": 0,
+        "goals_for": 150,
+        "goals_against": 0,
+        "opponent_goal_window_rate_95": null,
+        "uncertainty_note": "No observed opponent goals; empirical bootstrap is degenerate and cannot establish zero risk."
+      },
+      "exclusions": {
+        "period_boundary_censored": 134
+      }
+    },
+    "worldcup2022": {
+      "pass": {
+        "attempts": 44337,
+        "matches": 64,
+        "branch_counts": {
+          "completed_no_shot": 38791,
+          "failure_no_goal": 3112,
+          "completed_shot_no_goal": 2051,
+          "omitted_completed_pass_opponent_goal": 29,
+          "goal": 333,
+          "omitted_failed_pass_own_goal": 12,
+          "failure_opponent_goal": 9
+        },
+        "last_recorded_possession_counts": {
+          "own": 35737,
+          "opponent": 8600
+        },
+        "omitted_branch_attempts": 41,
+        "goals_for": 345,
+        "goals_against": 38,
+        "opponent_goal_window_rate_95": [
+          0.0004839872749888621,
+          0.0012805530968987568
+        ]
+      },
+      "shot": {
+        "attempts": 1329,
+        "matches": 64,
+        "branch_counts": {
+          "failure_no_goal": 1163,
+          "goal": 166
+        },
+        "last_recorded_possession_counts": {
+          "opponent": 290,
+          "own": 1039
+        },
+        "omitted_branch_attempts": 0,
+        "goals_for": 166,
+        "goals_against": 0,
+        "opponent_goal_window_rate_95": null,
+        "uncertainty_note": "No observed opponent goals; empirical bootstrap is degenerate and cannot establish zero risk."
+      },
+      "exclusions": {
+        "period_boundary_censored": 172,
+        "action_exceeds_window": 1
+      }
+    },
+    "euro2024": {
+      "pass": {
+        "attempts": 35961,
+        "matches": 51,
+        "branch_counts": {
+          "completed_no_shot": 31577,
+          "failure_no_goal": 2044,
+          "completed_shot_no_goal": 2087,
+          "goal": 217,
+          "omitted_failed_pass_own_goal": 15,
+          "failure_opponent_goal": 8,
+          "omitted_completed_pass_opponent_goal": 13
+        },
+        "last_recorded_possession_counts": {
+          "own": 29209,
+          "opponent": 6752
+        },
+        "omitted_branch_attempts": 28,
+        "goals_for": 232,
+        "goals_against": 21,
+        "opponent_goal_window_rate_95": [
+          0.0002995776927209237,
+          0.0009006188449581626
+        ]
+      },
+      "shot": {
+        "attempts": 1198,
+        "matches": 51,
+        "branch_counts": {
+          "failure_no_goal": 1086,
+          "goal": 112
+        },
+        "last_recorded_possession_counts": {
+          "own": 904,
+          "opponent": 294
+        },
+        "omitted_branch_attempts": 0,
+        "goals_for": 112,
+        "goals_against": 0,
+        "opponent_goal_window_rate_95": null,
+        "uncertainty_note": "No observed opponent goals; empirical bootstrap is degenerate and cannot establish zero risk."
+      },
+      "exclusions": {
+        "period_boundary_censored": 135
+      }
+    }
+  },
+  "limitations": [
+    "Retrospective recorded-action labels, not alternative-action outcomes.",
+    "Opponent goal within 15 seconds is not necessarily a counterattack caused by the action.",
+    "Overlapping action windows may share goals; uncertainty resamples matches.",
+    "A completed-pass no-shot branch can still lose possession; branch labels do not model every possession transition.",
+    "All cohorts have already been inspected in this project; a later fitted transition model needs an additional frozen external test.",
+    "Last recorded possession within the horizon is a provider event annotation, not continuous control measured exactly at 15 seconds.",
+    "No screenshot input or detection validation."
+  ]
+}

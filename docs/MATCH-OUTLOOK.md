@@ -60,3 +60,7 @@ The `2fd3de3` import fix was confirmed live by comparing Cloudflare's outcome-ui
 Phone layout was checked through a local iframe of width 390px (375px available content after its scrollbar), using the same app sources. Confirmed no page-wide horizontal overflow in Match outlook or Screenshot lab; calculation, deterministic full-time draw, save/load, loft plotting and two-visible-player practice analysis worked. The table and navigation have their own horizontal scrolling. This is responsive browser testing, not physical iOS/Android device testing. One unattributed MutationObserver error appeared in the wrapper console; the tested app interactions completed. Direct live-tab checks previously showed no console errors.
 
 All 22 public HTML/JavaScript/CSS assets were compared against Cloudflare and matched the tested build after line-ending normalization. Four extraction audits and four screenshot-runner software tests passed. No application source changed in this verification commit; the previously passed 58-test app build is unchanged.
+
+## Transition audit follow-up
+
+See `ml/WPA-VALIDATION.md` and `ml/transition-audit.json`: 179 matches, 120,021 eligible pass windows and 4,033 shot windows. The audit identifies omitted goal branches and sparse opponent-goal labels. It does not validate alternative-action WPA. Screenshot probabilities remain experimental at the user's explicit request.
