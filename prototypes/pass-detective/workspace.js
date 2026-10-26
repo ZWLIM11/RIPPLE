@@ -5,7 +5,7 @@
   document.querySelector('header').innerHTML='<a class="brand" href="#tactics" aria-label="RIPPLE home"><span class="brand-icon">≋</span> RIPPLE<span class="brand-tag">FOOTBALL INTELLIGENCE</span></a><div class="header-right"><span class="live-dot"></span><span>Local analysis</span></div>';
   const rail=document.createElement('nav');rail.className='workspace-rail';rail.setAttribute('aria-label','Workspace');
   rail.innerHTML='<div class="rail-caption">WORKSPACE</div>'+[
-    ['analysis','01','Tactics board'],['replay','02','Match replay'],['snapshot','03','Screenshot lab'],['insights','04','Pass insights'],['report','05','Reports & model'],['outlook','06','Match outlook']
+    ['home','00','Home'],['analysis','01','Tactics board'],['replay','02','Match replay'],['snapshot','03','Screenshot lab'],['insights','04','Pass insights'],['report','05','Reports & model'],['outlook','06','Match outlook']
   ].map(([id,n,name])=>`<button data-view="${id}"><span>${n}</span>${name}<b>↗</b></button>`).join('')+
     '<div class="rail-bottom"><div class="rail-ball">◎</div><strong>Every pass has a story.</strong><p>Explore the space.<br>Understand the decision.</p><span>PASS DETECTIVE / V2</span></div>';
   document.body.insertBefore(rail,main);
@@ -29,6 +29,7 @@
   workflow.innerHTML='<div><span class="eyebrow">YOUR NEXT STEPS</span><p id="workflowSteps"></p><span id="workflowLimit" class="fine"></span></div><button id="workflowNext"></button>';
   draft.after(workflow);
   const journeys={
+    home:['Explore the studio','Experimental analysis with explicit assumptions.','analysis','Enter studio →'],
     analysis:['1. Choose a scene → 2. Select a passing card → 3. Read the explanation','Board edits save on this device. Scores are heuristic rankings, not success percentages.','insights','Explain this pass →'],
     snapshot:['1. Upload or paste → 2. Calibrate pitch lines → 3. Mark visible players → 4. Analyse a route','Two teammates are enough to start. Unseen players remain unknown; results are experimental.','analysis','Open tactics board →'],
     outlook:['1. Set score and time → 2. Explore an action → 3. Enter assumptions → 4. Calculate and compare','Win, draw and loss estimates use your assumptions. They are not validated predictions.','report','Open reports →'],
@@ -42,6 +43,7 @@
   report.innerHTML='<div class="eyebrow">TAKE THE ANALYSIS WITH YOU</div><h2>A decision worth sharing.</h2><p>Download a self-contained report with the current pitch, selected pass, timing evidence and assumptions. Open the HTML file in a browser and choose Print to save a PDF.</p><div class="toolbar"><button id="downloadReport" class="primary">Download analysis report ↗</button><button id="downloadPitch">Download pitch SVG</button></div><p id="reportStatus" role="status"></p><div class="model-result"><span class="pill">RESEARCH ONLY</span><h3>CatBoost completion-context model</h3><p>44,847 held-out passes · 64 matches · 2022 World Cup</p><div class="research-metrics"><div><strong>0.7286</strong><span>ROC AUC</span></div><div><strong>0.2263</strong><span>Log loss</span></div><div><strong>0.93%</strong><span>Improvement vs logistic</span></div></div><p>The minimum improvement gate was 2%. This model did not pass and cannot compare alternative receivers. The board uses timing calculations and heuristic rankings, not completion probabilities.</p><p>Next research requires intended-target spatial data, a fresh holdout, calibration and evaluation against the app’s inputs.</p></div>';
   layout.append(report);
   const views={
+    home:['WELCOME','RIPPLE','Explore the next pass.',[]],
     outlook:['MATCH SCENARIOS','Match outlook','Explore the result under explicit assumptions.',[matchPanel]],
     analysis:['THE NEXT MOVE','Tactics board','Shape the play. Compare the options.',[boardSection,aside,$('route-evidence'),$('compare-pass')]],
     replay:['READ THE GAME','Match replay','Choose your pass before the synthetic outcome is revealed.',[replayPanel,boardSection,aside]],
@@ -53,6 +55,7 @@
   function showView(name,focus=false){
     if(!views[name])name='analysis';
     if(name!=='replay'&&replayTimer)stopReplay();
+    if(focus && location.protocol!=='file:'){const hash=name==='home'?'#welcome':name==='analysis'?'#studio':'#'+name;if(location.hash!==hash)window.history.pushState(null,'',hash);}
     currentView=name;$('workspaceSelect').value=name;const journey=journeys[name];$('workflowSteps').textContent=journey[0];$('workflowLimit').textContent=journey[1];$('workflowNext').textContent=journey[3];const [eyebrow,title,description,panels]=views[name];
     for(const panel of layout.children)panel.hidden=!panels.includes(panel);
     replayPanel.style.order='-1';
@@ -68,13 +71,14 @@
   $('workspaceSelect').onchange=()=>showView($('workspaceSelect').value,true);
   $('workflowNext').onclick=()=>showView(journeys[currentView][2],true);
   starters.onclick=e=>{const b=e.target.closest('[data-start-view]');if(b)showView(b.dataset.startView,true);};
-  const destinations={'tactics':'analysis','player-settings':'analysis','pass-options':'analysis','movement-settings':'analysis','route-evidence':'insights','explanations':'insights','compare-pass':'insights','match-replay':'replay','snapshot-import':'snapshot','report-studio':'report'};
+  const destinations={'welcome':'home','studio':'analysis','snapshot':'snapshot','insights':'insights','outlook':'outlook','replay':'replay','report':'report','tactics':'analysis','player-settings':'analysis','pass-options':'analysis','movement-settings':'analysis','route-evidence':'insights','explanations':'insights','compare-pass':'insights','match-replay':'replay','snapshot-import':'snapshot','report-studio':'report'};
   rail.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)showView(b.dataset.view,true);});
   document.addEventListener('click',e=>{
     const a=e.target.closest('a[href^="#"]');if(!a)return;
     const dest=destinations[a.hash.slice(1)];if(dest)showView(dest);
   });
   window.addEventListener('hashchange',()=>{const dest=destinations[location.hash.slice(1)];if(dest)showView(dest);});
+  window.addEventListener('popstate',()=>showView(destinations[location.hash.slice(1)]||(location.hash.startsWith('#board=')?'analysis':'home')));
   const contextActions=document.createElement('div');contextActions.className='toolbar context-actions';
   contextActions.innerHTML='<button id="openInsights" class="primary">Explain selected pass ↗</button><button id="openReport">Export report ↗</button>';
   $('pass-options').append(contextActions);
@@ -187,7 +191,7 @@
   $('downloadPitch').onclick=()=>{download(pitchSVG(),'image/svg+xml','ripple-pitch.svg');$('reportStatus').textContent='Pitch SVG downloaded.';};
   // Small explicit surface for verification and other UI modules.
   window.RippleWorkspace={showView,flush,reportHTML,pitchSVG,get view(){return currentView;}};
-  controls();showView(destinations[location.hash.slice(1)]||'analysis');
+  controls();showView(destinations[location.hash.slice(1)]||(location.hash.startsWith('#board=')?'analysis':'home'));
 })();
 
 // Presentation runs on a frozen copy, never on the editable board.

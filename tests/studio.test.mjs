@@ -264,6 +264,7 @@ test('mapping assistance detects close players, skips ball overlap and supports 
 test('expanded pitch restores focus, zooms and retains one touch target per player',()=>{
   const {$,dom,context}=loadUI();
   try{
+    $('enterStudio').click();
     $('focusPitch').focus();$('focusPitch').click();assert.equal($('tactics').getAttribute('aria-modal'),'true');
     $('pitchZoom').value='2';$('pitchZoom').dispatchEvent(new dom.window.Event('change'));assert.equal($('pitch').style.width,'max(200%, 1440px)');
     vm.runInContext('render();render()',context);assert.equal($('pitch').querySelectorAll('.touch-target').length,22);
@@ -320,6 +321,7 @@ test('reports contain portable pitch and model evidence, including empty possess
 test('language switch translates workspace and dynamic cards without changing model state',()=>{
   const {$,dom,context}=loadUI();
   try{
+    $('enterStudio').click();
     const before=vm.runInContext('JSON.stringify(state)',context);
     $('appLanguage').value='ms';$('appLanguage').dispatchEvent(new dom.window.Event('change'));
     assert.equal($('viewTitle').textContent,'Papan taktikal');
@@ -574,10 +576,51 @@ test('editorial illustration and entry points preserve analytical state',()=>{
     $('toggleLane').click();assert.equal($('toggleLane').getAttribute('aria-pressed'),'false');
     $('heroScreenshot').click();assert.equal(dom.window.document.body.dataset.view,'snapshot');
     dom.window.document.querySelector('[data-explore="outlook"]').click();assert.equal(dom.window.document.body.dataset.view,'outlook');
-    dom.window.document.querySelector('.brand').click();assert.equal(dom.window.document.body.dataset.view,'analysis');
+    dom.window.document.querySelector('.brand').click();assert.equal(dom.window.document.body.dataset.view,'home');
     $('enterStudio').click();assert.equal(dom.window.document.body.dataset.view,'analysis');
     assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
     assert.equal(dom.window.document.querySelector('.workspace-workflow details').open,false);
     assert.deepEqual(errors,[]);
   }finally{dom.window.close();}
+});
+
+
+test('landing routes and saved-board entry restore named boards after reload',()=>{
+  const first=loadUI({storage:true});let stored,saved;
+  try{
+    const {$,dom,context}=first;
+    assert.equal(dom.window.RippleWorkspace.view,'home');
+    $('enterStudio').click();assert.equal(dom.window.location.hash,'#studio');
+    $('quickSave').click();assert.equal(dom.window.document.querySelector('.playbook-library').open,true);
+    assert.equal(dom.window.document.activeElement.id,'scenarioName');
+    vm.runInContext('state.players[0].x=12.5;render()',context);
+    $('scenarioName').value='Saved retrieval check';$('saveScenario').click();
+    saved=vm.runInContext('JSON.stringify(state)',context);stored=dom.window.localStorage.getItem('ripple.library.v1');
+    dom.window.document.querySelector('.brand').click();assert.equal(dom.window.location.hash,'#welcome');
+    assert.equal(dom.window.RippleWorkspace.view,'home');
+  }finally{first.dom.window.close();}
+  const second=loadUI({storage:true,library:stored});
+  try{
+    const {$,dom,context}=second;
+    $('homeSaved').click();assert.equal(dom.window.RippleWorkspace.view,'analysis');
+    assert.match($('scenarioList').textContent,/Saved retrieval check/);
+    $('loadScenario').click();assert.equal(vm.runInContext('JSON.stringify(state)',context),saved);
+    assert.match($('libraryStatus').textContent,/Scenario loaded/);
+    assert.deepEqual(second.errors,[]);
+  }finally{second.dom.window.close();}
+  const linked=loadUI({url:'https://ripple.test/#studio'});
+  try{assert.equal(linked.dom.window.RippleWorkspace.view,'analysis');}finally{linked.dom.window.close();}
+});
+
+
+test('saved-board library restores earlier JSON backups and rejects malformed files',async()=>{
+ const {$,dom,context}=loadUI({storage:true});try{
+  $('homeSaved').click();
+  const payload={schemaVersion:1,kind:'pass-detective-board',state:initial()};payload.state.players[0].x=18;
+  await $('restoreBoardBackup').onchange({target:{files:[{size:100,text:async()=>JSON.stringify(payload)}],value:'board.json'}});
+  assert.equal(vm.runInContext('state.players[0].x',context),18);assert.match($('libraryStatus').textContent,/restored/);
+  const before=vm.runInContext('JSON.stringify(state)',context);
+  await $('restoreBoardBackup').onchange({target:{files:[{size:5,text:async()=>'{bad'}],value:'bad.json'}});
+  assert.match($('libraryStatus').textContent,/not loaded/);assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+ }finally{dom.window.close();}
 });
