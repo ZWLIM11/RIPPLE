@@ -79,3 +79,23 @@ test('score guidance follows analysed side, preserves manual intent and handles 
  assert.notEqual(M.guidance({...base,minute:90,stoppage:5},'auto').title,'Full time');
  assert.throws(()=>M.guidance(base,'unknown'));
 });
+
+
+test('action outcome mixtures normalize, conserve changes and respect analysed side',()=>{
+ const p={success:.72,creation:.32,goal:.18,counter:.08,seconds:15};
+ for(const kind of ['pass','shot','keep'])for(const side of ['home','away'])for(const minute of [0,80,89.75]){
+  const s={...base,side,minute},r=M.scenario(s,kind,p);
+  assert.ok(Math.abs(Object.values(r.expectedOutcomes).reduce((a,b)=>a+b,0)-1)<1e-12);
+  assert.ok(Math.abs(Object.values(r.changes).reduce((a,b)=>a+b,0))<1e-12);
+  for(const k of ['win','draw','loss']){
+   assert.ok(r.expectedOutcomes[k]>=0&&r.expectedOutcomes[k]<=1);
+   assert.ok(Math.abs(r.expectedOutcomes[k]-r.branches.reduce((sum,b)=>sum+b.probability*b[k],0))<1e-12);
+   assert.equal(r.changes[k],r.expectedOutcomes[k]-M.outcome(s)[k]);
+  }
+  assert.equal(r.expected,r.expectedOutcomes.win);assert.equal(r.wpa,r.changes.win);
+ }
+ const end={...base,minute:89.75};
+ assert.equal(M.scenario(end,'shot',{...p,goal:1}).expectedOutcomes.win,1);
+ assert.equal(M.scenario(end,'shot',{...p,goal:0,counter:1}).expectedOutcomes.loss,1);
+ assert.equal(M.scenario(end,'keep',{...p,success:1}).expectedOutcomes.draw,1);
+});

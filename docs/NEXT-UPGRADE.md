@@ -182,3 +182,7 @@ Opt-in score-aware guidance is implemented: automatic score context, manual inte
 ## Visual decision-flip update — 26 October 2026
 
 Preview / Apply / Undo is implemented and checked at phone width. The preview displays both routes and the hypothetical defender displacement, without changing the live board until Apply. 68 app tests and Cloudflare dry run passed. Next: complete win/draw/loss action comparison, then presentation mode. Prediction validation remains separate.
+
+## Full outcome comparison — 26 October 2026
+
+Pass, shoot and keep-possession calculations now show win/draw/loss and percentage-point changes against baseline, with captured per-action assumptions in responsive cards. 70 tests, Cloudflare dry run and phone-width checks passed. Richer event branches remain research work. Next product priority: presentation mode for a guided, reversible demonstration.

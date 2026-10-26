@@ -77,3 +77,9 @@ The retention input is separate from passing completion. Irrelevant shot fields 
 Optional tactical intention defaults to off. Follow the score selects protect the lead, find a winning goal or chase an equaliser from the analysed team perspective. Manual intentions remain selected and flag a mismatch with the score. Guidance explains tradeoffs and time remaining; full time suppresses next-action advice. The final-15-minute reminder is a presentation rule, not a learned threshold. Guidance never changes action rankings, probabilities, objectives or feasibility. Save/load and JSON exports preserve the choice; older files default to off.
 
 Verification: 66 app tests and the Cloudflare dry run passed. A 390px browser viewport showed readable controls and no page-wide overflow. This is responsive testing, not physical-device testing.
+
+## Complete outcome comparison
+
+Every branch now carries win, draw and loss probabilities. Each action mixes all three using branch weights; the resulting distribution sums to one, and changes versus the same pre-action baseline sum to zero. Existing expected/wpa fields retain their win-only meaning for compatibility. Displayed distributions round to 100%; percentage-point changes use unrounded values, so minor displayed rounding differences are expected.
+
+Calculated action cards retain the assumptions used for each action and show the same baseline and action window. Changing a selected action assumption removes its old card; changing the window, match context or board clears all cards. Cards are session-only: existing save/export preserves the selected scenario inputs and recalculates on request, not a saved collection of comparisons. Model limitations and experimental status remain unchanged.

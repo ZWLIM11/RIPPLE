@@ -16,7 +16,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   <section class="share-board" aria-label="Experimental tactical guidance"><div class="eyebrow">OPTIONAL · EXPERIMENTAL GUIDANCE</div><h3>What are you playing for?</h3><label for="wpIntent">Tactical intention</label><select id="wpIntent"><option value="off">Off · explore without guidance</option><option value="auto">Follow the score</option><option value="protect">Protect the lead</option><option value="win">Find a winning goal</option><option value="equalise">Chase an equaliser</option></select><div id="wpGuidance" role="status"></div><p class="fine">This guide explains tradeoffs. It does not change your passing objective, rank actions, adjust probabilities or make rejected passes feasible. Compare actions below using your own assumptions.</p></section>
   <h3>2. Compare board actions</h3><p id="wpBoardNote"></p><p>Shot opportunity is a geometry heuristic out of 100, not xG. It uses distance, goal angle, nearby defenders and straight-line blockers. Receiving positions hold defenders stationary; they do not forecast a future frame.</p>
   <div class="scroll"><table><thead><tr><th>Action</th><th>Pass heuristic</th><th>Shot opportunity</th><th>Distance / angle</th><th>Scenario impact</th><th>Explore</th></tr></thead><tbody id="wpActions"></tbody></table></div>
-  <h3>3. Explore an action’s possible outcomes</h3><p id="wpSelected">Choose an action above.</p>
+  <section aria-label="Calculated action comparisons"><h3>Your calculated comparisons</h3><p>Explore an action, enter assumptions, then calculate. Each card keeps the assumptions used for that calculation. Compare the same time window; these are illustrative scenarios, not an automatic best-action recommendation.</p><div id="wpComparisons" class="outcome-comparisons" aria-live="polite"></div></section><h3>3. Explore an action’s possible outcomes</h3><p id="wpSelected">Choose an action above.</p>
   <p>Enter your own hypothetical probabilities. They are not inferred from the heuristic scores. The same inputs can produce the same impact for different actions. Change them only when your scenario assumptions differ.</p>
   <div class="outcome-grid">
   ${field('wpRetention','Possession retained · assumed %',80,0,100)}${field('wpSuccess','Pass completes · assumed %',75,0,100)}${field('wpCreation','Shot created after completion · assumed %',30,0,100)}${field('wpGoal','Shot scores if taken · assumed %',10,0,100)}${field('wpCounter','Opponent goal after failure / turnover · assumed %',5,0,100)}${field('wpWindow','Action + counter window · seconds',15,1,120)}
@@ -31,7 +31,25 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   const num=id=>{const el=$(id);if(el.value===''||!el.checkValidity())throw Error(`Check ${el.parentElement.textContent.trim()}.`);return Number(el.value);};
   const context=()=>({homeScore:num('wpHomeScore'),awayScore:num('wpAwayScore'),minute:num('wpMinute'),stoppage:num('wpStoppage'),homeRate:num('wpHomeRate'),awayRate:num('wpAwayRate'),side:$('wpSide').value});
   const pct=n=>(100*n).toFixed(1)+'%', pp=n=>(n>=0?'+':'')+(100*n).toFixed(2)+' pp';
-  function clearScenario(){scenarios.clear();$('wpScenario').replaceChildren();$('motionPlot')?.replaceChildren();if($('motionResult'))$('motionResult').textContent='State changed. Plot again.';}
+  function clearScenario(){scenarios.clear();$('wpComparisons').replaceChildren();$('wpScenario').replaceChildren();$('motionPlot')?.replaceChildren();if($('motionResult'))$('motionResult').textContent='State changed. Plot again.';}
+  function assumptions(a,p){
+    const parts=a.kind==='keep'?[`Retention ${pct(p.success)}`, 'No own-team shot']:a.kind==='shot'?[`Shot scoring ${pct(p.goal)}`]:[`Completion ${pct(p.success)}`,`Shot creation after completion ${pct(p.creation)}`,`Shot scoring ${pct(p.goal)}`];
+    parts.push(`Opponent goal after ${a.kind==='keep'?'turnover':a.kind==='shot'?'miss':'failed pass'} ${pct(p.counter)}`,`Window ${p.seconds}s`);
+    return parts.join(' · ');
+  }
+  function comparisons(){
+    const box=$('wpComparisons');box.replaceChildren();
+    for(const a of actions){const saved=scenarios.get(a.key);if(!saved)continue;
+      const card=document.createElement('article');card.className='outcome-card';
+      const title=document.createElement('h4');title.textContent=a.label;card.append(title);
+      const values=OutcomeModel.percentages(saved.expectedOutcomes),baseline=OutcomeModel.percentages(saved.baselineOutcomes);
+      const list=document.createElement('dl');
+      ['win','draw','loss'].forEach((key,i)=>{const row=document.createElement('div'),term=document.createElement('dt'),value=document.createElement('dd');term.textContent=key[0].toUpperCase()+key.slice(1);value.textContent=`${values[i].toFixed(1)}% · ${pp(saved.changes[key])} vs baseline ${baseline[i].toFixed(1)}%`;row.append(term,value);list.append(row);});
+      const note=document.createElement('p');note.className='fine';note.textContent='Assumptions used: '+assumptions(a,saved.assumptions);
+      card.append(list,note);box.append(card);
+    }
+    if(!box.children.length)box.textContent='No calculated actions yet. Choose Explore in the actions table, then calculate.';
+  }
   function draw(){
     $('wpGuidance').replaceChildren();$('wpError').textContent='';$('wpDashboard').replaceChildren();$('wpActions').replaceChildren();
     try{
@@ -61,7 +79,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
         for(const value of [a.label,a.pass===null?'—':a.pass.toFixed(0)+' / 100',a.shot?a.shot.score.toFixed(0)+' / 100':'—',a.shot?`${a.shot.distance.toFixed(1)} m / ${a.shot.angleDegrees.toFixed(1)}°`:'No assumed shot',saved?pp(saved.wpa)+' · illustrative':'Not estimated']){const td=document.createElement('td');td.textContent=value;tr.append(td);}
         const td=document.createElement('td'),b=document.createElement('button');b.textContent='Explore';b.setAttribute('aria-label','Explore '+a.label);b.onclick=()=>{selected=a.key;selection();};td.append(b);tr.append(td);$('wpActions').append(tr);
       }
-      selection();
+      comparisons();selection();
     }catch(e){$('wpError').textContent=e.message;actions=[];selected=null;$('wpEvaluate').disabled=true;clearScenario();}
   }
   function selection(){
@@ -84,9 +102,9 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
       const a=actions.find(a=>a.key===selected);if(!a)throw Error('Choose a current action first.');
       const p={success:a.kind==='keep'?num('wpRetention')/100:a.kind==='shot'?1:num('wpSuccess')/100,creation:a.kind==='keep'?0:a.kind==='shot'?1:num('wpCreation')/100,goal:a.kind==='keep'?0:num('wpGoal')/100,counter:num('wpCounter')/100,seconds:num('wpWindow')};
       if(p.seconds<a.seconds)throw Error('Action window must include the pass preparation and flight time.');
-      const r=OutcomeModel.scenario(context(),a.kind,p);scenarios.set(a.key,r);draw();
-      const summary=document.createElement('p');summary.textContent=`Illustrative ${a.label}: immediate goal ${pct(r.immediateGoal)}; expected win ${pct(r.expected)} versus baseline ${pct(r.baseline)}; change ${pp(r.wpa)} (percentage points). User assumptions: ${a.kind==='keep'?'retention':'completion'} ${pct(p.success)}, shot creation ${pct(p.creation)}, shot scoring ${pct(p.goal)}, counter goal after failure ${pct(p.counter)}; window ${p.seconds}s.`;
-      const list=document.createElement('ul');for(const b of r.branches){const li=document.createElement('li');li.textContent=`${b.label}: ${pct(b.probability)} branch weight; ${pct(b.win)} win probability afterwards.`;list.append(li);}
+      const r=OutcomeModel.scenario(context(),a.kind,p);scenarios.set(a.key,{...r,assumptions:{...p}});draw();
+      const summary=document.createElement('p');summary.textContent=`Illustrative ${a.label}: immediate goal ${pct(r.immediateGoal)}. Expected win ${pct(r.expectedOutcomes.win)}, draw ${pct(r.expectedOutcomes.draw)}, loss ${pct(r.expectedOutcomes.loss)}. Changes versus baseline: win ${pp(r.changes.win)}, draw ${pp(r.changes.draw)}, loss ${pp(r.changes.loss)} (percentage points). User assumptions: ${assumptions(a,p)}.`;
+      const list=document.createElement('ul');for(const b of r.branches){const li=document.createElement('li');li.textContent=`${b.label}: ${pct(b.probability)} branch weight; win ${pct(b.win)}, draw ${pct(b.draw)}, loss ${pct(b.loss)} afterwards.`;list.append(li);}
       $('wpScenario').append(summary,list);
     }catch(e){$('wpScenario').textContent=e.message;}
   };

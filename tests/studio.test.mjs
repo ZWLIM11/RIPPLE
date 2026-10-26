@@ -452,7 +452,7 @@ test('keep possession restores assumptions and supports older saved scenarios',(
  const {$,dom}=loadUI({storage:true});try{
   const choose=()=>[...$('wpActions').querySelectorAll('button')].find(b=>b.getAttribute('aria-label').includes('Keep possession')).click();
   choose();assert.equal($('wpGoal').disabled,true);assert.equal($('motionRun').disabled,true);
-  $('wpRetention').value='92';$('wpEvaluate').click();assert.match($('wpScenario').textContent,/retention 92.0%/);
+  $('wpRetention').value='92';$('wpEvaluate').click();assert.match($('wpScenario').textContent,/retention 92.0%/i);
   $('wpSaveSession').click();const saved=JSON.parse(dom.window.localStorage.getItem('ripple.match.v1'));
   $('wpRetention').value='20';$('wpLoadSession').click();assert.equal($('wpRetention').value,'92');$('wpEvaluate').click();assert.match($('wpScenario').textContent,/Possession retained/);
   delete saved.fields.wpRetention;dom.window.localStorage.setItem('ripple.match.v1',JSON.stringify(saved));$('wpLoadSession').click();assert.equal($('wpRetention').value,'80');
@@ -501,5 +501,24 @@ test('flip preview invalidates on board edits and replay and cannot apply stale 
   assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
   vm.runInContext('replayActive=true;render()',context);$('findDecisionFlip').click();
   assert.match($('decisionFlipResult').textContent,/Exit replay/);assert.equal($('previewDecisionFlip').disabled,true);
+ }finally{dom.window.close();}
+});
+
+
+test('outcome cards retain per-action assumptions and clear on shared context changes',()=>{
+ const {$,dom}=loadUI();try{
+  const choose=text=>[...$('wpActions').querySelectorAll('button')].find(b=>b.getAttribute('aria-label').includes(text)).click();
+  choose('Pass to');$('wpSuccess').value='81';$('wpEvaluate').click();
+  choose('Keep possession');$('wpRetention').value='93';$('wpEvaluate').click();
+  choose('Direct shot');$('wpGoal').value='25';$('wpEvaluate').click();
+  const cards=[...$('wpComparisons').querySelectorAll('article')];assert.equal(cards.length,3);
+  assert.match(cards[0].textContent,/Completion 81.0%/);assert.match(cards[1].textContent,/Retention 93.0%/);assert.match(cards[2].textContent,/Shot scoring 25.0%/);
+  for(const card of cards){assert.equal(card.querySelectorAll('dt').length,3);assert.match(card.textContent,/vs baseline/);}
+  $('wpGoal').value='30';$('wpGoal').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+  assert.equal($('wpComparisons').querySelectorAll('article').length,2);
+  $('wpWindow').value='20';$('wpWindow').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+  assert.equal($('wpComparisons').querySelectorAll('article').length,0);
+  choose('Keep possession');$('wpEvaluate').click();$('wpHomeScore').value='2';$('wpHomeScore').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+  assert.equal($('wpComparisons').querySelectorAll('article').length,0);
  }finally{dom.window.close();}
 });

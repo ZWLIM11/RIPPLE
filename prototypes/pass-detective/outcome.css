@@ -3,3 +3,5 @@
 .outcome-grid label[hidden]{display:none}
 
 #wpIntent{display:block;width:100%;max-width:440px;min-height:44px;margin:10px 0;padding:10px;border:1px solid #cbd8cf;border-radius:9px;background:#fff;color:#173e31;font:inherit}#wpGuidance h4{margin-bottom:8px}
+
+.outcome-comparisons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:20px 0}.outcome-card{min-width:0;padding:18px;border:1px solid #cbd8cf;border-radius:14px;background:#f2f7f3;overflow-wrap:anywhere}.outcome-card h4{margin:0 0 16px}.outcome-card dl{margin:0}.outcome-card dl>div{padding:10px 0;border-bottom:1px solid #dce6df}.outcome-card dt{font-weight:700}.outcome-card dd{margin:5px 0 0;line-height:1.6}.outcome-card .fine{line-height:1.7}

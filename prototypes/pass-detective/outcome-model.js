@@ -65,12 +65,15 @@ const OutcomeModel=(()=>{
         {label:'Failed pass, no counter goal',probability:failure*(1-p.counter),delta:0}]:[]),
       {label:'Failure followed by counter goal',probability:failure*p.counter,delta:-1}
     ];
-    let expected=0;
+    const expectedOutcomes={win:0,draw:0,loss:0};
     for(const b of branches){const next={...after};if(b.delta===1)next[scoring]++;if(b.delta===-1)next[conceding]++;
       // Internal branch scores may exceed the input score cap by one.
       if(next.homeScore>50||next.awayScore>50)throw Error('Scenario score exceeds supported range.');
-      b.win=outcome(next).win;expected+=b.probability*b.win;}
-    return {baseline:base.win,expected,wpa:expected-base.win,immediateGoal:own,branches};
+      const o=outcome(next);
+      for(const key of ['win','draw','loss']){b[key]=o[key];expectedOutcomes[key]+=b.probability*o[key];}
+    }
+    const changes=Object.fromEntries(['win','draw','loss'].map(k=>[k,expectedOutcomes[k]-base[k]]));
+    return {baseline:base.win,expected:expectedOutcomes.win,wpa:changes.win,baselineOutcomes:base,expectedOutcomes,changes,immediateGoal:own,branches};
   }
   function guidance(s,mode='off'){
     validate(s);
