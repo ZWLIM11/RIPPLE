@@ -559,3 +559,21 @@ test('demo handles unavailable routes, full time, invalid context and replay',()
   vm.runInContext('replayActive=true',context);$('startDemo').click();assert.match($('startDemo').textContent,/Exit replay/);
  }finally{dom.window.close();}
 });
+
+
+test('editorial illustration and entry points preserve analytical state',()=>{
+  const {$,dom,context,errors}=loadUI({storage:true});
+  try{
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    $('toggleLane').click();assert.equal($('toggleLane').getAttribute('aria-pressed'),'true');
+    assert.match($('laneCaption').textContent,/One defender/);
+    $('toggleLane').click();assert.equal($('toggleLane').getAttribute('aria-pressed'),'false');
+    $('heroScreenshot').click();assert.equal(dom.window.document.body.dataset.view,'snapshot');
+    dom.window.document.querySelector('[data-explore="outlook"]').click();assert.equal(dom.window.document.body.dataset.view,'outlook');
+    dom.window.document.querySelector('.brand').click();assert.equal(dom.window.document.body.dataset.view,'analysis');
+    $('enterStudio').click();assert.equal(dom.window.document.body.dataset.view,'analysis');
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    assert.equal(dom.window.document.querySelector('.workspace-workflow details').open,false);
+    assert.deepEqual(errors,[]);
+  }finally{dom.window.close();}
+});

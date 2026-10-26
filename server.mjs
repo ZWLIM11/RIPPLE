@@ -8,7 +8,7 @@ try{process.loadEnvFile(fileURLToPath(new URL('.env',import.meta.url)));}catch{}
 const config={url:process.env.FOUNDRY_CHAT_URL,key:process.env.FOUNDRY_API_KEY,deployment:process.env.FOUNDRY_DEPLOYMENT,vision:process.env.FOUNDRY_VISION_DEPLOYMENT};
 const root=resolve(fileURLToPath(new URL('./prototypes/pass-detective/',import.meta.url)));
 const json=(res,status,body)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8'};
+const mime={'.svg':'image/svg+xml','.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8'};
 let busy=false;
 http.createServer(async(req,res)=>{
   try{
