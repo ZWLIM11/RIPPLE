@@ -536,3 +536,26 @@ test('workspace entry points and mobile selector preserve the working board',()=
   assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
  }finally{dom.window.close();}
 });
+
+
+test('guided demo walks five steps and restarts without modifying working state',()=>{
+ const {$,dom,context,errors}=loadUI();try{
+  const before=vm.runInContext('JSON.stringify(state)',context);
+  $('startDemo').click();assert.equal($('guidedDemo').open,true);assert.equal($('demoBack').disabled,true);
+  for(let i=0;i<4;i++)$('demoNext').click();
+  assert.match($('demoProgress').textContent,/5 of 5/);assert.match($('demoEvidence').textContent,/Example assumptions/);assert.match($('demoEvidence').textContent,/Keep possession/);
+  assert.equal($('demoNext').disabled,true);$('demoBack').click();assert.match($('demoProgress').textContent,/4 of 5/);
+  $('demoRestart').click();assert.match($('demoProgress').textContent,/1 of 5/);
+  $('demoExit').click();assert.equal($('guidedDemo').open,false);
+  assert.equal(vm.runInContext('JSON.stringify(state)',context),before);assert.deepEqual(errors,[]);
+ }finally{dom.window.close();}
+});
+test('demo handles unavailable routes, full time, invalid context and replay',()=>{
+ const {$,dom,context}=loadUI();try{
+  vm.runInContext('state.owner=null;render()',context);$('wpMinute').value='90';$('startDemo').click();
+  $('demoNext').click();assert.match($('demoCopy').textContent,/No viable pass/);
+  for(let i=0;i<3;i++)$('demoNext').click();assert.match($('demoEvidence').textContent,/Not enough match time/);$('demoExit').click();
+  $('wpMinute').value='';$('startDemo').click();assert.equal($('guidedDemo').open,false);
+  vm.runInContext('replayActive=true',context);$('startDemo').click();assert.match($('startDemo').textContent,/Exit replay/);
+ }finally{dom.window.close();}
+});

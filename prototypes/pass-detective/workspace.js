@@ -189,3 +189,55 @@
   window.RippleWorkspace={showView,flush,reportHTML,pitchSVG,get view(){return currentView;}};
   controls();showView(destinations[location.hash.slice(1)]||'analysis');
 })();
+
+// Presentation runs on a frozen copy, never on the editable board.
+(()=>{
+ const start=document.createElement('button');start.id='startDemo';start.textContent='Start guided demo →';start.className='primary';document.querySelector('.workspace-actions').append(start);
+ const dialog=document.createElement('dialog');dialog.id='guidedDemo';dialog.className='guided-demo';dialog.setAttribute('aria-labelledby','demoTitle');
+ dialog.innerHTML='<div class="toolbar"><span class="eyebrow">GUIDED DEMO · EXPERIMENTAL</span><button id="demoExit">Exit demo</button></div><p id="demoContext" class="fine"></p><p id="demoProgress" role="status"></p><h2 id="demoTitle" tabindex="-1"></h2><p id="demoCopy"></p><div id="demoPitch"></div><div id="demoEvidence"></div><div class="toolbar demo-navigation"><button id="demoBack">← Back</button><button id="demoRestart">Restart</button><button id="demoNext" class="primary">Next →</button></div>';
+ document.body.append(dialog);
+ let board=null,changed=null,flip=null,step=0,context=null,returnFocus=null;
+ const best=s=>PassingModel.candidates(s).map(c=>PassingModel.evaluate(s,c)).filter(c=>c.viable).sort((a,b)=>b.score-a.score)[0];
+ const name=id=>id?MatchIntelligence.name(id):'No viable receiver';
+ function pitch(s,route){
+  const box=$('demoPitch');box.replaceChildren();const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','-2 -2 109 72');svg.setAttribute('role','img');svg.setAttribute('aria-label','Demo pitch: '+(route?'leading route to '+name(route.receiver):'no viable route'));box.append(svg);
+  const add=(tag,attrs,text)=>{const e=document.createElementNS(svg.namespaceURI,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text)e.textContent=text;svg.append(e);};
+  add('rect',{x:0,y:0,width:105,height:68,fill:'#155144',stroke:'#cbd8cf','stroke-width':.3});add('path',{d:'M52.5 0V68 M0 14H16.5V54H0 M105 14H88.5V54H105',fill:'none',stroke:'#cbd8cf','stroke-width':.3});
+  if(route)add('line',{x1:s.ball.x,y1:s.ball.y,x2:route.target.x,y2:route.target.y,stroke:'#d9fa83','stroke-width':.8});
+  for(const p of s.players){add('circle',{cx:p.x,cy:p.y,r:1.6,fill:p.team==='blue'?'#398bff':'#f07867',stroke:p.id===s.owner?'#d9fa83':'white','stroke-width':.3});add('text',{x:p.x,y:p.y+.6,'text-anchor':'middle',fill:'white','font-size':1.7},String(p.number));}
+  add('circle',{cx:s.ball.x,cy:s.ball.y,r:.6,fill:'white'});
+  if(step>=2&&flip){add('circle',{cx:flip.from.x,cy:flip.from.y,r:2.3,fill:'none',stroke:'white','stroke-dasharray':'.7 .5','stroke-width':.4});add('line',{x1:flip.from.x,y1:flip.from.y,x2:flip.to.x,y2:flip.to.y,stroke:'white','stroke-width':.6});}
+ }
+ function show(){
+  const original=best(board),next=best(changed),active=step>=2?changed:board,route=step>=2?next:original;
+  $('demoProgress').textContent=`Step ${step+1} of 5`;
+  $('demoContext').textContent=`Snapshot of your board · ${context.homeScore}–${context.awayScore}, ${context.minute} minutes · analysed side: ${context.side} · objective: ${board.objective==='safe'?'Keep possession':'Progress the attack'}. Demo never edits your board.`;
+  $('demoTitle').textContent=['Read the situation','Understand the leading pass','Test a defender movement','See what changed','Explore match impact'][step];
+  const copies=[`${name(board.owner)} has possession. The highlighted route leads under the current objective and movement assumptions.`,original?`${name(original.receiver)} leads with a heuristic score of ${original.score.toFixed(0)}/100. This is a ranking, not a completion percentage.`:'No viable pass is available under these assumptions. The demo will not invent a recommendation.',flip?`Hypothetical change: move ${name(flip.defender)} ${flip.moved.toFixed(1)} m toward the original route. The hollow marker shows the original position; the white line shows displacement.`:'No receiver change was found in the bounded search. No defender is moved; other movements could produce a different result.',flip?`${name(original?.receiver)} → ${name(next?.receiver)}. Only one defender position changed. Re-evaluating interception and control timing changes the heuristic ranking; this does not prove an actual pass would fail.`:'The leading receiver stays unchanged within this limited search. That is a valid result, not proof that the route is robust to every movement.','Compare hypothetical actions over the same window. These probabilities come from explicit assumptions, not the passing scores. They do not select a validated best action.'];
+  $('demoCopy').textContent=copies[step];pitch(active,route);$('demoEvidence').replaceChildren();
+  if(step===1&&original){const p=document.createElement('p');p.textContent=`Interception margin ${original.routeMargin.toFixed(2)} s · Control margin ${original.controlMargin.toFixed(2)} s · Preparation + flight ${original.total.toFixed(2)} s. Positive margins mean estimated time to spare; all movement inputs are assumptions.`;$('demoEvidence').append(p);}
+  if(step===4){
+   const remaining=(90+context.stoppage-context.minute)*60,seconds=Math.max(15,Math.ceil(route?.total||0));
+   if(remaining<seconds){$('demoEvidence').textContent='Not enough match time remains for this action window. Change the match context outside the demo to explore another scenario.';}
+   else {const p=document.createElement('p');p.textContent=`Example assumptions: pass completes 75%; shot created after completion 30%; shot scores 10%; possession retained 80%; opponent goal after failure 5%; window ${seconds}s. Future goal rates: home ${context.homeRate}, away ${context.awayRate} per 90. These are demo assumptions.`;$('demoEvidence').append(p);
+    const owner=active.players.find(p=>p.id===active.owner);
+    if(!owner||owner.team!==$('wpTeam').value){const note=document.createElement('p');note.textContent='Match outlook analysed team must match the passer before comparing actions.';$('demoEvidence').append(note);}
+    else for(const kind of ['pass','shot','keep']){if(kind==='pass'&&!route)continue;const r=OutcomeModel.scenario(context,kind,{success:kind==='keep'?.8:.75,creation:.3,goal:.1,counter:.05,seconds});const values=OutcomeModel.percentages(r.expectedOutcomes),row=document.createElement('p');row.textContent=`${kind==='pass'?'Pass to '+name(route.receiver):kind==='shot'?'Direct shot':'Keep possession'}: Win ${values[0]}% · Draw ${values[1]}% · Loss ${values[2]}%. Win change ${(r.wpa*100).toFixed(2)} percentage points.`;$('demoEvidence').append(row);}
+   }
+  }
+  $('demoBack').disabled=step===0;$('demoNext').disabled=step===4;$('demoTitle').focus();dialog.scrollTop=0;
+ }
+ start.onclick=()=>{
+  if(replayActive){start.textContent='Exit replay before starting demo';return;}
+  try{
+   for(const id of ['wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpHomeRate','wpAwayRate'])if(!$(id).value||!$(id).checkValidity())throw Error('Invalid match context');
+   context={homeScore:Number($('wpHomeScore').value),awayScore:Number($('wpAwayScore').value),minute:Number($('wpMinute').value),stoppage:Number($('wpStoppage').value),homeRate:Number($('wpHomeRate').value),awayRate:Number($('wpAwayRate').value),side:$('wpSide').value};OutcomeModel.validate(context);
+   board=structuredClone(state);changed=structuredClone(board);flip=null;
+   try{const found=MatchIntelligence.decisionFlip(board,PassingModel);if(found.defender){flip=found;Object.assign(changed.players.find(p=>p.id===flip.defender),flip.to);}}catch{/* No viable baseline: explicitly shown by the demo. */}
+   step=0;returnFocus=document.activeElement;start.textContent='Start guided demo →';if(dialog.showModal)dialog.showModal();else dialog.setAttribute('open','');show();
+  }catch(e){start.textContent='Review match score/time inputs before demo';}
+ };
+ const exit=()=>{if(dialog.close)dialog.close();else dialog.removeAttribute('open');returnFocus?.focus();};
+ $('demoExit').onclick=exit;dialog.addEventListener('cancel',e=>{e.preventDefault();exit();});
+ $('demoNext').onclick=()=>{if(step<4){step++;show();}};$('demoBack').onclick=()=>{if(step>0){step--;show();}};$('demoRestart').onclick=()=>{step=0;show();};
+})();

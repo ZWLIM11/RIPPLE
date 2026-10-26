@@ -190,3 +190,7 @@ Pass, shoot and keep-possession calculations now show win/draw/loss and percenta
 ## Workspace organization — 26 October 2026
 
 Added direct screenshot and match-outcome entry points, contextual next-step guides for all six workspaces, and a phone workspace selector. Navigation preserves current board state. Verified 71 app tests, Cloudflare dry run and six phone-width views without page overflow. New guidance is currently English, consistent with the existing partial localization; fuller translation remains future work.
+
+## Guided demo — 26 October 2026
+
+Start guided demo in the workspace toolbar opens a five-step walkthrough on a frozen copy of the working board: situation, leading pass, hypothetical defender move, changed recommendation, illustrative match impact. Next/Back/Restart/Exit and Escape preserve the editable board. No viable route, no flip, replay lock and insufficient time are handled explicitly. Score/time/rates come from Match outlook; action probabilities are labeled demo assumptions. 73 tests and Cloudflare dry run passed. Phone visual verification remains pending because browser use was disabled.
