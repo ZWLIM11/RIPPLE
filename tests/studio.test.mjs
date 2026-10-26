@@ -338,9 +338,13 @@ test('keyboard screenshot mapping calibrates, marks all players, applies and sup
     dom.window.HTMLCanvasElement.prototype.getContext=()=>new Proxy({}, {get:()=>()=>{}});
     vm.runInContext('snapshotImage={};',context);
     const mark=(x,y)=>{$('markerX').value=x;$('markerY').value=y;$('placeMarker').click();};
+    mark(101,0);assert.match($('snapshotStatus').textContent,/0 to 100/);
+    assert.equal(vm.runInContext('calibration.length',context),0);
     mark(0,0);mark(100,0);mark(100,100);mark(0,100);
     assert.equal($('mappingTarget').disabled,false);
-    for(let i=0;i<23;i++)mark(20+i,50);
+    for(let i=0;i<23;i++)mark(20+i+.125,50.125);
+    assert.equal($('snapshotStatus').textContent,'');
+    assert.equal(vm.runInContext('mappedPoints.get("blue-1").x',context),.20125);
     assert.equal($('applyImage').disabled,false);
     assert.equal($('markerChecklist').querySelectorAll('.marked').length,23);
     $('undoMark').click();assert.equal($('applyImage').disabled,true);

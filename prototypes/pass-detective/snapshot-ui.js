@@ -74,7 +74,7 @@ function markSnapshotPoint(p){
       const id=$('mappingTarget').value;mappingHistory.push({id,old:mappedPoints.get(id)});
       mappedPoints.set(id,p);const next=mappingIds.find(id=>!mappedPoints.has(id));if(next)$('mappingTarget').value=next;
     }
-    drawMapping();
+    drawMapping();snapshotStatus('');
   }catch(error){snapshotStatus(error.message);}
 }
 $('snapshotCanvas').onclick=e=>{
