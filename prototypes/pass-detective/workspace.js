@@ -9,6 +9,10 @@
   ].map(([id,n,name])=>`<button data-view="${id}"><span>${n}</span>${name}<b>↗</b></button>`).join('')+
     '<div class="rail-bottom"><div class="rail-ball">◎</div><strong>Every pass has a story.</strong><p>Explore the space.<br>Understand the decision.</p><span>PASS DETECTIVE / V2</span></div>';
   document.body.insertBefore(rail,main);
+  const mobileNav=document.createElement('div');mobileNav.className='mobile-workspace';
+  mobileNav.innerHTML='<label for="workspaceSelect">Workspace</label><select id="workspaceSelect" aria-label="Choose workspace">'+[...rail.querySelectorAll('button')].map(b=>`<option value="${b.dataset.view}">${b.childNodes[1].textContent}</option>`).join('')+'</select>';
+  rail.after(mobileNav);
+
   const bar=document.createElement('div');bar.className='workspace-bar';
   bar.innerHTML='<div><div class="eyebrow" id="viewEyebrow">THE NEXT MOVE</div><h1 id="viewTitle">Tactics board</h1><p id="viewDescription">Shape the play. Compare the options.</p></div><div class="workspace-actions"><label for="appLanguage">Language</label><select id="appLanguage"><option value="en">English</option><option value="ms">Bahasa Melayu</option></select><button id="undoBoard" title="Undo board edit">↶ Undo</button><button id="redoBoard" title="Redo board edit">↷ Redo</button><button id="quickSave">Save board</button></div>';
   main.prepend(bar);
@@ -18,6 +22,20 @@
   const intro=$('getting-started');
   intro.className='workspace-intro';
   intro.innerHTML='<div><span class="eyebrow">FIRST TIME HERE?</span><strong>One pass. Three ways to understand it.</strong><p>Try a scene → select a receiver → inspect the evidence.</p></div><button id="guidedStart" class="primary">Try guided example ↗</button>';
+  const starters=document.createElement('div');starters.className='workspace-starters';
+  starters.innerHTML='<button data-start-view="snapshot"><strong>Analyse a screenshot</strong><span>Map visible players and compare a passing route.</span></button><button data-start-view="outlook"><strong>Explore match outcomes</strong><span>Compare pass, shoot and keep-possession scenarios.</span></button>';
+  intro.append(starters);
+  const workflow=document.createElement('section');workflow.className='workspace-workflow';workflow.setAttribute('aria-label','Workspace guide');
+  workflow.innerHTML='<div><span class="eyebrow">YOUR NEXT STEPS</span><p id="workflowSteps"></p><span id="workflowLimit" class="fine"></span></div><button id="workflowNext"></button>';
+  draft.after(workflow);
+  const journeys={
+    analysis:['1. Choose a scene → 2. Select a passing card → 3. Read the explanation','Board edits save on this device. Scores are heuristic rankings, not success percentages.','insights','Explain this pass →'],
+    snapshot:['1. Upload or paste → 2. Calibrate pitch lines → 3. Mark visible players → 4. Analyse a route','Two teammates are enough to start. Unseen players remain unknown; results are experimental.','analysis','Open tactics board →'],
+    outlook:['1. Set score and time → 2. Explore an action → 3. Enter assumptions → 4. Calculate and compare','Win, draw and loss estimates use your assumptions. They are not validated predictions.','report','Open reports →'],
+    replay:['1. Load a synthetic match → 2. Choose a pass → 3. Reveal the outcome','Replay locks board editing. Exit replay before changing player positions.','insights','Explore pass insights →'],
+    insights:['1. Select a route → 2. Explain it → 3. Test a what-if change','Explanations describe model evidence; hypothetical routes are not observed outcomes.','report','Export your analysis →'],
+    report:['1. Review the evidence → 2. Download the report → 3. Share the file','The analysis report covers your tactical board. Match outlook has its own scenario JSON export.','analysis','Back to tactics →']
+  };
   const boardSection=$('tactics').parentElement,aside=$('pass-options').parentElement;
   const roster=$('roster').closest('.panel'),model=[...layout.children].find(p=>p.textContent.includes('How the model ranks passes'));
   const report=document.createElement('section');report.className='panel wide report-studio';report.id='report-studio';
@@ -35,7 +53,7 @@
   function showView(name,focus=false){
     if(!views[name])name='analysis';
     if(name!=='replay'&&replayTimer)stopReplay();
-    currentView=name;const [eyebrow,title,description,panels]=views[name];
+    currentView=name;$('workspaceSelect').value=name;const journey=journeys[name];$('workflowSteps').textContent=journey[0];$('workflowLimit').textContent=journey[1];$('workflowNext').textContent=journey[3];const [eyebrow,title,description,panels]=views[name];
     for(const panel of layout.children)panel.hidden=!panels.includes(panel);
     replayPanel.style.order='-1';
     studioPanel.style.order='-1';
@@ -47,6 +65,9 @@
     if(focus){$('viewTitle').tabIndex=-1;$('viewTitle').focus();}
     window.RippleLocale?.refresh();
   }
+  $('workspaceSelect').onchange=()=>showView($('workspaceSelect').value,true);
+  $('workflowNext').onclick=()=>showView(journeys[currentView][2],true);
+  starters.onclick=e=>{const b=e.target.closest('[data-start-view]');if(b)showView(b.dataset.startView,true);};
   const destinations={'tactics':'analysis','player-settings':'analysis','pass-options':'analysis','movement-settings':'analysis','route-evidence':'insights','explanations':'insights','compare-pass':'insights','match-replay':'replay','snapshot-import':'snapshot','report-studio':'report'};
   rail.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)showView(b.dataset.view,true);});
   document.addEventListener('click',e=>{

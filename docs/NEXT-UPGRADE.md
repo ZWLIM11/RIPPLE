@@ -186,3 +186,7 @@ Preview / Apply / Undo is implemented and checked at phone width. The preview di
 ## Full outcome comparison — 26 October 2026
 
 Pass, shoot and keep-possession calculations now show win/draw/loss and percentage-point changes against baseline, with captured per-action assumptions in responsive cards. 70 tests, Cloudflare dry run and phone-width checks passed. Richer event branches remain research work. Next product priority: presentation mode for a guided, reversible demonstration.
+
+## Workspace organization — 26 October 2026
+
+Added direct screenshot and match-outcome entry points, contextual next-step guides for all six workspaces, and a phone workspace selector. Navigation preserves current board state. Verified 71 app tests, Cloudflare dry run and six phone-width views without page overflow. New guidance is currently English, consistent with the existing partial localization; fuller translation remains future work.

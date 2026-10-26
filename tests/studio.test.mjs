@@ -522,3 +522,17 @@ test('outcome cards retain per-action assumptions and clear on shared context ch
   assert.equal($('wpComparisons').querySelectorAll('article').length,0);
  }finally{dom.window.close();}
 });
+
+
+test('workspace entry points and mobile selector preserve the working board',()=>{
+ const {$,dom,context}=loadUI();try{
+  const before=vm.runInContext('JSON.stringify(state)',context);
+  dom.window.document.querySelector('[data-start-view="snapshot"]').click();
+  assert.equal(dom.window.document.body.dataset.view,'snapshot');assert.equal($('workspaceSelect').value,'snapshot');assert.match($('workflowSteps').textContent,/Calibrate/);
+  $('workspaceSelect').value='outlook';$('workspaceSelect').dispatchEvent(new dom.window.Event('change'));
+  assert.equal($('match-outlook').hidden,false);assert.match($('workflowLimit').textContent,/not validated/);
+  $('workflowNext').click();assert.equal(dom.window.document.body.dataset.view,'report');
+  $('workflowNext').click();assert.equal(dom.window.document.body.dataset.view,'analysis');
+  assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+ }finally{dom.window.close();}
+});
