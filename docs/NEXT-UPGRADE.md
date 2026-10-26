@@ -173,3 +173,8 @@ Keep trained win-impact predictions on the separate research track described abo
 ## Progress update — 22 October 2026
 
 The keep-possession action is now implemented as an illustrative no-own-shot scenario, with retention/turnover branches, a separate retention input, save/load/export support and compatibility with older saved scenarios. See MATCH-OUTLOOK.md. Priority 1 is partially fulfilled: richer branches and expected draw/loss output remain future work; the current comparison reports expected win impact. Next product priority is opt-in score-aware guidance. Calibrated WPA remains unfinished.
+
+
+## Progress update — 26 October 2026
+
+Opt-in score-aware guidance is implemented: automatic score context, manual intentions, mismatch explanation, remaining-time context, full-time handling and persistence. It leaves probability and ranking engines unchanged. Verified 66 app tests, deployment dry run and phone-width layout. Next product priority: visual decision-flip Preview / Apply / Undo. Richer draw/loss comparison and presentation mode remain outstanding; calibrated WPA and screenshot probabilities remain experimental.

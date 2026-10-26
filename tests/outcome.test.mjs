@@ -68,3 +68,14 @@ test('keep possession has exhaustive retention and turnover branches, no invente
  assert.throws(()=>M.scenario({...base,minute:90},'keep',p));
  assert.throws(()=>M.scenario(base,'keep',{...p,success:-.1}));
 });
+
+test('score guidance follows analysed side, preserves manual intent and handles full time',()=>{
+ assert.equal(M.guidance(base).mode,'off');
+ assert.equal(M.guidance(base,'auto').chosen,'win');
+ assert.equal(M.guidance({...base,homeScore:2},'auto').chosen,'protect');
+ assert.equal(M.guidance({...base,homeScore:2,side:'away'},'auto').chosen,'equalise');
+ assert.match(M.guidance({...base,homeScore:0},'protect').text,/manual intention differs/);
+ assert.equal(M.guidance({...base,minute:90},'auto').title,'Full time');
+ assert.notEqual(M.guidance({...base,minute:90,stoppage:5},'auto').title,'Full time');
+ assert.throws(()=>M.guidance(base,'unknown'));
+});

@@ -70,3 +70,10 @@ See `ml/WPA-VALIDATION.md` and `ml/transition-audit.json`: 179 matches, 120,021 
 Match outlook now compares pass, hypothetical direct shot and **Keep possession · hold or recycle**. The latter explicitly assumes no own-team shot during the selected window. With assumed retention R and opponent-goal probability T conditional on turnover, branches are R (retained/no shot), (1-R)(1-T) (turnover/no goal), and (1-R)T (turnover/opponent goal). Their weights sum to one. No-goal branches share unchanged future rates; no calibrated value is assigned to retained possession itself. Consuming time can favour a leading team or disadvantage a trailing team. No safe recycling route or dribble trajectory is inferred.
 
 The retention input is separate from passing completion. Irrelevant shot fields are hidden for this action, and the motion plot is unavailable because no route is defined. Changing the shared action window invalidates all comparison results. Version-1 saved scenarios remain compatible: files without a retention field load with an explicit 80% assumption that must be reviewed; new saves/exports include the entered retention and selected action. Screenshot probabilities remain experimental.
+
+
+## Score-aware guidance
+
+Optional tactical intention defaults to off. Follow the score selects protect the lead, find a winning goal or chase an equaliser from the analysed team perspective. Manual intentions remain selected and flag a mismatch with the score. Guidance explains tradeoffs and time remaining; full time suppresses next-action advice. The final-15-minute reminder is a presentation rule, not a learned threshold. Guidance never changes action rankings, probabilities, objectives or feasibility. Save/load and JSON exports preserve the choice; older files default to off.
+
+Verification: 66 app tests and the Cloudflare dry run passed. A 390px browser viewport showed readable controls and no page-wide overflow. This is responsive testing, not physical-device testing.

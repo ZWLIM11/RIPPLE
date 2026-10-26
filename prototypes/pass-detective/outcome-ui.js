@@ -13,6 +13,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   </div><button id="wpReset">Reset match assumptions</button></details>
   <p id="wpError" role="alert"></p><div id="wpDashboard" aria-live="polite"></div>
   <details><summary>How this baseline works</summary><p>Each team scores independently at a constant rate: expected remaining goals = goals per 90 × remaining minutes / 90. Future goal counts follow a Poisson distribution. Home advantage is represented only by the goal rates you enter. Score and time affect results; possession, red cards and tactical state do not change these rates. Regulation plus added time only; no extra time or penalties.</p></details>
+  <section class="share-board" aria-label="Experimental tactical guidance"><div class="eyebrow">OPTIONAL · EXPERIMENTAL GUIDANCE</div><h3>What are you playing for?</h3><label for="wpIntent">Tactical intention</label><select id="wpIntent"><option value="off">Off · explore without guidance</option><option value="auto">Follow the score</option><option value="protect">Protect the lead</option><option value="win">Find a winning goal</option><option value="equalise">Chase an equaliser</option></select><div id="wpGuidance" role="status"></div><p class="fine">This guide explains tradeoffs. It does not change your passing objective, rank actions, adjust probabilities or make rejected passes feasible. Compare actions below using your own assumptions.</p></section>
   <h3>2. Compare board actions</h3><p id="wpBoardNote"></p><p>Shot opportunity is a geometry heuristic out of 100, not xG. It uses distance, goal angle, nearby defenders and straight-line blockers. Receiving positions hold defenders stationary; they do not forecast a future frame.</p>
   <div class="scroll"><table><thead><tr><th>Action</th><th>Pass heuristic</th><th>Shot opportunity</th><th>Distance / angle</th><th>Scenario impact</th><th>Explore</th></tr></thead><tbody id="wpActions"></tbody></table></div>
   <h3>3. Explore an action’s possible outcomes</h3><p id="wpSelected">Choose an action above.</p>
@@ -26,13 +27,13 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   const persistence=document.createElement('div');persistence.className='toolbar';
   persistence.innerHTML='<button id="wpSaveSession">Save match scenario</button><button id="wpLoadSession">Load saved scenario</button><button id="wpExport">Export match JSON</button><label>Import match JSON<input id="wpImport" type="file" accept=".json,application/json"></label><p id="wpStorageStatus" role="status"></p>';
   matchPanel.append(persistence);
-  const fieldIds=['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate','wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow','wpRetention'];
+  const fieldIds=['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate','wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow','wpRetention','wpIntent'];
   const num=id=>{const el=$(id);if(el.value===''||!el.checkValidity())throw Error(`Check ${el.parentElement.textContent.trim()}.`);return Number(el.value);};
   const context=()=>({homeScore:num('wpHomeScore'),awayScore:num('wpAwayScore'),minute:num('wpMinute'),stoppage:num('wpStoppage'),homeRate:num('wpHomeRate'),awayRate:num('wpAwayRate'),side:$('wpSide').value});
   const pct=n=>(100*n).toFixed(1)+'%', pp=n=>(n>=0?'+':'')+(100*n).toFixed(2)+' pp';
   function clearScenario(){scenarios.clear();$('wpScenario').replaceChildren();$('motionPlot')?.replaceChildren();if($('motionResult'))$('motionResult').textContent='State changed. Plot again.';}
   function draw(){
-    $('wpError').textContent='';$('wpDashboard').replaceChildren();$('wpActions').replaceChildren();
+    $('wpGuidance').replaceChildren();$('wpError').textContent='';$('wpDashboard').replaceChildren();$('wpActions').replaceChildren();
     try{
       const s=context(),o=OutcomeModel.outcome(s),percent=OutcomeModel.percentages(o);
       const team=$(s.side==='home'?'wpHome':'wpAway').value||s.side;
@@ -41,6 +42,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
       for(let i=0;i<3;i++){const segment=document.createElement('span');segment.style.width=percent[i]+'%';bar.append(segment);}
       const legend=document.createElement('p');legend.className='outcome-legend';legend.textContent=`Win ${percent[0].toFixed(1)}% · Draw ${percent[1].toFixed(1)}% · Loss ${percent[2].toFixed(1)}%`;
       $('wpDashboard').append(heading,bar,legend);
+      const guidance=OutcomeModel.guidance(s,$('wpIntent').value),guideTitle=document.createElement('h4'),guideText=document.createElement('p');guideTitle.textContent=guidance.title;guideText.textContent=guidance.text;$('wpGuidance').append(guideTitle,guideText);
       const owner=state.players.find(p=>p.id===state.owner),teamId=$('wpTeam').value;
       actions=[];
       if(owner?.team===teamId&&!replayActive){
@@ -90,7 +92,8 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   };
   for(const id of ['wpHome','wpAway','wpHomeScore','wpAwayScore','wpMinute','wpStoppage','wpTeam','wpSide','wpHomeRate','wpAwayRate'])$(id).addEventListener('input',()=>{clearScenario();draw();});
   for(const id of ['wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow','wpRetention'])$(id).addEventListener('input',()=>{if(id==='wpWindow')clearScenario();else scenarios.delete(selected);draw();$('wpScenario').textContent='Assumptions changed. Calculate again to update this scenario.';});
-  $('wpReset').onclick=()=>{importVersion++;for(const [id,value]of Object.entries({wpHome:'Home',wpAway:'Away',wpHomeScore:1,wpAwayScore:1,wpMinute:80,wpStoppage:0,wpTeam:'blue',wpSide:'home',wpHomeRate:1.5,wpAwayRate:1.2}))$(id).value=value;clearScenario();draw();};
+  $('wpIntent').addEventListener('change',()=>{importVersion++;clearScenario();draw();});
+  $('wpReset').onclick=()=>{importVersion++;for(const [id,value]of Object.entries({wpHome:'Home',wpAway:'Away',wpHomeScore:1,wpAwayScore:1,wpMinute:80,wpStoppage:0,wpTeam:'blue',wpSide:'home',wpHomeRate:1.5,wpAwayRate:1.2,wpIntent:'off'}))$(id).value=value;clearScenario();draw();};
   const old=render;render=function(){old();const next=JSON.stringify([state.players,state.ball,state.owner,state.cfg,state.objective,replayActive]);if(next!==signature){importVersion++;signature=next;clearScenario();draw();}};
   function packet(){
     if(replayActive)throw Error('Exit replay before saving a match scenario.');
@@ -101,7 +104,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   function restore(data){
     if(replayActive)throw Error('Exit replay before importing a match scenario.');
     if(data?.version!==1||data.kind!=='ripple-match-scenario'||!data.fields)throw Error('Unsupported match scenario file.');
-    const next=SnapshotModel.validate(data.board,initial()),f={wpRetention:'80',...data.fields};
+    const next=SnapshotModel.validate(data.board,initial()),f={wpRetention:'80',wpIntent:'off',...data.fields};
     for(const id of fieldIds){
       if(typeof f[id]!=='string'||f[id].length>80)throw Error('Invalid scenario field.');
       const el=$(id);

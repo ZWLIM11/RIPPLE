@@ -459,3 +459,16 @@ test('keep possession restores assumptions and supports older saved scenarios',(
   $('wpEvaluate').click();$('wpWindow').value='20';$('wpWindow').dispatchEvent(new dom.window.Event('input'));assert.doesNotMatch($('wpActions').textContent,/illustrative/);
  }finally{dom.window.close();}
 });
+
+test('tactical guidance persists overrides without changing board rankings or probabilities',()=>{
+ const {$,dom,context}=loadUI({storage:true});try{
+  const before=vm.runInContext('JSON.stringify([state,result.top])',context),dashboard=$('wpDashboard').textContent;
+  $('wpIntent').value='protect';$('wpIntent').dispatchEvent(new dom.window.Event('change'));
+  assert.match($('wpGuidance').textContent,/manual intention differs/);
+  assert.equal(vm.runInContext('JSON.stringify([state,result.top])',context),before);assert.equal($('wpDashboard').textContent,dashboard);
+  $('wpSaveSession').click();$('wpIntent').value='auto';$('wpLoadSession').click();assert.equal($('wpIntent').value,'protect');
+  $('wpHomeScore').value='0';$('wpHomeScore').dispatchEvent(new dom.window.Event('input'));assert.equal($('wpIntent').value,'protect');assert.match($('wpGuidance').textContent,/trailing/);
+  const saved=JSON.parse(dom.window.localStorage.getItem('ripple.match.v1'));delete saved.fields.wpIntent;dom.window.localStorage.setItem('ripple.match.v1',JSON.stringify(saved));$('wpLoadSession').click();assert.equal($('wpIntent').value,'off');
+  $('wpReset').click();assert.equal($('wpIntent').value,'off');
+ }finally{dom.window.close();}
+});

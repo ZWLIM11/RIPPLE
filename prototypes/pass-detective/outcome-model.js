@@ -72,6 +72,25 @@ const OutcomeModel=(()=>{
       b.win=outcome(next).win;expected+=b.probability*b.win;}
     return {baseline:base.win,expected,wpa:expected-base.win,immediateGoal:own,branches};
   }
+  function guidance(s,mode='off'){
+    validate(s);
+    if(!['off','auto','protect','win','equalise'].includes(mode))throw Error('Invalid tactical intention.');
+    const remaining=90+s.stoppage-s.minute,difference=(s.homeScore-s.awayScore)*(s.side==='home'?1:-1);
+    if(mode==='off')return {title:'Guidance is off',text:'Choose Follow the score or a tactical intention to explore tradeoffs.',mode};
+    if(remaining===0)return {title:'Full time',text:'No playing time remains under the entered match duration. There is no next-action tactical guidance.',mode};
+    const suggested=difference>0?'protect':difference<0?'equalise':'win',chosen=mode==='auto'?suggested:mode;
+    const title={protect:'Protect the lead',win:'Find a winning goal',equalise:'Chase an equaliser'}[chosen];
+    const status=difference>0?`leading by ${difference}`:difference<0?`trailing by ${-difference}`:'level';
+    const context=`Your analysed team is ${status}, with ${remaining.toFixed(1)} minutes remaining. `;
+    const tradeoffs={
+      protect:'Compare retaining possession against attacking passes and a shot. Turnovers can expose the lead, but holding the ball is not automatically safer; pressure and the available routes still matter.',
+      win:'Compare the chance of creating a goal with the risk of conceding. A shot now, an attacking pass and retaining possession can have different tradeoffs; the score alone cannot identify the best action.',
+      equalise:'Compare actions that could create a scoring chance before time runs out. Holding or recycling uses time without an assumed shot in that window; greater attacking risk still needs a feasible route.'
+    };
+    const urgency=remaining<=15?' The final 15 minutes are a reminder to inspect the action window carefully, not a learned risk threshold.':' There is time for more possessions; one action does not determine the result.';
+    const override=mode!=='auto'&&chosen!==suggested?' Your manual intention differs from the score context and remains selected.':'';
+    return {title,text:context+tradeoffs[chosen]+urgency+override,mode,chosen};
+  }
   function trajectory(a,b,{speed=16,curve=0,height=0,vx=0,vy=0}={}){
     for(const p of [a,b]){number(p.x,0,105,'position x');number(p.y,0,68,'position y');}
     number(speed,1,35,'ball speed');number(curve,-15,15,'curve');number(height,0,15,'height');number(vx,-10,10,'velocity x');number(vy,-10,10,'velocity y');
@@ -83,5 +102,5 @@ const OutcomeModel=(()=>{
     return {points,length,duration,horizontalSpeed:length/duration,receiverAfter:{x:b.x+vx*duration,y:b.y+vy*duration},receiverShift:Math.hypot(vx,vy)*duration,
       outsidePitch:points.some(p=>p.x<0||p.x>105||p.y<0||p.y>68)};
   }
-  return {validate,outcome,percentages,shot,scenario,trajectory};
+  return {validate,outcome,percentages,shot,scenario,trajectory,guidance};
 })();
