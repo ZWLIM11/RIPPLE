@@ -178,3 +178,7 @@ The keep-possession action is now implemented as an illustrative no-own-shot sce
 ## Progress update — 26 October 2026
 
 Opt-in score-aware guidance is implemented: automatic score context, manual intentions, mismatch explanation, remaining-time context, full-time handling and persistence. It leaves probability and ranking engines unchanged. Verified 66 app tests, deployment dry run and phone-width layout. Next product priority: visual decision-flip Preview / Apply / Undo. Richer draw/loss comparison and presentation mode remain outstanding; calibrated WPA and screenshot probabilities remain experimental.
+
+## Visual decision-flip update — 26 October 2026
+
+Preview / Apply / Undo is implemented and checked at phone width. The preview displays both routes and the hypothetical defender displacement, without changing the live board until Apply. 68 app tests and Cloudflare dry run passed. Next: complete win/draw/loss action comparison, then presentation mode. Prediction validation remains separate.

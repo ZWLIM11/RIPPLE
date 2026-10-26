@@ -23,3 +23,7 @@ Research source: **StatsBomb Open Data**, pinned revision `4b73468fc5b0f1950f9f6
 ![StatsBomb](../ml/assets/statsbomb.png)
 
 The possession baseline's match-bootstrap log-loss difference versus a constant is [-0.00252, 0.00141], spanning zero: no reliable improvement established. Verification: 62 app tests, five transition audit tests and Cloudflare dry run passed. Browser checks confirmed decision-flip output, two-player sensitivity, stale-selection clearing and no page-wide overflow at 375px content width in a 390px phone frame.
+
+## Visual decision-flip preview
+
+After Find a decision flip, select Preview movement. The separate diagram leaves the board unchanged: dashed gold is the original leading route, solid mint the hypothetical new route, and the white arrow/hollow marker shows the defender move. No viable new pass is stated explicitly. Apply movement changes the board deliberately and creates a separate history step; Undo movement restores that step. Later board edits or replay invalidate pending previews and the dedicated undo shortcut; normal board history remains available. The search is bounded and heuristic, not a calibrated prediction or minimum-distance proof.

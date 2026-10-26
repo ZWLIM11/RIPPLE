@@ -472,3 +472,34 @@ test('tactical guidance persists overrides without changing board rankings or pr
   $('wpReset').click();assert.equal($('wpIntent').value,'off');
  }finally{dom.window.close();}
 });
+
+
+test('visual flip preview is isolated and apply is one reversible history step',()=>{
+ const {$,dom,context,errors}=loadUI({storage:true});try{
+  vm.runInContext('state.players[0].y+=0.1;render()',context);
+  const before=vm.runInContext('JSON.stringify(state)',context);
+  $('findDecisionFlip').click();assert.equal($('previewDecisionFlip').disabled,false);
+  assert.equal($('applyDecisionFlip').disabled,true);
+  $('previewDecisionFlip').click();assert.ok($('decisionFlipPreview').querySelector('svg'));
+  assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+  const expected=vm.runInContext('JSON.stringify(flipResult.to)',context);
+  const id=vm.runInContext('flipResult.defender',context);
+  $('applyDecisionFlip').click();
+  assert.equal(vm.runInContext(`JSON.stringify({x:byId('${id}').x,y:byId('${id}').y})`,context),expected);
+  assert.equal($('decisionFlipPreview').hidden,true);assert.equal($('undoDecisionFlip').disabled,false);
+  $('undoDecisionFlip').click();assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+  assert.equal($('undoDecisionFlip').disabled,true);assert.deepEqual(errors,[]);
+ }finally{dom.window.close();}
+});
+
+test('flip preview invalidates on board edits and replay and cannot apply stale movement',()=>{
+ const {$,dom,context}=loadUI();try{
+  $('findDecisionFlip').click();$('previewDecisionFlip').click();
+  vm.runInContext('state.cfg.reaction+=0.1;render()',context);
+  assert.equal($('decisionFlipPreview').hidden,true);assert.equal($('applyDecisionFlip').disabled,true);
+  const before=vm.runInContext('JSON.stringify(state)',context);$('applyDecisionFlip').onclick();
+  assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+  vm.runInContext('replayActive=true;render()',context);$('findDecisionFlip').click();
+  assert.match($('decisionFlipResult').textContent,/Exit replay/);assert.equal($('previewDecisionFlip').disabled,true);
+ }finally{dom.window.close();}
+});
