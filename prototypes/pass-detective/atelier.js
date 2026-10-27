@@ -158,7 +158,7 @@
 (()=>{
   const stage=document.querySelector('.workspace-stage');stage.classList.add('playground');
   const sections={
-    analysis:['THE PLAYMAKER','Your pitch.<br><em>Your next move.</em>','Try a scene, then make it yours.','Choose a scene · replaces the current board', [['Open receiver','scene:open'],['Blocked lane','scene:blocked'],['Under pressure','scene:pressure']]],
+    analysis:['THE PLAYMAKER','Your pitch.<br><em>Your next move.</em>','Choose a scene. Move players. Compare passes.','Scenes replace the current board', [['Open receiver','scene:open'],['Blocked lane','scene:blocked'],['Under pressure','scene:pressure']]],
     replay:['THE SCREENING ROOM','Pause the game.<br><em>Trust your instinct.</em>','Make your call before the story unfolds.','Synthetic replay · outcomes stay hidden until revealed', [['Start the match','startReplay'],['Jump to timeline','jump:decisionSeek']]],
     snapshot:['THE FRAME LAB','One frame.<br><em>A new perspective.</em>','Turn the players you can see into a question worth exploring.','Original practice illustration · not real match footage', [['Try the practice frame','loadSample'],['Bring my screenshot','snapshotImage']]],
     insights:['THE DISCOVERY ROOM','A good pass.<br><em>But why?</em>','Pull on a thread. See what changes.','Explore evidence for the selected route', [['Find the weak point','showRouteRisk'],['Move the defender','testWindow'],['Explain this pass','askAnalysis']]],
@@ -177,4 +177,27 @@
   function syncClock(){if(!$('playClock'))return;$('playClock').disabled=replayActive;$('playClockNumber').textContent=$('wpMinute').value+'′';$('playClock').value=$('wpMinute').value;const legend=$('wpDashboard').querySelector('.outcome-legend');$('playClockOdds').textContent=legend?.textContent||$('wpError').textContent||'Set valid match assumptions below.';}
   new MutationObserver(syncClock).observe($('wpDashboard'),{childList:true});
   new MutationObserver(refresh).observe(document.body,{attributes:true,attributeFilter:['data-view']});refresh();
+})();
+
+/* Keep instructions available without competing with the working tools. */
+(()=>{
+  const text=(selector,copy)=>{const node=document.querySelector(selector);if(node)node.textContent=copy;};
+  text('.hero-copy>p','Move players. Explore passing lanes. See what changes.');
+  text('.home-assurance>div:nth-child(2) p','Move players and compare routes. No AI account needed.');
+  text('.home-assurance>div:nth-child(3) p','Save on this device, or download a JSON backup.');
+  text('.home-assurance>div:nth-child(4) p','Experimental estimates. Scores are not success probabilities.');
+  text('#pasteFrame>p','Paste with Ctrl+V / ⌘V, or upload a screenshot. On phone, upload a saved image.');
+  text('.sample-upload p','Try mapping an example pitch. No upload needed.');
+  text('.intake-heading p','Upload → calibrate → mark → analyse.');
+  text('#snapshot-import>p.fine','Mark the players you can see. Two teammates are enough; unseen players stay unknown.');
+  text('#imageWorkspace>p.notice','Experimental geometry only. One frame cannot establish movement or pass safety.');
+  text('.studio-tools>p.notice','Experimental estimates. Scores are not completion probabilities.');
+  text('#match-replay>p:not([class])','Choose a pass, then reveal the synthetic outcome.');
+  text('#match-outlook>p:not([id]):not([class])','Explore win, draw and loss using your assumptions. Not calibrated predictions.');
+  text('#report-studio>p:not([id]):not([class])','Export your board and evidence. Print the HTML report to save a PDF.');
+  document.querySelectorAll('.section-help>summary').forEach(node=>{if(node.textContent==='How to use this section')node.textContent='Quick help';});
+  // Fold static prose only. Dynamic results, status/error messages and controls stay put.
+  const candidates=[...document.querySelectorAll('.layout p')].filter(p=>!p.id&&!p.closest('details')&&!p.matches('.notice,.status,[role],[aria-live]')&&!p.querySelector('button,input,select,a')&&p.textContent.length>180&&!p.closest('#evidence,#cards,#wpScenario,#wpComparisons,#analysisAnswer,#windowResult,#frameResult,#missingPlayerResult,#replayEvidence,#replayRecap,#liveReportPreview,.model-result,#visionReview'));
+  for(const p of candidates){const fold=document.createElement('details'),summary=document.createElement('summary');fold.className='copy-details';summary.textContent=p.closest('#match-outlook')?'Assumptions & limits':p.closest('#snapshot-import')?'Mapping guidance':p.closest('#match-replay')?'About this replay':'How this works';p.before(fold);fold.append(summary,p);}
+  const extra=document.querySelector('.studio-extra');if(extra){const details=document.createElement('details'),summary=document.createElement('summary');details.className='copy-details';summary.textContent='Turning points & contributions';extra.before(details);details.append(summary,extra);}
 })();
