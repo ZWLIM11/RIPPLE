@@ -18,6 +18,19 @@
   const library=document.createElement('details');library.className='playbook-library';
   library.innerHTML='<summary><span>My playbook</span><span class="fine">Save · revisit · share</span></summary><div class="playbook-content"><p>Keep up to 20 named scenarios on this device. Save the current board, or pick a saved scenario to load it. Download JSON for a backup.</p><label for="scenarioName">Scenario name</label><div class="playbook-row"><input id="scenarioName" maxlength="60" placeholder="e.g. Breaking the high press"><button id="saveScenario" class="primary">Save new scenario</button></div><label for="scenarioList">Saved scenarios</label><div class="playbook-row"><select id="scenarioList" aria-label="Saved scenarios"></select><button id="loadScenario">Load</button><button id="renameScenario">Rename</button><button id="deleteScenario">Remove</button></div><p id="libraryStatus" role="status" class="fine"></p></div>';
   $('tactics').before(library);
+  const gallery=document.createElement('div');gallery.className='saved-board-gallery';gallery.setAttribute('aria-label','Saved board previews');$('scenarioList').parentElement.before(gallery);
+  function previews(){
+    gallery.replaceChildren();
+    for(const e of entries){
+      const tile=document.createElement('button');tile.className='saved-board-tile';tile.type='button';tile.setAttribute('aria-pressed',String(e.id===$('scenarioList').value));
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 105 68');svg.setAttribute('aria-hidden','true');
+      const shape=(tag,attrs)=>{const el=document.createElementNS(svg.namespaceURI,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);svg.append(el);};
+      shape('rect',{x:3,y:3,width:99,height:62,fill:'none',stroke:'#819889','stroke-width':.4});shape('path',{d:'M52.5 3V65',stroke:'#819889','stroke-width':.4});shape('circle',{cx:52.5,cy:34,r:9,fill:'none',stroke:'#819889','stroke-width':.4});
+      for(const p of e.state.players)shape('circle',{cx:p.x,cy:p.y,r:p.id===e.state.owner?2.2:1.5,fill:p.team==='blue'?'#eedfc0':'#d58469',stroke:p.id===e.state.owner?'white':'none','stroke-width':.6});
+      const title=document.createElement('strong');title.textContent=e.name;const hint=document.createElement('small');hint.textContent='Open this board ↗';tile.append(svg,title,hint);
+      tile.disabled=replayActive;tile.onclick=()=>{$('scenarioList').value=e.id;$('loadScenario').click();};gallery.append(tile);
+    }
+  }
   function list(){
     const selected=$('scenarioList').value;$('scenarioList').replaceChildren();
     if(!entries.length)$('scenarioList').add(new Option('No saved scenarios yet',''));
@@ -25,6 +38,7 @@
     if(entries.some(e=>e.id===selected))$('scenarioList').value=selected;
     for(const id of ['loadScenario','renameScenario','deleteScenario'])$(id).disabled=!entries.length||replayActive;
     $('saveScenario').disabled=replayActive;
+    previews();
   }
   function store(next){
     try{localStorage.setItem(libraryKey,JSON.stringify({version:1,entries:next}));entries=next;list();return true;}

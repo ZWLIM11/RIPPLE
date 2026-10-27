@@ -31,4 +31,13 @@
   summary.textContent='A quick guide to this workspace';guide.append(summary);
   while(workflow.firstChild)guide.append(workflow.firstChild);
   workflow.append(guide);
+  // Keep advanced assumptions available without competing with the pitch.
+  const assumptions=document.getElementById('reaction').closest('.panel');
+  if(assumptions){const details=document.createElement('details');details.className='cinema-assumptions';const label=document.createElement('summary');label.textContent='Movement assumptions';details.append(label);assumptions.querySelector('h2')?.remove();while(assumptions.firstChild)details.append(assumptions.firstChild);assumptions.append(details);}
+  const journey=document.createElement('ol');journey.className='snapshot-journey';journey.setAttribute('aria-label','Screenshot analysis steps');
+  for(const [i,text]of ['Add a screenshot','Calibrate the pitch','Mark visible players','Explore a route'].entries()){const item=document.createElement('li');const number=document.createElement('b');number.textContent='0'+(i+1);item.append(number,document.createTextNode(text));journey.append(item);}
+  snapshotPanel.querySelector('h2').after(journey);
+  function updateJourney(){const step=!snapshotImage?0:calibration.length<4?1:[...mappedPoints.keys()].filter(k=>k!=='ball').length<2?2:3;[...journey.children].forEach((el,i)=>{el.classList.toggle('current',i===step);if(i===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});}
+  new MutationObserver(updateJourney).observe(document.getElementById('mappingInstruction'),{childList:true,characterData:true,subtree:true});
+  new MutationObserver(updateJourney).observe(document.getElementById('snapshotStatus'),{childList:true,characterData:true,subtree:true});updateJourney();
 })();
