@@ -135,6 +135,18 @@ test('sensitivity split preview preserves state and clears after changes',()=>{
   }finally{dom.window.close();}
 });
 
+test('workspace playground clock uses match inputs and cover moods preserve the board',async()=>{
+  const {$,dom,context,errors}=loadUI();
+  try{
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    vm.runInContext('RippleWorkspace.showView("outlook")',context);await new Promise(r=>setTimeout(r,0));
+    $('playClock').value='65';$('playClock').dispatchEvent(new dom.window.Event('input'));assert.equal($('wpMinute').value,'65');assert.match($('playClockNumber').textContent,/65/);
+    vm.runInContext('RippleWorkspace.showView("report")',context);await new Promise(r=>setTimeout(r,0));
+    dom.window.document.querySelector('[data-play-action="mood:ivory"]').click();assert.equal(dom.window.document.querySelector('.playground-art').dataset.mood,'ivory');
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);assert.equal(errors.length,0);
+  }finally{dom.window.close();}
+});
+
 test('match scenarios save and restore board plus assumptions; invalid saves do not corrupt state',()=>{
   const {$,dom,context,errors}=loadUI({storage:true});
   try{
