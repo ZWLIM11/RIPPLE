@@ -40,4 +40,20 @@
   function updateJourney(){const step=!snapshotImage?0:calibration.length<4?1:[...mappedPoints.keys()].filter(k=>k!=='ball').length<2?2:3;[...journey.children].forEach((el,i)=>{el.classList.toggle('current',i===step);if(i===step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});}
   new MutationObserver(updateJourney).observe(document.getElementById('mappingInstruction'),{childList:true,characterData:true,subtree:true});
   new MutationObserver(updateJourney).observe(document.getElementById('snapshotStatus'),{childList:true,characterData:true,subtree:true});updateJourney();
+  const stage=document.createElement('section');stage.className='workspace-stage';
+  stage.innerHTML='<div><span class="stage-edition"></span><h2></h2><p></p></div><div class="stage-route" aria-hidden="true"><i></i><i></i><i></i><span>EVERY DECISION STARTS A RIPPLE</span></div>';
+  document.querySelector('.workspace-bar').after(stage);
+  const chapters={analysis:['01 / THE TACTICAL ATELIER','Make room for the next pass.','Shape the pitch. Select a route. Explore the evidence.'],snapshot:['02 / FROM FRAME TO FIELD','Start with what you can see.','Bring a screenshot, mark visible players and explore an experimental estimate.'],replay:['03 / THE REPLAY ROOM','A decision before the reveal.','Choose a passing route before uncovering the synthetic outcome.'],insights:['04 / THE EVIDENCE ROOM','Look beyond the highlighted line.','Question the recommendation and challenge its assumptions.'],outlook:['05 / POSSIBLE FUTURES','Pass. Shoot. Keep.','Explore how score, time and assumed outcomes change the picture.'],report:['06 / YOUR FIELD NOTES','A decision worth keeping.','Export your current board and take the reasoning with you.']};
+  function updateStage(){const copy=chapters[document.body.dataset.view];stage.hidden=!copy;if(copy){stage.querySelector('.stage-edition').textContent=copy[0];stage.querySelector('h2').textContent=copy[1];stage.querySelector('p').textContent=copy[2];}}
+  new MutationObserver(updateStage).observe(document.body,{attributes:true,attributeFilter:['data-view']});updateStage();
+  const nested=document.querySelector('.cinema-assumptions .settings-fold');if(nested){nested.querySelector('summary')?.remove();nested.replaceWith(...nested.childNodes);}
+  const upload=document.getElementById('snapshotImage').closest('.toolbar');
+  if(upload){const intake=document.createElement('section');intake.className='snapshot-intake';intake.innerHTML='<div class="intake-heading"><span aria-hidden="true">⌗</span><div><h3>Bring the match into focus.</h3><p>A frame is your starting point. You control the mapping.</p></div></div>';upload.before(intake);intake.append(upload);}
+  document.querySelectorAll('.studio-grid>div').forEach((el,i)=>{el.classList.add('insight-tool');const label=document.createElement('span');label.className='tool-number';label.textContent=i===0?'01 / EXPLAIN':'02 / CHALLENGE';el.prepend(label);});
+  replayPanel.querySelector('.toolbar')?.classList.add('replay-console');
+  document.querySelector('#match-outlook details')?.classList.add('match-context');
+  const actions=document.getElementById('wpActions')?.closest('.scroll');
+  if(actions){actions.classList.add('action-workbench');const guide=document.createElement('div');guide.className='action-guide';guide.innerHTML='<div><span>↗</span><h3>Pass</h3><p>Find the next connection.</p></div><div><span>◎</span><h3>Shoot</h3><p>Explore the chance at goal.</p></div><div><span>↻</span><h3>Keep</h3><p>Consider retaining possession.</p></div>';actions.before(guide);}
+  const report=document.getElementById('report-studio');
+  if(report){const cover=document.createElement('div');cover.className='report-cover';cover.innerHTML='<span>RIPPLE / FIELD NOTES</span><h3>The next pass.<br>A clearer perspective.</h3><p>Your board. Your assumptions. Your analysis.</p><div aria-hidden="true">↗</div>';report.prepend(cover);}
 })();
