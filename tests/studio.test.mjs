@@ -76,6 +76,65 @@ function loadUI(options={}){
   return {dom,errors,context,$:id=>dom.window.document.getElementById(id)};
 }
 
+test('cinematic route preview is isolated, pausable and invalidated by board edits',async()=>{
+  const {$,dom,context,errors}=loadUI();
+  try{
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    $('routePlay').click();assert.ok($('pitch').querySelector('[data-cinema-preview]'));
+    $('routePause').click();assert.equal($('routePause').textContent,'Resume');
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    $('routePause').click();assert.equal($('routePause').textContent,'Pause');
+    vm.runInContext('state.players[0].x+=1;render()',context);
+    assert.equal($('pitch').querySelector('[data-cinema-preview]'),null);assert.equal($('routePause').disabled,true);
+    $('showRouteRisk').click();assert.ok($('pitch').querySelector('[data-cinema-preview]'));
+    $('routeStop').click();assert.equal($('pitch').querySelector('.route-muted'),null);
+    assert.equal(errors.length,0);
+  }finally{dom.window.close();}
+});
+
+test('cinematic wizard gates navigation and replay markers expose no outcomes',async()=>{
+  const {$,dom,context,errors}=loadUI();
+  try{
+    $('snapshotStep2').click();assert.match($('wizardHint').textContent,/calibration/);
+    $('startReplay').click();await new Promise(r=>setTimeout(r,0));
+    const markers=$('replayMarkers');assert.equal(markers.children.length,18);
+    assert.doesNotMatch(markers.textContent,/completed|intercepted|goal/i);
+    markers.children[2].click();assert.equal(vm.runInContext('replayIndex',context),2);assert.equal(vm.runInContext('replayRevealed',context),false);
+    assert.equal(errors.length,0);
+  }finally{dom.window.close();}
+});
+
+test('cinematic action cards use existing assumptions and read-only report has no duplicate controls',async()=>{
+  const {$,dom,context,errors}=loadUI();
+  try{
+    const before=vm.runInContext('JSON.stringify(state)',context);
+    $('cinemaActions').querySelector('[data-kind=keep]').click();assert.equal($('wpRetention').disabled,false);
+    $('wpEvaluate').click();await new Promise(r=>setTimeout(r,0));
+    assert.ok($('wpComparisons').querySelector('.scenario-bar'));
+    assert.match($('wpComparisons').textContent,/Retention/);
+    $('liveScenario').checked=true;$('wpRetention').value='90';$('wpRetention').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+    assert.match($('wpComparisons').textContent,/Retention 90.0%/);
+    $('wpRetention').value='101';$('wpRetention').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+    assert.match($('wpScenario').textContent,/Check/);assert.equal($('wpComparisons').querySelector('.scenario-bar'),null);
+    vm.runInContext('RippleWorkspace.showView("report")',context);await new Promise(r=>setTimeout(r,0));
+    assert.ok($('liveReportPreview').querySelector('svg'));assert.equal($('liveReportPreview').querySelector('svg [id],svg button,svg input'),null);
+    $('reportRoute').selectedIndex=1;$('reportRoute').dispatchEvent(new dom.window.Event('change'));assert.equal(vm.runInContext('selectedRoute().key',context),$('reportRoute').value);
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    assert.equal(errors.length,0);
+  }finally{dom.window.close();}
+});
+
+test('sensitivity split preview preserves state and clears after changes',()=>{
+  const {$,dom,context,errors}=loadUI();
+  try{
+    const before=vm.runInContext('JSON.stringify(state)',context);$('testWindow').click();
+    assert.equal($('sensitivityViews').querySelectorAll('svg').length,2);
+    assert.equal(vm.runInContext('JSON.stringify(state)',context),before);
+    vm.runInContext('state.players[0].x+=1;render()',context);assert.equal($('sensitivityViews').children.length,0);
+    assert.equal(errors.length,0);
+  }finally{dom.window.close();}
+});
+
 test('match scenarios save and restore board plus assumptions; invalid saves do not corrupt state',()=>{
   const {$,dom,context,errors}=loadUI({storage:true});
   try{

@@ -46,9 +46,11 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
       const list=document.createElement('dl');
       ['win','draw','loss'].forEach((key,i)=>{const row=document.createElement('div'),term=document.createElement('dt'),value=document.createElement('dd');term.textContent=key[0].toUpperCase()+key.slice(1);value.textContent=`${values[i].toFixed(1)}% · ${pp(saved.changes[key])} vs baseline ${baseline[i].toFixed(1)}%`;row.append(term,value);list.append(row);});
       const note=document.createElement('p');note.className='fine';note.textContent='Assumptions used: '+assumptions(a,saved.assumptions);
-      card.append(list,note);box.append(card);
+      const bar=document.createElement('div');bar.className='outcome-bar scenario-bar';bar.setAttribute('role','img');bar.setAttribute('aria-label',`Illustrative win ${values[0].toFixed(1)}%, draw ${values[1].toFixed(1)}%, loss ${values[2].toFixed(1)}%`);
+      values.forEach(v=>{const segment=document.createElement('span');segment.style.width=v+'%';bar.append(segment);});
+      card.append(bar,list,note);box.append(card);
     }
-    if(!box.children.length)box.textContent='No calculated actions yet. Choose Explore in the actions table, then calculate.';
+    if(!box.children.length)box.textContent='No calculated actions yet. Choose an action card, enter your assumptions, then calculate.';
   }
   function draw(){
     $('wpGuidance').replaceChildren();$('wpError').textContent='';$('wpDashboard').replaceChildren();$('wpActions').replaceChildren();
@@ -75,7 +77,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
       }
       $('wpBoardNote').textContent=replayActive?'Exit synthetic replay to explore a separate match scenario.':!owner?'Assign a passer on the tactics board first.':owner.team!==teamId?'The analysed team must match the tactics-board passer. Change the team above or the passer.':`${actions.filter(a=>a.kind==='pass').length} feasible passing options plus hypothetical keep-possession and direct-shot scenarios. Rejected passes are excluded. Open Tactics board to drag players, then return here.`;
       for(const a of actions){
-        const tr=document.createElement('tr'),saved=scenarios.get(a.key);
+        const tr=document.createElement('tr'),saved=scenarios.get(a.key);tr.dataset.action=a.key;tr.dataset.kind=a.kind;
         for(const value of [a.label,a.pass===null?'—':a.pass.toFixed(0)+' / 100',a.shot?a.shot.score.toFixed(0)+' / 100':'—',a.shot?`${a.shot.distance.toFixed(1)} m / ${a.shot.angleDegrees.toFixed(1)}°`:'No assumed shot',saved?pp(saved.wpa)+' · illustrative':'Not estimated']){const td=document.createElement('td');td.textContent=value;tr.append(td);}
         const td=document.createElement('td'),b=document.createElement('button');b.textContent='Explore';b.setAttribute('aria-label','Explore '+a.label);b.onclick=()=>{selected=a.key;selection();};td.append(b);tr.append(td);$('wpActions').append(tr);
       }
@@ -85,6 +87,7 @@ const matchPanel=document.createElement('section');matchPanel.className='panel w
   function selection(){
     $('motionPlot')?.replaceChildren();if($('motionResult'))$('motionResult').textContent='Selection changed. Plot again.';
     const a=actions.find(a=>a.key===selected);
+    document.querySelectorAll('#wpActions tr').forEach(row=>{row.classList.toggle('selected-action',row.dataset.action===selected);row.querySelector('button').setAttribute('aria-pressed',String(row.dataset.action===selected));});
     $('wpEvaluate').disabled=!a;
     $('wpSuccess').disabled=$('wpCreation').disabled=a?.kind!=='pass';
     $('wpGoal').disabled=a?.kind==='keep';

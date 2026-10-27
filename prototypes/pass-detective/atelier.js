@@ -57,3 +57,99 @@
   const report=document.getElementById('report-studio');
   if(report){const cover=document.createElement('div');cover.className='report-cover';cover.innerHTML='<span>RIPPLE / FIELD NOTES</span><h3>The next pass.<br>A clearer perspective.</h3><p>Your board. Your assumptions. Your analysis.</p><div aria-hidden="true">↗</div>';report.prepend(cover);}
 })();
+
+/* Interaction layer: previews never edit analytical state. */
+(()=>{
+  const reduced=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const jump=node=>node?.scrollIntoView?.({block:'center',behavior:reduced()?'instant':'smooth'});
+  const button=(id,text,fn)=>{const b=document.createElement('button');b.id=id;b.textContent=text;b.onclick=fn;return b;};
+  const controls=document.createElement('div');controls.className='route-player';
+  controls.innerHTML='<div><span class="eyebrow">ROUTE PREVIEW</span><p id="routePreviewStatus" role="status">Tap a recommendation or preview its route on hover.</p></div><div class="toolbar"><button id="routePlay">Play route</button><button id="routePause" disabled>Pause</button><button id="routeStop" disabled>Reset preview</button><label>Playback speed<select id="routeSpeed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>';
+  $('pitch').closest('.pitch-wrap').after(controls);
+  let frame=null,layer=null,elapsed=0,last=0,playing=false,previewCandidate=null;
+  function clearRoute(){if(frame!==null)cancelAnimationFrame(frame);frame=null;layer?.remove();layer=null;playing=false;elapsed=0;previewCandidate=null;$('routePause').disabled=$('routeStop').disabled=true;$('routePause').textContent='Pause';$('pitch').querySelectorAll('.player').forEach(p=>p.classList.remove('route-muted','route-focus'));}
+  function light(c,risk=false){
+    layer?.remove();layer=el('g',{'pointer-events':'none','data-cinema-preview':'true'});
+    $('routeStop').disabled=false;
+    el('line',{x1:state.ball.x,y1:state.ball.y,x2:c.target.x,y2:c.target.y,stroke:'#ffe0a0','stroke-width':1.1,'stroke-dasharray':c.viable?'none':'2 1'},layer);
+    $('pitch').querySelectorAll('.player').forEach(p=>{const relevant=[state.owner,c.receiver,c.critical?.defender].includes(p.dataset.id);p.classList.toggle('route-muted',!relevant);p.classList.toggle('route-focus',relevant);});
+    if(risk&&c.critical){const d=byId(c.critical.defender),q=c.critical.point;el('circle',{cx:q.x,cy:q.y,r:2.5,fill:'#ffae8c40',stroke:'#ffae8c','stroke-width':.6},layer);el('line',{x1:d.x,y1:d.y,x2:q.x,y2:q.y,stroke:'#ffae8c','stroke-width':.7,'stroke-dasharray':'1 .7'},layer);}
+    return el('circle',{cx:state.ball.x,cy:state.ball.y,r:.95,fill:'#fff6d7',stroke:'#8a6a32','stroke-width':.3},layer);
+  }
+  const hover=e=>{const card=e.target.closest('[data-route]');if(!card||playing||previewCandidate)return;const c=result.all.find(c=>c.key===card.dataset.route);if(c){light(c);$('routePreviewStatus').textContent=`Previewing ${c.receiver}. Click to select; board unchanged.`;}};
+  $('cards').addEventListener('pointerover',hover);$('cards').addEventListener('focusin',hover);
+  const selectedHighlight=e=>{if(e.target.closest('[data-route]')&&(e.type==='click'||e.key==='Enter'||e.key===' ')){const c=selectedRoute();if(c)light(c);}};
+  $('cards').addEventListener('click',selectedHighlight);$('cards').addEventListener('keydown',selectedHighlight);
+  for(const event of ['pointerleave','focusout'])$('cards').addEventListener(event,()=>{if(!previewCandidate){clearRoute();$('routePreviewStatus').textContent='Preview cleared. Tap a recommendation to select it.';}});
+  $('routePlay').onclick=()=>{
+    clearRoute();stopPreview();const c=selectedRoute();if(!c||!Number.isFinite(c.flight)||!c.distance){$('routePreviewStatus').textContent='Choose a reachable route first.';return;}
+    previewCandidate=structuredClone(c);const ball=light(c);playing=true;last=0;$('routePause').disabled=$('routeStop').disabled=false;
+    const tick=now=>{if(!playing)return;if(last)elapsed+=(now-last)*Number($('routeSpeed').value);last=now;const progress=reduced()?1:Math.min(1,elapsed/4200),t=progress*(c.prep+c.flight),flight=Math.max(0,Math.min(c.flight,t-c.prep)),f=Math.min(1,(c.speed*flight-.5*flight*flight)/c.distance);ball.setAttribute('cx',state.ball.x+(c.target.x-state.ball.x)*f);ball.setAttribute('cy',state.ball.y+(c.target.y-state.ball.y)*f);$('routePreviewStatus').textContent=`Illustrative route · ${t.toFixed(1)} model seconds. Not observed tracking.`;if(progress<1)frame=requestAnimationFrame(tick);else{playing=false;frame=null;$('routePause').disabled=true;}};
+    $('routePause').onclick=()=>{playing=!playing;$('routePause').textContent=playing?'Pause':'Resume';if(playing){last=0;frame=requestAnimationFrame(tick);}else if(frame!==null){cancelAnimationFrame(frame);frame=null;}};
+    frame=requestAnimationFrame(tick);
+  };
+  $('routeStop').onclick=()=>{clearRoute();$('routePreviewStatus').textContent='Preview reset. Board unchanged.';};
+  $('animateCandidate').addEventListener('click',clearRoute);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearRoute();});
+
+  // Evidence buttons point to the same selected route, not a new recommendation.
+  const evidenceTools=document.createElement('div');evidenceTools.className='toolbar evidence-links';
+  evidenceTools.append(button('showRouteRisk','Show interception risk on pitch',()=>{clearRoute();const c=selectedRoute();if(c){light(c,true);$('routePreviewStatus').textContent=`Highlighted ${c.critical.defender} and the weakest sampled route point.`;jump($('pitch'));}}));
+  $('evidence').before(evidenceTools);
+  const twins=document.createElement('div');twins.id='sensitivityViews';twins.className='sensitivity-views';$('windowResult').after(twins);
+  function miniPitch(board,c,label){
+    const figure=document.createElement('figure'),caption=document.createElement('figcaption');caption.textContent=label;
+    const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','-2 -2 109 72');svg.setAttribute('role','img');svg.setAttribute('aria-label',label);
+    el('rect',{width:105,height:68,fill:'#173b30',stroke:'#c4ceb4','stroke-width':.3},svg);el('path',{d:'M52.5 0V68 M0 14H16.5V54H0 M105 14H88.5V54H105',fill:'none',stroke:'#c4ceb4','stroke-width':.3},svg);
+    if(c)el('line',{x1:board.ball.x,y1:board.ball.y,x2:c.target.x,y2:c.target.y,stroke:'#e5c28a','stroke-width':.8},svg);
+    for(const p of board.players)el('circle',{cx:p.x,cy:p.y,r:p.id===c?.critical?.defender?2:1.4,fill:p.team==='blue'?'#65a5ff':'#f49a82',stroke:'#fff','stroke-width':p.id===c?.critical?.defender?.6:.1},svg);
+    figure.append(svg,caption);return figure;
+  }
+  $('testWindow').addEventListener('click',()=>{
+    twins.replaceChildren();const c=selectedRoute();if(!c)return;const r=MatchIntelligence.sensitivity(state,c,PassingModel);if(!r.baselineViable)return;
+    const sample=r.closure||r.samples.at(-1),copy=structuredClone(state),d=copy.players.find(p=>p.id===r.defender),q=c.critical.point,length=Math.hypot(q.x-d.x,q.y-d.y);if(length){d.x+=(q.x-d.x)*sample.shift/length;d.y+=(q.y-d.y)*sample.shift/length;}
+    twins.append(miniPitch(state,c,'Before · current positions'),miniPitch(copy,c,`After · defender moved ${sample.shift.toFixed(2)} m · ${sample.viable?'still viable':'rejected'} at this sample`));
+  });
+
+  // Screenshot steps navigate existing controls and never erase calibration/marks.
+  const journey=document.querySelector('.snapshot-journey'),hint=document.createElement('p');hint.id='wizardHint';hint.className='wizard-hint';hint.setAttribute('role','status');journey.after(hint);
+  const fold=(node,label,open=false)=>{const details=document.createElement('details'),summary=document.createElement('summary');details.className='wizard-fold';details.open=open;summary.textContent=label;node.before(details);details.append(summary,node);return details;};
+  const uploadFold=fold($('pasteFrame'),'1. Add or change screenshot',true);uploadFold.append(document.querySelector('.sample-upload'),document.querySelector('.snapshot-intake'));
+  const calibrationFold=fold($('frameRegion').parentElement,'2. Choose the visible pitch area',true);
+  fold($('markerChecklist'),'All player labels · mark only the visible players');
+  fold($('visionReview'),'Optional AI suggestions');fold($('scanKits').closest('.challenge-panel'),'Optional kit-colour assistant');
+  let previousImage=null,previousCalibrated=false;
+  const destinations=[()=>uploadFold,()=>$('frameRegion'),()=>$('mappingTarget'),()=>$('framePasser')];
+  [...journey.children].forEach((li,i)=>{const text=li.textContent.replace(/^(\d+)/,'$1 · '),b=button('snapshotStep'+i,text,()=>{if(i===0||snapshotImage&&(i===1||calibration.length===4)){if(i===0)uploadFold.open=true;if(i===1)calibrationFold.open=true;jump(destinations[i]());if(i>0)destinations[i]().focus();}else{hint.textContent=i===1?'Upload a screenshot first.':'Finish the four calibration corners first.';}});li.replaceChildren(b);});
+  function wizard(){const calibrated=!!snapshotImage&&calibration.length===4,ready=calibrated&&!$('measureFrame').disabled,step=!snapshotImage?0:!calibrated?1:ready?3:2;if(snapshotImage!==previousImage){uploadFold.open=!snapshotImage;calibrationFold.open=true;previousImage=snapshotImage;}if(calibrated!==previousCalibrated){calibrationFold.open=!calibrated;previousCalibrated=calibrated;}journey.dataset.step=String(step);[...journey.children].forEach((li,i)=>{li.classList.toggle('current',i===step);li.querySelector('button').setAttribute('aria-current',i===step?'step':'false');});hint.textContent=['Upload or paste a frame to begin.','Choose visible pitch landmarks, then mark the four corners in order.','Mark a passer, a teammate and any visible opponents. Unseen players stay unknown.','Ready to analyse. Choose two marked teammates; you can keep adding visible opponents.'][step];document.querySelector('.snapshot-intake').classList.toggle('upload-complete',!!snapshotImage);}
+  new MutationObserver(wizard).observe($('mappingInstruction'),{childList:true,subtree:true,characterData:true});new MutationObserver(wizard).observe($('frameResult'),{childList:true,subtree:true,characterData:true});wizard();
+
+  // Neutral decision numbers only: no future outcome leaks in the timeline.
+  const markers=document.createElement('div');markers.id='replayMarkers';markers.className='film-timeline';markers.setAttribute('aria-label','Replay decision markers');$('decisionSeek').after(markers);
+  function timeline(){markers.replaceChildren();if(!replayActive||!replayMatch)return;replayMatch.decisions.forEach((_,i)=>{const b=button('',String(i+1),()=>{$('decisionSeek').value=String(i);$('decisionSeek').dispatchEvent(new Event('input',{bubbles:true}));});b.setAttribute('aria-label',`Go to decision ${i+1}`);b.setAttribute('aria-current',i===replayIndex?'step':'false');markers.append(b);});$('decisionStory').classList.toggle('outcome-revealed',replayRevealed);}
+  new MutationObserver(timeline).observe($('replayClock'),{childList:true});timeline();
+
+  // Existing Explore handlers remain the single action-selection path.
+  const actionCards=document.createElement('div');actionCards.id='cinemaActions';actionCards.className='cinema-actions';document.querySelector('.action-guide').replaceWith(actionCards);
+  function actionTiles(){actionCards.replaceChildren();for(const row of $('wpActions').children){const b=button('', '',()=>{row.querySelector('button').click();actionTiles();jump($('wpSelected'));});b.className='action-tile';b.dataset.kind=row.dataset.kind;b.setAttribute('aria-pressed',String(row.classList.contains('selected-action')));const title=document.createElement('strong'),info=document.createElement('span');title.textContent=row.cells[0].textContent;info.textContent=row.dataset.kind==='pass'?`Pass heuristic ${row.cells[1].textContent} · ${row.cells[4].textContent}`:row.dataset.kind==='shot'?`Shot opportunity ${row.cells[2].textContent} · geometry only`:'Explore retaining possession under your assumptions';b.append(title,info);actionCards.append(b);}}
+  new MutationObserver(actionTiles).observe($('wpActions'),{childList:true});$('wpActions').addEventListener('click',actionTiles);actionTiles();
+  const tableDetails=document.createElement('details'),tableLabel=document.createElement('summary'),table=document.querySelector('.action-workbench');tableLabel.textContent='Detailed action evidence';tableDetails.className='action-details';tableDetails.append(tableLabel);table.before(tableDetails);tableDetails.append(table);
+  const liveLabel=document.createElement('label');liveLabel.className='live-scenario-switch';liveLabel.innerHTML='<input id="liveScenario" type="checkbox"> Update this illustrative scenario while I edit assumptions';$('wpEvaluate').before(liveLabel);
+  const recalculate=()=>{if($('liveScenario').checked&&!$('wpEvaluate').disabled)$('wpEvaluate').click();};$('liveScenario').onchange=recalculate;
+  for(const id of ['wpRetention','wpSuccess','wpCreation','wpGoal','wpCounter','wpWindow'])$(id).addEventListener('input',recalculate);
+
+  const reportPreview=document.createElement('section');reportPreview.id='liveReportPreview';reportPreview.className='live-report-preview';reportPreview.setAttribute('aria-label','Current report preview');document.querySelector('.report-cover').after(reportPreview);
+  function updateReport(){reportPreview.replaceChildren();const title=document.createElement('h3');title.textContent='Your current board';const c=selectedRoute();if(c){const label=document.createElement('label'),select=document.createElement('select');label.textContent='Route to feature in your report ';select.id='reportRoute';const choices=[...result.top];if(!choices.some(r=>r.key===c.key))choices.push(c);for(const r of choices)select.add(new Option(`${r.receiver} · ${r.target.label} · ${r.speed} m/s`,r.key));select.value=c.key;select.onchange=()=>{routeKey=select.value;inspectReceiver=null;render();$('reportRoute')?.focus();};label.append(select);reportPreview.append(label);}reportPreview.append(title,miniPitch(state,c,'Read-only board preview · export includes current evidence'));const copy=document.createElement('p');copy.textContent=c?`${c.receiver} · ${c.target.label} · heuristic ${c.score.toFixed(0)}/100 · route margin ${signed(c.routeMargin)}. Experimental estimates, not completion probabilities.`:'Assign a passer to include route evidence.';reportPreview.append(copy);}
+  updateReport();
+  const toast=document.createElement('p');toast.id='saveToast';toast.className='save-toast';toast.setAttribute('role','status');toast.hidden=true;document.body.append(toast);let toastTimer;
+  new MutationObserver(()=>{toast.textContent=$('libraryStatus').textContent;toast.hidden=!toast.textContent;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toast.hidden=true;},4000);}).observe($('libraryStatus'),{childList:true});
+
+  const dock=document.createElement('nav');dock.className='phone-action-dock';dock.setAttribute('aria-label','Current workspace actions');document.body.append(dock);
+  const dockActions={analysis:[['Play route','routePlay'],['Save board','quickSave']],snapshot:[['Upload','snapshotImage'],['Analyse route','measureFrame']],replay:[['Play / pause','autoReplay'],['Reveal outcome','revealPass']],insights:[['Explain','askAnalysis'],['Test window','testWindow']],outlook:[['Calculate impact','wpEvaluate']],report:[['Export report','downloadReport'],['Save board','quickSave']]};
+  function dockUpdate(){dock.replaceChildren();for(const [label,id]of dockActions[document.body.dataset.view]||[]){const target=$(id),b=button('',label,()=>{if(!target.disabled){target.click();if(id!=='snapshotImage')jump(target);}});b.disabled=target.disabled;dock.append(b);}dock.hidden=!dock.children.length;}
+  const seen=new Set();function viewChange(){clearRoute();const view=document.body.dataset.view,stage=document.querySelector('.workspace-stage');stage.classList.toggle('compact-stage',seen.has(view));seen.add(view);dockUpdate();if(view==='report')updateReport();}
+  new MutationObserver(viewChange).observe(document.body,{attributes:true,attributeFilter:['data-view']});
+  for(const id of ['measureFrame','autoReplay','revealPass','wpEvaluate','askAnalysis','testWindow'])new MutationObserver(dockUpdate).observe($(id),{attributes:true,attributeFilter:['disabled']});
+  const oldRender=render;render=function(){clearRoute();twins.replaceChildren();oldRender();$('routePlay').disabled=!selectedRoute();$('routePreviewStatus').textContent='Select a route, then play an illustrative preview.';if(document.body.dataset.view==='report')updateReport();dockUpdate();};
+  viewChange();
+})();
